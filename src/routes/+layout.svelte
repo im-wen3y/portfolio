@@ -1,5 +1,6 @@
 <script lang="ts">
 	import favicon from '$lib/assets/favicon.svg';
+	import iconDownload from '$lib/assets/icon-download.png';
 	import '../app.css';
 
 	let { children } = $props();
@@ -54,12 +55,17 @@
 	<div class="nav-inner">
 		<a href="/resume" class="wordmark">im-wen3y</a>
 		<ul class="nav-links">
-			<li><a href="/resume#hero">Home</a></li>
-			<li><a href="/resume#about">About</a></li>
-			<li><a href="/resume#experience">Experience</a></li>
-			<li><a href="/resume#skills">Skills</a></li>
-			<li><a href="/resume#contact">Contact</a></li>
-			<li><a href="/portfolio">Portfolio</a></li>
+			<li><a href="/resume#hero" class:active={activeSection === 'hero'}>Home</a></li>
+			<li><a href="/resume#about" class:active={activeSection === 'about'}>About</a></li>
+			<li><a href="/resume#experience" class:active={activeSection === 'experience'}>Experience</a></li>
+			<li><a href="/resume#skills" class:active={activeSection === 'skills'}>Skills</a></li>
+			<li><a href="/resume#contact" class:active={activeSection === 'contact'}>Contact</a></li>
+			<li>
+				<a href="/resume/print" target="_blank" class="nav-pdf">
+					<img src={iconDownload} alt="PDF 다운로드" class="nav-pdf-icon" />
+					PDF
+				</a>
+			</li>
 		</ul>
 		<button
 			class="hamburger"
@@ -79,6 +85,12 @@
 {/if}
 
 <div class="drawer" class:drawer-open={menuOpen} aria-hidden={!menuOpen}>
+	<button class="drawer-close" onclick={closeMenu} aria-label="메뉴 닫기">
+		<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<line x1="1" y1="1" x2="17" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+			<line x1="17" y1="1" x2="1" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+		</svg>
+	</button>
 	<ul class="drawer-links">
 		<li>
 			<a href="/resume#hero" onclick={closeMenu} class:active={activeSection === 'hero'}>
@@ -110,13 +122,11 @@
 				<span class="drawer-ko">연락하기</span>
 			</a>
 		</li>
-		<li>
-			<a href="/portfolio" onclick={closeMenu}>
-				<span class="drawer-en">Portfolio</span>
-				<span class="drawer-ko">포트폴리오</span>
-			</a>
-		</li>
 	</ul>
+	<a href="/resume/print" target="_blank" onclick={closeMenu} class="drawer-pdf-btn">
+		<img src={iconDownload} alt="" class="nav-pdf-icon" />
+		이력서 저장
+	</a>
 </div>
 
 <main>
@@ -173,6 +183,33 @@
 	}
 
 	.nav-links a:hover {
+		color: var(--color-ink);
+	}
+
+	.nav-links a.active {
+		color: var(--color-primary);
+	}
+
+	.nav-pdf-icon {
+		width: 13px;
+		height: 13px;
+		display: inline-block;
+		vertical-align: middle;
+		margin-bottom: 1px;
+	}
+
+	.nav-links .nav-pdf {
+		color: var(--color-ink);
+		border: 1px solid var(--color-hairline);
+		padding: 6px 12px;
+		border-radius: var(--rounded-md);
+		transition:
+			background-color 0.15s ease,
+			color 0.15s ease;
+	}
+
+	.nav-links .nav-pdf:hover {
+		background-color: var(--color-surface-card);
 		color: var(--color-ink);
 	}
 
@@ -246,6 +283,53 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-xs);
+		flex: 1;
+	}
+
+	.drawer-pdf-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 7px;
+		width: 100%;
+		padding: 14px;
+		background-color: var(--color-primary);
+		color: var(--color-on-primary);
+		font-family: var(--font-body);
+		font-size: 14px;
+		font-weight: 500;
+		border-radius: var(--rounded-md);
+		transition: background-color 0.15s ease;
+	}
+
+	.drawer-pdf-btn:hover {
+		background-color: var(--color-primary-active);
+	}
+
+	.drawer-pdf-btn .nav-pdf-icon {
+		filter: brightness(0) invert(1);
+	}
+
+	.drawer-close {
+		position: absolute;
+		top: 20px;
+		right: 20px;
+		width: 36px;
+		height: 36px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: none;
+		border: none;
+		cursor: pointer;
+		color: var(--color-muted);
+		border-radius: var(--rounded-md);
+		transition: color 0.15s ease, background-color 0.15s ease;
+	}
+
+	.drawer-close:hover {
+		color: var(--color-ink);
+		background-color: var(--color-surface-soft);
 	}
 
 	.drawer-links a {
