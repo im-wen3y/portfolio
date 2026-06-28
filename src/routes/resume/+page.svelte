@@ -1,10 +1,11 @@
 <script>
 	const codeHtml = `<span class="syn-comment">// im-wen3y</span>
 <span class="syn-keyword">const</span> <span class="syn-var">me</span> <span class="syn-punct">=</span> <span class="syn-punct">{</span>
-  <span class="syn-prop">name</span><span class="syn-punct">:</span>   <span class="syn-string">'송누리'</span><span class="syn-punct">,</span>
+  <span class="syn-prop">name</span><span class="syn-punct">:</span> <span class="syn-string">'송누리'</span><span class="syn-punct">,</span>
   <span class="syn-prop">career</span><span class="syn-punct">:</span> <span class="syn-string">'7년차'</span><span class="syn-punct">,</span>
-  <span class="syn-prop">role</span><span class="syn-punct">:</span>   <span class="syn-string">'프론트엔드 파트 리더'</span><span class="syn-punct">,</span>
-  <span class="syn-prop">stack</span><span class="syn-punct">:</span>  <span class="syn-punct">[</span><span class="syn-string">'React'</span><span class="syn-punct">,</span> <span class="syn-string">'TypeScript'</span><span class="syn-punct">]</span><span class="syn-punct">,</span>
+  <span class="syn-prop">role</span><span class="syn-punct">:</span> <span class="syn-string">'프론트엔드 파트 리더'</span><span class="syn-punct">,</span>
+  <span class="syn-prop">stack</span><span class="syn-punct">:</span> <span class="syn-punct">[</span><span class="syn-string">'React'</span><span class="syn-punct">,</span> <span class="syn-string">'TypeScript'</span><span class="syn-punct">]</span><span class="syn-punct">,</span>
+  <span class="syn-prop">portfolio</span><span class="syn-punct">:</span> <a href="/portfolio" class="syn-string syn-link">'바로가기'</a><span class="syn-punct">,</span>
 <span class="syn-punct">}</span>`;
 </script>
 
@@ -66,17 +67,17 @@
 		<h2 class="display-lg">소개</h2>
 		<p class="about-lead">
 			<strong>사용자 관점</strong>에서 UI/UX를 고민하고, 팀과 함께
-			<strong>안정적인 개발 프로세스</strong>를 만들어가는 것을 중요하게 생각하는
-			프론트엔드 개발자입니다.
+			<strong>안정적인 개발 프로세스</strong>를 만들어가는 것을 중요하게 생각하는 프론트엔드
+			개발자입니다.
 		</p>
 		<div class="about-body">
 			<p>
-				다양한 웹/앱 프로젝트를 <strong>React 기반으로 개발·운영</strong>하며,
-				모바일/웹 리뉴얼과 <strong>주요 기능 설계·개발을 주도</strong>했습니다.
+				다양한 웹/앱 프로젝트를 <strong>React 기반으로 개발·운영</strong>하며, 모바일/웹 리뉴얼과
+				<strong>주요 기능 설계·개발을 주도</strong>했습니다.
 			</p>
 			<p>
-				기획팀, 디자인팀과 협업하며 <strong>요구사항 정의와 우선순위 조율</strong>을 수행하고,
-				팀 내 업무 조율과 <strong>신입 개발자 멘토링</strong>을 통해
+				기획팀, 디자인팀과 협업하며 <strong>요구사항 정의와 우선순위 조율</strong>을 수행하고, 팀 내
+				업무 조율과 <strong>신입 개발자 멘토링</strong>을 통해
 				<strong>팀 생산성과 개발 역량 향상</strong>에 기여했습니다.
 			</p>
 			<p>
@@ -212,19 +213,19 @@
 					<h4 class="exp-project-title">주요 프로젝트</h4>
 					<ul class="exp-bullets">
 						<li>
-							<strong>신한DS LMS 고도화</strong> — 직원용 Admin 화면 개발 및 API 연동, User-Admin 간 데이터
+							신한DS LMS 고도화 — 직원용 Admin 화면 개발 및 API 연동, User-Admin 간 데이터
 							통신 오류 수정
 						</li>
 						<li>
-							<strong>롯데마트 웹/웹앱 운영</strong> — 주문·결제 관련 API 문제 해결, 신규 팀원용 업무
+							롯데마트 웹/웹앱 운영 — 주문·결제 관련 API 문제 해결, 신규 팀원용 업무
 							프로세스 및 단위 테스트 가이드 작성
 						</li>
 						<li>
-							<strong>공공기관 사이트 유지보수</strong> — 자료관리시스템 백엔드 유지보수 및 데이터 관리,
+							공공기관 사이트 유지보수 — 자료관리시스템 백엔드 유지보수 및 데이터 관리,
 							운영 표준화
 						</li>
 						<li>
-							<strong>미스터피자 웹/모바일웹 리뉴얼</strong> — 회원가입·로그인·주문·결제 기능 API 설계
+							미스터피자 웹/모바일웹 리뉴얼 — 회원가입·로그인·주문·결제 기능 API 설계
 							및 개발
 						</li>
 					</ul>
@@ -249,13 +250,21 @@
 					<li>Chrome, Safari 등 주요 브라우저 크로스 브라우저 대응</li>
 				</ul>
 			</div>
-<div class="skills-group">
+			<div class="skills-group">
 				<h3 class="skills-group-title">협업 및 리더십</h3>
 				<ul class="skills-list">
 					<li>기획·디자인팀과 협업하여 요구사항 정의 및 기능 설계</li>
 					<li>팀 업무 조율, 코드 리뷰, 개발 가이드 제공</li>
 					<li>신입 개발자 멘토링을 통한 팀 역량 향상</li>
 					<li>Git, Slack, Jira, Confluence, Notion, Figma 활용</li>
+				</ul>
+			</div>
+			<div class="skills-group">
+				<h3 class="skills-group-title">AI 도구</h3>
+				<ul class="skills-list">
+					<li>Cursor AI 기반 코드 작성 및 리팩터링 보조</li>
+					<li>Claude, ChatGPT 활용 설계 검토 및 문서화</li>
+					<li>AI 도구를 개발 워크플로우에 통합하여 생산성 향상</li>
 				</ul>
 			</div>
 		</div>
@@ -314,6 +323,7 @@
 
 <style>
 	.container {
+		width: 100%;
 		max-width: 1028px;
 		margin: 0 auto;
 		padding: 0 var(--space-lg);
@@ -475,7 +485,18 @@
 		width: 10px;
 		height: 10px;
 		border-radius: var(--rounded-full);
-		background-color: var(--color-surface-dark-soft);
+	}
+
+	.code-dot:nth-child(1) {
+		background-color: #ff5f57;
+	}
+
+	.code-dot:nth-child(2) {
+		background-color: #febc2e;
+	}
+
+	.code-dot:nth-child(3) {
+		background-color: #28c840;
 	}
 
 	.code-filename {
@@ -483,6 +504,7 @@
 		font-size: 12px;
 		color: var(--color-on-dark-soft);
 		margin-left: var(--space-xs);
+		transition: color 0.15s ease;
 	}
 
 	.code-body {
@@ -516,6 +538,15 @@
 	}
 	:global(.syn-punct) {
 		color: var(--color-on-dark-soft);
+	}
+	:global(.syn-link) {
+		text-decoration: none;
+		transition: opacity 0.15s ease;
+	}
+	:global(.syn-link:hover) {
+		text-decoration: underline;
+		text-underline-offset: 3px;
+		opacity: 0.7;
 	}
 
 	/* ── About ── */
@@ -653,7 +684,8 @@
 		color: var(--color-muted-soft);
 	}
 
-	.exp-bullets strong {
+	.exp-bullets strong,
+	.skills-list strong {
 		color: var(--color-body-strong);
 		font-weight: 500;
 	}
@@ -666,7 +698,7 @@
 
 	.skills-grid {
 		display: grid;
-		grid-template-columns: repeat(2, 1fr);
+		grid-template-columns: repeat(3, 1fr);
 		gap: var(--space-xxl);
 	}
 
@@ -844,7 +876,7 @@
 			grid-template-columns: 1fr;
 		}
 
-.exp-header {
+		.exp-header {
 			flex-direction: column;
 			align-items: flex-start;
 		}
