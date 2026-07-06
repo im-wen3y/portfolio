@@ -1,25 +1,109 @@
-<script>
-	const codeHtml = `<span class="syn-comment">// im-wen3y</span>
-<span class="syn-keyword">const</span> <span class="syn-var">me</span> <span class="syn-punct">=</span> <span class="syn-punct">{</span>
-  <span class="syn-prop">name</span><span class="syn-punct">:</span> <span class="syn-string">'송누리'</span><span class="syn-punct">,</span>
-  <span class="syn-prop">career</span><span class="syn-punct">:</span> <span class="syn-string">'7년차'</span><span class="syn-punct">,</span>
-  <span class="syn-prop">role</span><span class="syn-punct">:</span> <span class="syn-string">'프론트엔드 파트 리더'</span><span class="syn-punct">,</span>
-  <span class="syn-prop">stack</span><span class="syn-punct">:</span> <span class="syn-punct">[</span><span class="syn-string">'React'</span><span class="syn-punct">,</span> <span class="syn-string">'TypeScript'</span><span class="syn-punct">]</span><span class="syn-punct">,</span>
-  <span class="syn-prop">portfolio</span><span class="syn-punct">:</span> <a href="/portfolio" class="syn-string syn-link">'바로가기'</a><span class="syn-punct">,</span>
-<span class="syn-punct">}</span>`;
+<script lang="ts">
+	import { reveal } from '$lib/actions/reveal';
+	import { resolve } from '$app/paths';
+
+	let activeSection = $state('hero');
+
+	$effect(() => {
+		const sections = document.querySelectorAll('section[id]');
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (entry.isIntersecting) {
+						activeSection = entry.target.id;
+					}
+				}
+			},
+			{ threshold: 0.3 }
+		);
+		sections.forEach((s) => observer.observe(s));
+		return () => observer.disconnect();
+	});
+
+	const HERO_LINE_1 = '안녕하세요,';
+	const HERO_LINE_2 = '송누리입니다';
+
+	let typedLine1 = $state('');
+	let typedLine2 = $state('');
+	let typingPhase = $state(1);
+
+	$effect(() => {
+		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			typedLine1 = HERO_LINE_1;
+			typedLine2 = HERO_LINE_2;
+			typingPhase = 2;
+			return;
+		}
+
+		let i = 0;
+		const timer = setInterval(() => {
+			if (typingPhase === 1) {
+				i++;
+				typedLine1 = HERO_LINE_1.slice(0, i);
+				if (i >= HERO_LINE_1.length) {
+					typingPhase = 2;
+					i = 0;
+				}
+			} else {
+				i++;
+				typedLine2 = HERO_LINE_2.slice(0, i);
+				if (i >= HERO_LINE_2.length) {
+					clearInterval(timer);
+				}
+			}
+		}, 90);
+
+		return () => clearInterval(timer);
+	});
 </script>
 
+<nav class="section-nav" aria-label="이력서 섹션 이동">
+	<ul class="section-nav-links">
+		<li>
+			<a href={resolve('/resume#hero')} class:active={activeSection === 'hero'}>Home</a>
+		</li>
+		<li>
+			<a href={resolve('/resume#about')} class:active={activeSection === 'about'}>About</a>
+		</li>
+		<li>
+			<a href={resolve('/resume#experience')} class:active={activeSection === 'experience'}
+				>Experience</a
+			>
+		</li>
+		<li>
+			<a href={resolve('/resume#skills')} class:active={activeSection === 'skills'}>Skills</a>
+		</li>
+		<li>
+			<a href={resolve('/resume#contact')} class:active={activeSection === 'contact'}>Contact</a>
+		</li>
+	</ul>
+</nav>
+
 <section id="hero" class="hero">
+	<div class="hero-bg">
+		<div class="hero-bg-radial"></div>
+		<div class="hero-bg-grid"></div>
+		<div class="hero-bg-scanlines"></div>
+	</div>
 	<div class="container">
 		<div class="hero-grid">
 			<div class="hero-content">
-				<p class="hero-eyebrow">Frontend Developer</p>
-				<h1 class="display-xl">안녕하세요,<br />송누리입니다</h1>
-				<p class="hero-sub">
+				<p class="hero-eyebrow reveal" use:reveal>Frontend Developer</p>
+				<h1
+					class="display-xl reveal"
+					use:reveal={{ delay: 80 }}
+					aria-label="{HERO_LINE_1} {HERO_LINE_2}"
+				>
+					<span aria-hidden="true">
+						{typedLine1}{#if typingPhase === 1}<span class="type-cursor"></span>{/if}<br />
+						{typedLine2}{#if typingPhase === 2}<span class="type-cursor"></span>{/if}
+					</span>
+				</h1>
+				<p class="hero-sub reveal" use:reveal={{ delay: 160 }}>
 					React 기반으로 웹/앱을 개발·운영하며 프론트엔드 파트 리더로 팀을 이끌어온 7년차
 					개발자입니다.
 				</p>
-				<div class="hero-badges">
+				<div class="hero-badges reveal" use:reveal={{ delay: 240 }}>
 					<span class="badge">React</span>
 					<span class="badge">Next</span>
 					<span class="badge">TypeScript</span>
@@ -28,34 +112,42 @@
 					<span class="badge">Emotion</span>
 					<span class="badge">TailwindCSS</span>
 				</div>
-				<div class="hero-actions">
-					<a href="mailto:imwen3y@gmail.com" class="btn-primary">이메일 보내기</a>
-					<a
-						href="https://www.linkedin.com/in/im-wen3y"
-						class="btn-secondary"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						LinkedIn
-					</a>
-					<a
-						href="https://velog.io/@imwen3y/posts"
-						class="btn-secondary"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						Velog
-					</a>
+				<div class="hero-actions reveal" use:reveal={{ delay: 320 }}>
+					<a href={resolve('/portfolio')} class="btn-text">포트폴리오 바로가기 →</a>
 				</div>
 			</div>
-			<div class="hero-code-window">
+			<div class="hero-code-window reveal reveal-right" use:reveal={{ delay: 200 }}>
 				<div class="code-chrome">
 					<span class="code-dot"></span>
 					<span class="code-dot"></span>
 					<span class="code-dot"></span>
 					<span class="code-filename">im-wen3y.ts</span>
 				</div>
-				<pre class="code-body"><code>{@html codeHtml}</code></pre>
+				<pre class="code-body"><code
+						><span class="syn-comment">// im-wen3y</span>
+<span class="syn-keyword">const</span> <span class="syn-var">me</span> <span class="syn-punct"
+							>=</span
+						> <span class="syn-punct">{'{'}</span>
+  <span class="syn-prop">name</span><span class="syn-punct">:</span> <span class="syn-string"
+							>'송누리'</span
+						><span class="syn-punct">,</span>
+  <span class="syn-prop">career</span><span class="syn-punct">:</span> <span class="syn-string"
+							>'7년차'</span
+						><span class="syn-punct">,</span>
+  <span class="syn-prop">role</span><span class="syn-punct">:</span> <span class="syn-string"
+							>'프론트엔드 파트 리더'</span
+						><span class="syn-punct">,</span>
+  <span class="syn-prop">stack</span><span class="syn-punct">:</span> <span class="syn-punct"
+							>[</span
+						><span class="syn-string">'React'</span><span class="syn-punct">,</span> <span
+							class="syn-string">'TypeScript'</span
+						><span class="syn-punct">]</span><span class="syn-punct">,</span>
+  <span class="syn-prop">portfolio</span><span class="syn-punct">:</span> <a
+							href={resolve('/portfolio')}
+							class="syn-string syn-link">'바로가기'</a
+						><span class="syn-punct">,</span>
+<span class="syn-punct">}</span></code
+					></pre>
 			</div>
 		</div>
 	</div>
@@ -63,24 +155,24 @@
 
 <section id="about" class="about">
 	<div class="container">
-		<span class="section-label">§ ABOUT</span>
-		<h2 class="display-lg">소개</h2>
-		<p class="about-lead">
+		<span class="section-label reveal" use:reveal>§ ABOUT</span>
+		<h2 class="display-lg reveal" use:reveal={{ delay: 60 }}>소개</h2>
+		<p class="about-lead reveal" use:reveal={{ delay: 120 }}>
 			<strong>사용자 관점</strong>에서 UI/UX를 고민하고, 팀과 함께
 			<strong>안정적인 개발 프로세스</strong>를 만들어가는 것을 중요하게 생각하는 프론트엔드
 			개발자입니다.
 		</p>
 		<div class="about-body">
-			<p>
+			<p class="reveal" use:reveal={{ delay: 160 }}>
 				다양한 웹/앱 프로젝트를 <strong>React 기반으로 개발·운영</strong>하며, 모바일/웹 리뉴얼과
 				<strong>주요 기능 설계·개발을 주도</strong>했습니다.
 			</p>
-			<p>
+			<p class="reveal" use:reveal={{ delay: 220 }}>
 				기획팀, 디자인팀과 협업하며 <strong>요구사항 정의와 우선순위 조율</strong>을 수행하고, 팀 내
 				업무 조율과 <strong>신입 개발자 멘토링</strong>을 통해
 				<strong>팀 생산성과 개발 역량 향상</strong>에 기여했습니다.
 			</p>
-			<p>
+			<p class="reveal" use:reveal={{ delay: 280 }}>
 				앞으로는 개발자로서의 역량을 넘어, 기술적으로도 성장하는
 				<strong>프론트엔드 파트 리더</strong>로 팀과 조직을 이끄는 역할을 수행하고 싶습니다.
 			</p>
@@ -90,10 +182,10 @@
 
 <section id="experience" class="experience">
 	<div class="container">
-		<span class="section-label">§ EXPERIENCE</span>
-		<h2 class="display-lg">경험</h2>
+		<span class="section-label reveal" use:reveal>§ EXPERIENCE</span>
+		<h2 class="display-lg reveal" use:reveal={{ delay: 60 }}>경험</h2>
 
-		<article class="exp-card">
+		<article class="exp-card reveal" use:reveal>
 			<div class="exp-header">
 				<div class="exp-meta">
 					<h3 class="exp-company">라텔앤드파트너즈</h3>
@@ -155,7 +247,7 @@
 			</div>
 		</article>
 
-		<article class="exp-card">
+		<article class="exp-card reveal" use:reveal>
 			<div class="exp-header">
 				<div class="exp-meta">
 					<h3 class="exp-company">샤플앤컴퍼니</h3>
@@ -197,7 +289,7 @@
 			</div>
 		</article>
 
-		<article class="exp-card">
+		<article class="exp-card reveal" use:reveal>
 			<div class="exp-header">
 				<div class="exp-meta">
 					<h3 class="exp-company">아이티키</h3>
@@ -213,21 +305,17 @@
 					<h4 class="exp-project-title">주요 프로젝트</h4>
 					<ul class="exp-bullets">
 						<li>
-							신한DS LMS 고도화 — 직원용 Admin 화면 개발 및 API 연동, User-Admin 간 데이터
-							통신 오류 수정
+							신한DS LMS 고도화 — 직원용 Admin 화면 개발 및 API 연동, User-Admin 간 데이터 통신 오류
+							수정
 						</li>
 						<li>
-							롯데마트 웹/웹앱 운영 — 주문·결제 관련 API 문제 해결, 신규 팀원용 업무
-							프로세스 및 단위 테스트 가이드 작성
+							롯데마트 웹/웹앱 운영 — 주문·결제 관련 API 문제 해결, 신규 팀원용 업무 프로세스 및
+							단위 테스트 가이드 작성
 						</li>
 						<li>
-							공공기관 사이트 유지보수 — 자료관리시스템 백엔드 유지보수 및 데이터 관리,
-							운영 표준화
+							공공기관 사이트 유지보수 — 자료관리시스템 백엔드 유지보수 및 데이터 관리, 운영 표준화
 						</li>
-						<li>
-							미스터피자 웹/모바일웹 리뉴얼 — 회원가입·로그인·주문·결제 기능 API 설계
-							및 개발
-						</li>
+						<li>미스터피자 웹/모바일웹 리뉴얼 — 회원가입·로그인·주문·결제 기능 API 설계 및 개발</li>
 					</ul>
 				</div>
 			</div>
@@ -237,10 +325,10 @@
 
 <section id="skills" class="skills">
 	<div class="container">
-		<span class="section-label">§ SKILLS</span>
-		<h2 class="display-lg">기술 및 협업</h2>
+		<span class="section-label reveal" use:reveal>§ SKILLS</span>
+		<h2 class="display-lg reveal" use:reveal={{ delay: 60 }}>기술 및 협업</h2>
 		<div class="skills-grid">
-			<div class="skills-group">
+			<div class="skills-group reveal" use:reveal>
 				<h3 class="skills-group-title">기술</h3>
 				<ul class="skills-list">
 					<li>JavaScript, TypeScript, React 기반 웹/모바일 개발</li>
@@ -250,7 +338,7 @@
 					<li>Chrome, Safari 등 주요 브라우저 크로스 브라우저 대응</li>
 				</ul>
 			</div>
-			<div class="skills-group">
+			<div class="skills-group reveal" use:reveal={{ delay: 100 }}>
 				<h3 class="skills-group-title">협업 및 리더십</h3>
 				<ul class="skills-list">
 					<li>기획·디자인팀과 협업하여 요구사항 정의 및 기능 설계</li>
@@ -259,7 +347,7 @@
 					<li>Git, Slack, Jira, Confluence, Notion, Figma 활용</li>
 				</ul>
 			</div>
-			<div class="skills-group">
+			<div class="skills-group reveal" use:reveal={{ delay: 200 }}>
 				<h3 class="skills-group-title">AI 도구</h3>
 				<ul class="skills-list">
 					<li>Cursor AI 기반 코드 작성 및 리팩터링 보조</li>
@@ -273,8 +361,8 @@
 
 <section id="education" class="education">
 	<div class="container">
-		<span class="section-label">§ EDUCATION</span>
-		<div class="edu-row">
+		<span class="section-label reveal" use:reveal>§ EDUCATION</span>
+		<div class="edu-row reveal" use:reveal={{ delay: 60 }}>
 			<div class="edu-info">
 				<h3 class="edu-school">대진대학교</h3>
 				<span class="edu-major">문헌정보학과 졸업</span>
@@ -287,9 +375,9 @@
 <section id="contact" class="contact">
 	<div class="container">
 		<div class="contact-inner">
-			<h2 class="display-md">함께 일하고 싶다면</h2>
-			<p>언제든 편하게 연락해주세요.</p>
-			<div class="contact-actions">
+			<h2 class="display-md reveal" use:reveal>함께 일하고 싶다면</h2>
+			<p class="reveal" use:reveal={{ delay: 80 }}>언제든 편하게 연락해주세요.</p>
+			<div class="contact-actions reveal" use:reveal={{ delay: 160 }}>
 				<a href="mailto:imwen3y@gmail.com" class="btn-contact-primary">이메일 보내기</a>
 				<a
 					href="https://www.linkedin.com/in/im-wen3y"
@@ -322,6 +410,76 @@
 </footer>
 
 <style>
+	.section-nav {
+		position: sticky;
+		top: 64px;
+		z-index: 90;
+		background-color: var(--color-surface-soft);
+		border-bottom: 1px solid var(--color-hairline-soft);
+	}
+
+	.section-nav-links {
+		max-width: 1028px;
+		margin: 0 auto;
+		padding: 0 var(--space-lg);
+		display: flex;
+		gap: var(--space-xl);
+		list-style: none;
+	}
+
+	.section-nav-links a {
+		display: inline-block;
+		padding: 12px 0;
+		font-family: var(--font-body);
+		font-size: 14px;
+		font-weight: 500;
+		color: var(--color-muted);
+		transition: color 0.2s ease;
+	}
+
+	.section-nav-links a:hover {
+		color: var(--color-ink);
+	}
+
+	.section-nav-links a.active {
+		color: var(--color-primary);
+	}
+
+	@media (max-width: 768px) {
+		.section-nav {
+			display: none;
+		}
+	}
+
+	.reveal {
+		opacity: 0;
+		transform: translateY(24px);
+		transition:
+			opacity 0.6s ease,
+			transform 0.6s ease;
+	}
+
+	.reveal:global(.in-view) {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	.reveal-right {
+		transform: translateX(32px);
+	}
+
+	.reveal-right:global(.in-view) {
+		transform: translateX(0);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.reveal {
+			opacity: 1;
+			transform: none;
+			transition: none;
+		}
+	}
+
 	.container {
 		width: 100%;
 		max-width: 1028px;
@@ -349,6 +507,27 @@
 		color: var(--color-ink);
 	}
 
+	.type-cursor {
+		display: inline-block;
+		width: 3px;
+		height: 0.8em;
+		margin-left: 4px;
+		background-color: var(--color-primary);
+		vertical-align: middle;
+		animation: type-cursor-blink 1s steps(1) infinite;
+	}
+
+	@keyframes type-cursor-blink {
+		0%,
+		49% {
+			opacity: 1;
+		}
+		50%,
+		100% {
+			opacity: 0;
+		}
+	}
+
 	.display-lg {
 		font-family: var(--font-display);
 		font-size: 48px;
@@ -370,11 +549,18 @@
 
 	/* ── Hero ── */
 	.hero {
+		position: relative;
+		overflow: hidden;
 		background-color: var(--color-canvas);
 		padding: var(--space-section) 0;
 		min-height: calc(100vh - 64px);
 		display: flex;
 		align-items: center;
+	}
+
+	.hero .container {
+		position: relative;
+		z-index: 1;
 	}
 
 	.hero-grid {
@@ -386,6 +572,91 @@
 
 	.hero-content {
 		max-width: 560px;
+	}
+
+	.hero-bg {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 40%;
+		overflow: hidden;
+		background-color: #141414;
+		animation: hero-flicker 8s infinite;
+		mask-image: linear-gradient(to bottom, #000 0%, #000 65%, transparent 100%);
+		-webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 65%, transparent 100%);
+		pointer-events: none;
+	}
+
+	.hero-bg-radial {
+		position: absolute;
+		inset: 0;
+		background: radial-gradient(ellipse at 50% 0%, rgba(33, 241, 168, 0.1), transparent 65%);
+	}
+
+	.hero-bg-grid {
+		position: absolute;
+		inset: -2px;
+		background-image:
+			linear-gradient(rgba(33, 241, 168, 0.05) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(33, 241, 168, 0.05) 1px, transparent 1px);
+		background-size: 44px 44px;
+		animation: hero-grid-scroll 3.2s linear infinite;
+		mask: radial-gradient(ellipse at 50% 0%, #000 40%, transparent 85%);
+	}
+
+	.hero-bg-scanlines {
+		position: absolute;
+		inset: 0;
+		background: repeating-linear-gradient(
+			to bottom,
+			rgba(0, 0, 0, 0) 0px,
+			rgba(0, 0, 0, 0) 2px,
+			rgba(0, 0, 0, 0.18) 3px,
+			rgba(0, 0, 0, 0.18) 4px
+		);
+		mix-blend-mode: multiply;
+	}
+
+	@keyframes hero-grid-scroll {
+		from {
+			background-position: 0 0;
+		}
+		to {
+			background-position: 0 -44px;
+		}
+	}
+
+	@keyframes hero-flicker {
+		0%,
+		100% {
+			opacity: 1;
+		}
+		92% {
+			opacity: 1;
+		}
+		93% {
+			opacity: 0.85;
+		}
+		94% {
+			opacity: 1;
+		}
+		96% {
+			opacity: 0.92;
+		}
+		97% {
+			opacity: 1;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero-bg {
+			animation: none;
+		}
+
+		.hero-bg-grid {
+			animation: none;
+		}
 	}
 
 	.hero-eyebrow {
@@ -429,39 +700,22 @@
 		margin-top: var(--space-xl);
 	}
 
-	.btn-primary {
-		display: inline-block;
-		background-color: var(--color-primary);
-		color: var(--color-on-primary);
+	.btn-text {
+		display: inline-flex;
+		align-items: center;
+		color: var(--color-primary);
 		font-family: var(--font-body);
 		font-size: 14px;
 		font-weight: 500;
 		line-height: 1;
-		padding: 12px 20px;
-		border-radius: var(--rounded-md);
-		transition: background-color 0.15s ease;
+		padding: 12px 4px;
+		transition: color 0.15s ease;
 	}
 
-	.btn-primary:active {
-		background-color: var(--color-primary-active);
-	}
-
-	.btn-secondary {
-		display: inline-block;
-		background-color: var(--color-canvas);
-		color: var(--color-ink);
-		font-family: var(--font-body);
-		font-size: 14px;
-		font-weight: 500;
-		line-height: 1;
-		padding: 12px 20px;
-		border-radius: var(--rounded-md);
-		border: 1px solid var(--color-hairline);
-		transition: background-color 0.15s ease;
-	}
-
-	.btn-secondary:active {
-		background-color: var(--color-surface-card);
+	.btn-text:hover {
+		color: var(--color-primary-active);
+		text-decoration: underline;
+		text-underline-offset: 3px;
 	}
 
 	/* Code window */
@@ -793,8 +1047,8 @@
 
 	.btn-contact-primary {
 		display: inline-block;
-		background-color: var(--color-canvas);
-		color: var(--color-ink);
+		background-color: var(--color-primary);
+		color: var(--color-on-primary);
 		font-family: var(--font-body);
 		font-size: 14px;
 		font-weight: 500;
@@ -805,7 +1059,7 @@
 	}
 
 	.btn-contact-primary:active {
-		background-color: var(--color-surface-card);
+		background-color: var(--color-primary-active);
 	}
 
 	.btn-contact-secondary {
