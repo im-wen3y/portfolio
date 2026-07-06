@@ -1,27 +1,12 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
+	import { printTheme } from '$lib/stores/print-theme.svelte';
 
-	const THEME_STORAGE_KEY = 'resume-print-theme';
-
-	let theme = $state<'light' | 'dark'>('light');
 	let toastVisible = $state(false);
 	let toastTimeout: ReturnType<typeof setTimeout> | undefined;
 
-	onMount(() => {
-		const saved = localStorage.getItem(THEME_STORAGE_KEY);
-		if (saved === 'light' || saved === 'dark') {
-			theme = saved;
-		}
-	});
-
-	function toggleTheme() {
-		theme = theme === 'light' ? 'dark' : 'light';
-		localStorage.setItem(THEME_STORAGE_KEY, theme);
-	}
-
 	function handlePrint() {
-		if (theme === 'dark') {
+		if (printTheme.value === 'dark') {
 			toastVisible = true;
 			clearTimeout(toastTimeout);
 			toastTimeout = setTimeout(() => {
@@ -39,40 +24,6 @@
 <!-- 화면 전용 컨트롤 바 -->
 <div class="controls">
 	<a href={resolve('/resume')} class="back-link">← 이력서로</a>
-	<button
-		type="button"
-		class="theme-switch"
-		onclick={toggleTheme}
-		role="switch"
-		aria-checked={theme === 'dark'}
-	>
-		<span class="theme-switch-track" class:is-dark={theme === 'dark'}>
-			<span class="theme-switch-thumb">
-				{#if theme === 'dark'}
-					<svg class="theme-switch-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-						<path
-							d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a.5.5 0 0 0-.65-.62A6.5 6.5 0 1 0 14.12 10.15a.5.5 0 0 0-.62-.65Z"
-						/>
-					</svg>
-				{:else}
-					<svg class="theme-switch-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-						<circle cx="8" cy="8" r="3.2" />
-						<g stroke="currentColor" stroke-width="1.3" stroke-linecap="round">
-							<line x1="8" y1="0.8" x2="8" y2="2.4" />
-							<line x1="8" y1="13.6" x2="8" y2="15.2" />
-							<line x1="0.8" y1="8" x2="2.4" y2="8" />
-							<line x1="13.6" y1="8" x2="15.2" y2="8" />
-							<line x1="2.7" y1="2.7" x2="3.8" y2="3.8" />
-							<line x1="12.2" y1="12.2" x2="13.3" y2="13.3" />
-							<line x1="2.7" y1="13.3" x2="3.8" y2="12.2" />
-							<line x1="12.2" y1="3.8" x2="13.3" y2="2.7" />
-						</g>
-					</svg>
-				{/if}
-			</span>
-		</span>
-		<span class="theme-switch-label">{theme === 'dark' ? 'Dark' : 'Light'}</span>
-	</button>
 	<button onclick={handlePrint} class="save-btn">PDF로 저장</button>
 </div>
 
@@ -87,7 +38,7 @@
 
 <!-- A4 미리보기 래퍼 (화면에서 종이처럼 보임) -->
 <div class="preview-wrap">
-	<article class="page" class:dark={theme === 'dark'}>
+	<article class="page" class:dark={printTheme.value === 'dark'}>
 		<!-- 헤더 -->
 		<header class="pr-header">
 			<div>
@@ -261,7 +212,9 @@
 		justify-content: space-between;
 		gap: 12px;
 		padding: 12px 24px;
-		background-color: var(--color-surface-soft);
+		background-color: color-mix(in srgb, var(--color-surface-soft) 72%, transparent);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
 		border-bottom: 1px solid var(--color-hairline);
 		position: sticky;
 		top: 64px;
@@ -296,68 +249,6 @@
 
 	.save-btn:active {
 		background-color: var(--color-primary-active);
-	}
-
-	.theme-switch {
-		display: flex;
-		align-items: center;
-		gap: 8px;
-		background: none;
-		border: none;
-		padding: 0;
-		cursor: pointer;
-		font-family: var(--font-body);
-	}
-
-	.theme-switch-track {
-		display: flex;
-		align-items: center;
-		width: 44px;
-		height: 24px;
-		padding: 2px;
-		border-radius: var(--rounded-pill);
-		background-color: color-mix(in srgb, var(--color-accent-amber) 30%, transparent);
-		transition: background-color 0.2s ease;
-	}
-
-	.theme-switch-track.is-dark {
-		background-color: var(--color-surface-dark);
-	}
-
-	.theme-switch-thumb {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 20px;
-		height: 20px;
-		border-radius: 50%;
-		background-color: var(--color-accent-amber);
-		color: var(--color-on-primary);
-		transform: translateX(0);
-		transition:
-			transform 0.2s ease,
-			background-color 0.2s ease;
-	}
-
-	.theme-switch-track.is-dark .theme-switch-thumb {
-		background-color: var(--color-primary);
-		transform: translateX(20px);
-	}
-
-	.theme-switch-icon {
-		width: 12px;
-		height: 12px;
-	}
-
-	.theme-switch-label {
-		font-size: 13px;
-		font-weight: 500;
-		color: var(--color-muted);
-		transition: color 0.15s ease;
-	}
-
-	.theme-switch:hover .theme-switch-label {
-		color: var(--color-ink);
 	}
 
 	.print-toast {
