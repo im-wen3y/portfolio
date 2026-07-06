@@ -1,4 +1,22 @@
 <script>
+	import { onMount } from 'svelte';
+
+	const THEME_STORAGE_KEY = 'resume-print-theme';
+
+	let theme = $state('light');
+
+	onMount(() => {
+		const saved = localStorage.getItem(THEME_STORAGE_KEY);
+		if (saved === 'light' || saved === 'dark') {
+			theme = saved;
+		}
+	});
+
+	function toggleTheme() {
+		theme = theme === 'light' ? 'dark' : 'light';
+		localStorage.setItem(THEME_STORAGE_KEY, theme);
+	}
+
 	function handlePrint() {
 		window.print();
 	}
@@ -11,12 +29,19 @@
 <!-- 화면 전용 컨트롤 바 -->
 <div class="controls">
 	<a href="/resume" class="back-link">← 이력서로</a>
+	<button
+		onclick={toggleTheme}
+		class="theme-toggle-btn"
+		aria-pressed={theme === 'dark'}
+	>
+		{theme === 'light' ? '🌙 Dark로 보기' : '☀️ Light로 보기'}
+	</button>
 	<button onclick={handlePrint} class="save-btn">PDF로 저장</button>
 </div>
 
 <!-- A4 미리보기 래퍼 (화면에서 종이처럼 보임) -->
 <div class="preview-wrap">
-	<article class="page">
+	<article class="page" class:dark={theme === 'dark'}>
 		<!-- 헤더 -->
 		<header class="pr-header">
 			<div>
@@ -184,6 +209,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		gap: 12px;
 		padding: 12px 24px;
 		background-color: var(--color-surface-soft);
 		border-bottom: 1px solid var(--color-hairline);
@@ -220,6 +246,26 @@
 
 	.save-btn:active {
 		background-color: var(--color-primary-active);
+	}
+
+	.theme-toggle-btn {
+		font-family: var(--font-body);
+		font-size: 13px;
+		font-weight: 500;
+		line-height: 1;
+		padding: 9px 18px;
+		background-color: transparent;
+		color: var(--color-ink);
+		border: 1px solid var(--color-hairline);
+		border-radius: var(--rounded-md);
+		cursor: pointer;
+		transition:
+			background-color 0.15s ease,
+			color 0.15s ease;
+	}
+
+	.theme-toggle-btn:hover {
+		background-color: var(--color-surface-card);
 	}
 
 	.preview-wrap {
