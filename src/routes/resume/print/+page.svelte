@@ -1,9 +1,11 @@
-<script>
+<script lang="ts">
 	import { onMount } from 'svelte';
 
 	const THEME_STORAGE_KEY = 'resume-print-theme';
 
 	let theme = $state('light');
+	let toastVisible = $state(false);
+	let toastTimeout: ReturnType<typeof setTimeout> | undefined;
 
 	onMount(() => {
 		const saved = localStorage.getItem(THEME_STORAGE_KEY);
@@ -18,6 +20,13 @@
 	}
 
 	function handlePrint() {
+		if (theme === 'dark') {
+			toastVisible = true;
+			clearTimeout(toastTimeout);
+			toastTimeout = setTimeout(() => {
+				toastVisible = false;
+			}, 3000);
+		}
 		window.print();
 	}
 </script>
@@ -38,6 +47,12 @@
 	</button>
 	<button onclick={handlePrint} class="save-btn">PDF로 저장</button>
 </div>
+
+{#if toastVisible}
+	<div class="print-toast" role="status">
+		다크 배경이 보이려면 인쇄 설정에서 '배경 그래픽'을 켜주세요
+	</div>
+{/if}
 
 <!-- A4 미리보기 래퍼 (화면에서 종이처럼 보임) -->
 <div class="preview-wrap">
@@ -266,6 +281,42 @@
 
 	.theme-toggle-btn:hover {
 		background-color: var(--color-surface-card);
+	}
+
+	.print-toast {
+		position: fixed;
+		top: 84px;
+		left: 50%;
+		transform: translate(-50%, 0);
+		z-index: 50;
+		padding: 10px 20px;
+		background-color: rgba(20, 20, 19, 0.9);
+		color: #ffffff;
+		font-family: var(--font-body);
+		font-size: 13px;
+		font-weight: 500;
+		border-radius: var(--rounded-pill);
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+		white-space: nowrap;
+		pointer-events: none;
+		animation: print-toast-fade 3s ease forwards;
+	}
+
+	@keyframes print-toast-fade {
+		0% {
+			opacity: 0;
+			transform: translate(-50%, -8px);
+		}
+		10% {
+			opacity: 1;
+			transform: translate(-50%, 0);
+		}
+		85% {
+			opacity: 1;
+		}
+		100% {
+			opacity: 0;
+		}
 	}
 
 	.preview-wrap {
@@ -583,6 +634,10 @@
 
 		.preview-wrap {
 			display: contents;
+		}
+
+		.print-toast {
+			display: none;
 		}
 
 		.page {
