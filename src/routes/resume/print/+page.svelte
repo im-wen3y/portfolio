@@ -3,7 +3,7 @@
 
 	const THEME_STORAGE_KEY = 'resume-print-theme';
 
-	let theme = $state('light');
+	let theme = $state<'light' | 'dark'>('light');
 	let toastVisible = $state(false);
 	let toastTimeout: ReturnType<typeof setTimeout> | undefined;
 
@@ -48,11 +48,9 @@
 	<button onclick={handlePrint} class="save-btn">PDF로 저장</button>
 </div>
 
-{#if toastVisible}
-	<div class="print-toast" role="status">
-		다크 배경이 보이려면 인쇄 설정에서 '배경 그래픽'을 켜주세요
-	</div>
-{/if}
+<div class="print-toast" class:print-toast-visible={toastVisible} role="status" aria-hidden={!toastVisible}>
+	다크 배경이 보이려면 인쇄 설정에서 '배경 그래픽'을 켜주세요.
+</div>
 
 <!-- A4 미리보기 래퍼 (화면에서 종이처럼 보임) -->
 <div class="preview-wrap">
@@ -287,7 +285,7 @@
 		position: fixed;
 		top: 84px;
 		left: 50%;
-		transform: translate(-50%, 0);
+		transform: translate(-50%, -8px);
 		z-index: 50;
 		padding: 10px 20px;
 		background-color: rgba(20, 20, 19, 0.9);
@@ -299,6 +297,10 @@
 		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 		white-space: nowrap;
 		pointer-events: none;
+		opacity: 0;
+	}
+
+	.print-toast.print-toast-visible {
 		animation: print-toast-fade 3s ease forwards;
 	}
 
@@ -339,14 +341,14 @@
 			0 10px 40px rgba(20, 20, 19, 0.12);
 		font-family: 'IBM Plex Sans KR', 'Inter', sans-serif;
 		color: #141413;
-		print-color-adjust: exact;
-		-webkit-print-color-adjust: exact;
 	}
 
 	/* ── 다크 테마 오버라이드 (사이트 기존 다크 변수 재사용) ── */
 	.page.dark {
 		background: var(--color-canvas);
 		color: var(--color-ink);
+		print-color-adjust: exact;
+		-webkit-print-color-adjust: exact;
 	}
 
 	.page.dark .pr-name,
