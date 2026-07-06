@@ -24,3 +24,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Vitest with `requireAssertions: true` — every test must contain at least one assertion
 - Server-side tests: `src/**/*.{test,spec}.{js,ts}`
 - Component tests excluded from server project (`.svelte.{test,spec}` files)
+
+## Type/Lint Errors
+
+`src/` 이하에서 타입 에러나 ESLint 에러가 보이면 절대 우회하지 말고 근본 원인을 고쳐서 해결한다. 자세한 규칙은 아래를 따른다:
+
+@rules/code-style.md
+@rules/component-style.md
