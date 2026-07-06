@@ -288,6 +288,62 @@
 			0 10px 40px rgba(20, 20, 19, 0.12);
 		font-family: 'IBM Plex Sans KR', 'Inter', sans-serif;
 		color: #141413;
+		print-color-adjust: exact;
+		-webkit-print-color-adjust: exact;
+	}
+
+	/* ── 다크 테마 오버라이드 (사이트 기존 다크 변수 재사용) ── */
+	.page.dark {
+		background: var(--color-canvas);
+		color: var(--color-ink);
+	}
+
+	.page.dark .pr-name,
+	.page.dark .pr-sublabel,
+	.page.dark .pr-company,
+	.page.dark .pr-proj {
+		color: var(--color-ink);
+	}
+
+	.page.dark .pr-role-line,
+	.page.dark .pr-contact,
+	.page.dark .pr-contact a,
+	.page.dark .pr-muted,
+	.page.dark .pr-badge {
+		color: var(--color-muted);
+	}
+
+	.page.dark .pr-contact a:hover {
+		color: var(--color-primary);
+	}
+
+	.page.dark .pr-label {
+		color: var(--color-primary);
+	}
+
+	.page.dark .pr-divider,
+	.page.dark .pr-exp {
+		border-top-color: var(--color-hairline);
+	}
+
+	.page.dark .pr-right {
+		border-left-color: var(--color-hairline);
+	}
+
+	.page.dark .pr-about,
+	.page.dark .pr-list li,
+	.page.dark .pr-edu-sub,
+	.page.dark .pr-skill-badge {
+		color: var(--color-body);
+	}
+
+	.page.dark .pr-list li::before {
+		color: var(--color-muted-soft);
+	}
+
+	.page.dark .pr-skill-badge,
+	.page.dark .pr-badge {
+		background-color: var(--color-surface-card);
 	}
 
 	/* ── 헤더 ── */
