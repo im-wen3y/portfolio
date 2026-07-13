@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+- 경력/이력 관련 데이터가 필요하면 `~/career-wiki` (https://github.com/im-wen3y/career-wiki) 를 참조한다.
+
 ## Commands
 
 - `pnpm vitest run src/lib/some-file.spec.ts` — run a single test file
