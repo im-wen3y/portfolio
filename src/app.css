@@ -2,7 +2,6 @@
 	/* Brand & Accent (portfolio neon palette) */
 	--color-primary: #21f1a8;
 	--color-primary-active: #16c988;
-	--color-primary-disabled: #2a3330;
 	--color-accent-teal: #5be0c2;
 	--color-accent-amber: #ffb347;
 
@@ -20,7 +19,6 @@
 	--color-canvas: #171717;
 	--color-surface-soft: #131c19;
 	--color-surface-card: #1c2622;
-	--color-surface-cream-strong: #222e29;
 	--color-surface-dark: #0f1312;
 	--color-surface-dark-elevated: #17211d;
 	--color-surface-dark-soft: #121a17;
@@ -28,11 +26,6 @@
 	/* Border */
 	--color-hairline: rgba(233, 255, 248, 0.14);
 	--color-hairline-soft: rgba(233, 255, 248, 0.08);
-
-	/* Semantic */
-	--color-success: #4ade80;
-	--color-warning: #eab308;
-	--color-error: #f87171;
 
 	/* Typography */
 	--font-display: 'Cormorant Garamond', 'EB Garamond', 'Noto Serif KR', serif;
@@ -50,11 +43,8 @@
 	--space-section: 96px;
 
 	/* Rounded */
-	--rounded-xs: 4px;
-	--rounded-sm: 6px;
 	--rounded-md: 8px;
 	--rounded-lg: 12px;
-	--rounded-xl: 16px;
 	--rounded-pill: 9999px;
 	--rounded-full: 9999px;
 }

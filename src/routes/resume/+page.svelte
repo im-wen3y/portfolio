@@ -938,12 +938,6 @@
 		color: var(--color-muted-soft);
 	}
 
-	.exp-bullets strong,
-	.skills-list strong {
-		color: var(--color-body-strong);
-		font-weight: 500;
-	}
-
 	/* ── Skills ── */
 	.skills {
 		background-color: var(--color-surface-soft);
