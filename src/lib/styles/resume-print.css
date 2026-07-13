@@ -103,21 +103,6 @@
 	gap: 12px;
 }
 
-.theme-switch {
-	display: inline-flex;
-	align-items: center;
-	gap: 6px;
-	padding: 7px 10px;
-	border: 1px solid var(--color-hairline);
-	border-radius: var(--rounded-pill);
-	background-color: var(--color-surface-card);
-	color: var(--color-body);
-	font-family: var(--font-body);
-	font-size: 12px;
-	font-weight: 500;
-	cursor: pointer;
-}
-
 .accent-picker {
 	display: flex;
 	align-items: center;
@@ -149,27 +134,112 @@
 		0 0 0 4px var(--dot);
 }
 
-.theme-switch:focus-visible,
 .accent-dot:focus-visible,
 .view-toggle-btn:focus-visible,
-.logout-btn:focus-visible,
-.save-btn:focus-visible {
+.save-btn:focus-visible,
+.floating-action:focus-visible,
+.floating-trigger:focus-visible {
 	outline: 2px solid var(--color-ink);
 	outline-offset: 3px;
 }
 
-.logout-btn {
-	padding: 7px 0;
-	border: 0;
-	background: none;
-	color: var(--color-muted);
-	font-family: var(--font-body);
-	font-size: 12px;
-	cursor: pointer;
+.floating-actions {
+	position: fixed;
+	right: clamp(18px, 3vw, 36px);
+	bottom: clamp(18px, 3vw, 36px);
+	z-index: 40;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 12px;
 }
 
-.logout-btn:hover {
+.floating-menu {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 10px;
+}
+
+.floating-menu form {
+	margin: 0;
+}
+
+.floating-action {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 10px;
+	padding: 0;
+	border: 0;
+	background: none;
+	cursor: pointer;
+	font-family: var(--font-body);
+}
+
+.floating-action-label {
+	padding: 7px 11px;
+	border: 1px solid var(--color-hairline);
+	border-radius: var(--rounded-md);
+	background: color-mix(in srgb, var(--color-surface-dark-elevated) 94%, transparent);
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+	color: var(--color-body);
+	font-size: 12px;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.floating-action-icon,
+.floating-trigger {
+	display: grid;
+	place-items: center;
+	border-radius: 50%;
+	box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+}
+
+.floating-action-icon {
+	width: 46px;
+	height: 46px;
+	border: 1px solid var(--color-hairline);
+	background: var(--color-surface-dark-elevated);
 	color: var(--color-ink);
+}
+
+.floating-action:hover .floating-action-icon {
+	border-color: var(--pr-accent);
+	color: var(--pr-accent);
+}
+
+.floating-action svg,
+.floating-trigger svg {
+	width: 21px;
+	height: 21px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.8;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.floating-trigger {
+	width: 58px;
+	height: 58px;
+	padding: 0;
+	border: 0;
+	background: var(--pr-accent);
+	color: #ffffff;
+	cursor: pointer;
+	transition:
+		transform 0.2s ease,
+		filter 0.15s ease;
+}
+
+.floating-trigger:hover {
+	filter: brightness(1.08);
+}
+
+.floating-trigger.open {
+	transform: rotate(30deg);
 }
 
 .print-toast {
@@ -287,8 +357,8 @@
 .page.dark .pr-name,
 .page.dark .pr-company,
 .page.dark .pf-project-title,
-.page.dark .pf-mini-title,
-.page.dark .pf-skill-title {
+.page.dark .pf-evidence dd strong,
+.page.dark .resume-skill-list strong {
 	color: var(--color-ink);
 }
 
@@ -297,15 +367,15 @@
 .page.dark .pr-contact a,
 .page.dark .pr-muted,
 .page.dark .pf-project-meta,
-.page.dark .pf-role-value,
-.page.dark .pf-mini-period,
-.page.dark .pf-mini-meta {
+.page.dark .pr-strength-tag,
+.page.dark .resume-role-title,
+.page.dark .resume-project-head span,
+.page.dark .resume-skill-list strong {
 	color: var(--color-muted);
 }
 
 .page.dark .pr-sep,
-.page.dark .pf-role-sep,
-.page.dark .pf-case-label:not(.accent) {
+.page.dark .pf-evidence dt {
 	color: var(--color-muted-soft);
 }
 
@@ -313,17 +383,30 @@
 	border-top-color: var(--color-hairline-soft);
 }
 
-.page.dark .pr-exp {
-	border-top-color: var(--color-hairline);
-}
-
 .page.dark .pr-about,
 .page.dark .pr-list li,
-.page.dark .pr-exp-summary,
-.page.dark .pr-etc,
 .page.dark .pr-edu-sub,
-.page.dark .pf-case,
-.page.dark .pf-mini-sum {
+.page.dark .pf-project-summary,
+.page.dark .pf-evidence dd,
+.page.dark .portfolio-lead,
+.page.dark .resume-skill-list p,
+.page.dark .resume-project > p,
+.page.dark .resume-section-lead,
+.page.dark .resume-principle-body > p,
+.page.dark .resume-principle-evidence,
+.page.dark .resume-continuation-name,
+.page.dark .resume-continuation-header > p:last-child {
+	color: var(--color-body);
+}
+
+.page.dark .resume-project-head h3,
+.page.dark .resume-impact strong,
+.page.dark .resume-principle-head h3,
+.page.dark .pf-evidence .scope dd {
+	color: var(--color-ink);
+}
+
+.page.dark .resume-impact span {
 	color: var(--color-body);
 }
 
@@ -352,8 +435,18 @@
 	color: var(--color-body);
 }
 
-.page.dark .pf-chip {
-	background-color: color-mix(in srgb, var(--pr-accent) 20%, var(--color-canvas));
+.page.dark .resume-career-item + .resume-career-item,
+.page.dark .resume-project + .resume-project,
+.page.dark .resume-document > .pr-section + .pr-section,
+.page.dark .resume-footer-grid,
+.page.dark .resume-continuation-header,
+.page.dark .resume-principle,
+.page.dark .resume-detail-section + .resume-detail-section,
+.page.dark .resume-detail-role + .resume-detail-role,
+.page.dark .pf-case-study,
+.page.dark .pf-evidence > div,
+.page.dark .portfolio-footer-grid {
+	border-color: var(--color-hairline-soft);
 }
 
 /* ── 헤더 ── */
@@ -411,7 +504,7 @@
 	margin: 4mm 0;
 }
 
-/* divider 없이 바로 이어지는 About 섹션의 간격 */
+/* 일반 문서 섹션 간격 */
 .pr-section + .pr-section {
 	margin-top: 8mm;
 }
@@ -442,26 +535,29 @@
 
 .pr-strength-tag {
 	display: block;
-	font-size: 7pt;
+	font-size: 6.4pt;
 	font-weight: 600;
-	letter-spacing: 1pt;
+	letter-spacing: 0.8pt;
 	text-transform: uppercase;
-	color: var(--pr-accent);
+	color: #78756e;
 	margin-bottom: 1.5mm;
 }
 
 .pr-strength-title {
-	font-size: 9.5pt;
+	font-size: 9.3pt;
 	font-weight: 600;
+	line-height: 1.35;
 	color: #141413;
 	margin: 0 0 1.5mm 0;
+	text-wrap: balance;
 }
 
 .pr-strength-desc {
-	font-size: 8pt;
+	font-size: 7.8pt;
 	line-height: 1.5;
 	color: #3d3d3a;
 	margin: 0;
+	text-wrap: pretty;
 }
 
 /* ── 프로젝트 기술 스택 / 기타 프로젝트 ── */
@@ -471,24 +567,22 @@
 	margin: 1mm 0 2.5mm 0;
 }
 
-.pr-etc {
-	font-size: 8pt;
-	line-height: 1.5;
-	color: #6c6a64;
-	margin-top: 4mm;
-}
-
-/* ── 포트폴리오 뷰: 대표 프로젝트 ── */
+/* ── 포트폴리오 뷰: 대표 프로젝트 사례 ── */
 .pf-projects {
 	display: flex;
 	flex-direction: column;
-	gap: 4mm;
+	gap: 9mm;
 }
 
-.pf-project {
+.pf-case-study {
 	break-inside: avoid;
-	border-left: 2px solid var(--pr-accent);
-	padding-left: 3mm;
+	padding-top: 5mm;
+	border-top: 1px solid rgba(20, 20, 19, 0.14);
+}
+
+.pf-case-study:first-child {
+	padding-top: 0;
+	border-top: 0;
 }
 
 .pf-project-head {
@@ -498,10 +592,22 @@
 	gap: 4mm;
 }
 
-.pf-project-title {
-	font-size: 10pt;
+.pf-project-company {
+	margin: 0 0 1mm;
+	font-size: 7pt;
 	font-weight: 600;
+	letter-spacing: 0.8pt;
+	text-transform: uppercase;
+	color: var(--pr-accent);
+}
+
+.pf-project-title {
+	margin: 0;
+	font-size: 14pt;
+	font-weight: 600;
+	line-height: 1.25;
 	color: #141413;
+	text-wrap: balance;
 }
 
 .pf-project-meta {
@@ -510,142 +616,82 @@
 	color: #6c6a64;
 }
 
-.pf-role-line {
-	font-size: 7.5pt;
-	margin: 1mm 0 0 0;
+.pf-project-summary {
+	margin: 2.5mm 0 0;
+	font-size: 9pt;
+	line-height: 1.6;
+	color: #3d3d3a;
 }
 
-.pf-role-value {
+.pf-evidence {
+	margin: 3mm 0 0;
+}
+
+.pf-evidence > div {
+	display: grid;
+	grid-template-columns: 22mm 1fr;
+	gap: 4mm;
+	padding: 2.8mm 0;
+	border-top: 1px solid rgba(20, 20, 19, 0.08);
+}
+
+.pf-evidence dt {
+	font-size: 7pt;
+	font-weight: 700;
+	letter-spacing: 0.5pt;
 	color: #6c6a64;
 }
 
-.pf-role-sep {
-	color: #b5b2a8;
-}
-
-.pf-contribution {
-	color: var(--pr-accent);
-	font-weight: 600;
-}
-
-.pf-summary {
-	margin-top: 1.2mm;
-}
-
-.pf-case {
-	font-size: 8pt;
-	line-height: 1.55;
-	color: #3d3d3a;
-	margin: 0 0 1.2mm 0;
-	padding-left: 12mm;
-	position: relative;
-}
-
-.pf-case-label {
-	position: absolute;
-	left: 0;
-	top: 0;
-	width: 10mm;
-	font-size: 6.5pt;
-	font-weight: 600;
-	letter-spacing: 0.5pt;
-	color: #8e8b82;
-}
-
-.pf-case-label.accent {
+.pf-evidence .result dt {
 	color: var(--pr-accent);
 }
 
-/* ── 포트폴리오 뷰: 그 외 프로젝트 (2단 컴팩트) ── */
-.pf-mini-grid {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 3mm 8mm;
-}
-
-.pf-mini {
-	break-inside: avoid;
-}
-
-.pf-mini-top {
-	display: flex;
-	justify-content: space-between;
-	align-items: baseline;
-	gap: 3mm;
-}
-
-.pf-mini-title {
-	font-size: 8.5pt;
+.pf-evidence .scope dd {
 	font-weight: 600;
 	color: #141413;
 }
 
-.pf-mini-period {
-	flex-shrink: 0;
-	font-size: 7pt;
-	color: #8e8b82;
-}
-
-.pf-mini-meta {
-	font-size: 7pt;
-	color: #6c6a64;
-	margin: 0.5mm 0 0.8mm 0;
-}
-
-.pf-mini-sum {
-	font-size: 7.5pt;
-	line-height: 1.45;
-	color: #6c6a64;
-	margin: 0;
-}
-
-/* ── 포트폴리오 뷰: 스킬 ── */
-.pf-skills {
+.pf-detail-list {
 	display: flex;
 	flex-direction: column;
-	gap: 2.5mm;
+	gap: 1.2mm;
+	margin: 0;
+	padding-left: 4mm;
 }
 
-.pf-skill-row {
-	display: grid;
-	grid-template-columns: 20mm 1fr;
-	align-items: baseline;
-	gap: 4mm;
+.pf-detail-list li::marker {
+	color: var(--pr-accent);
 }
 
-.pf-skill-title {
-	font-size: 8pt;
-	font-weight: 600;
+.pf-evidence dd {
+	margin: 0;
+	font-size: 8.5pt;
+	line-height: 1.6;
+	color: #3d3d3a;
+}
+
+.pf-evidence dd strong {
+	display: block;
+	margin-bottom: 1mm;
 	color: #141413;
+	font-weight: 600;
 }
 
-.pf-chips {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 1.5mm;
-}
-
-.pf-chip {
-	font-size: 7.5pt;
-	color: color-mix(in srgb, var(--pr-accent) 75%, black);
-	background-color: color-mix(in srgb, var(--pr-accent) 12%, white);
-	padding: 1pt 6pt;
-	border-radius: 99pt;
-	white-space: nowrap;
-}
-
-/* ── 학력 그리드 ── */
-.pr-edu-grid {
+.portfolio-footer-grid {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 0 8mm;
+	grid-template-columns: minmax(0, 2fr) minmax(48mm, 1fr);
+	gap: 10mm;
+	margin-top: 10mm;
+	padding-top: 5mm;
+	border-top: 1px solid rgba(20, 20, 19, 0.14);
+	break-inside: avoid;
 }
 
 /* ── 섹션 레이블 ── */
 .pr-label {
 	font-family: 'Inter', sans-serif;
 	font-size: 7pt;
-	font-weight: 600;
+	font-weight: 700;
 	letter-spacing: 1.5pt;
 	text-transform: uppercase;
 	color: var(--pr-accent);
@@ -692,10 +738,12 @@
 }
 
 .pr-company {
-	font-size: 10pt;
+	font-size: 9.2pt;
 	font-weight: 600;
+	line-height: 1.35;
 	color: #141413;
 	display: block;
+	text-wrap: balance;
 }
 
 .pr-edu-sub {
@@ -708,50 +756,324 @@
 	font-size: 8pt;
 	color: #6c6a64;
 	margin: 0;
+	font-variant-numeric: tabular-nums;
 }
 
-/* ── 경험 요약 ── */
-.pr-exp-summary {
-	font-size: 8pt;
-	line-height: 1.5;
-	color: #3d3d3a;
-	margin: 1.5mm 0 2mm 0;
-}
-
-/* ── 경험 아이템 ── */
-.pr-exp {
-	margin-bottom: 4mm;
+/* ── 2페이지 이력서 ── */
+.resume-document > .pr-section + .pr-section {
+	margin-top: 4mm;
 	padding-top: 4mm;
-	border-top: 1px solid #e6dfd8;
+	border-top: 1px solid rgba(20, 20, 19, 0.1);
+}
+
+.resume-career-grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 0;
+}
+
+.resume-career-item {
+	min-width: 0;
+	padding-right: 4mm;
 	break-inside: avoid;
 }
 
-.pr-label + .pr-exp {
-	padding-top: 0;
-	border-top: none;
+.resume-career-item + .resume-career-item {
+	padding-left: 4mm;
+	border-left: 1px solid rgba(20, 20, 19, 0.08);
 }
 
-.pr-exp-quiet {
-	padding-top: 0;
-	border-top: none;
+.resume-career-item .pr-company {
+	font-size: 8.2pt;
+	overflow-wrap: anywhere;
 }
 
-.pr-exp:last-child {
-	margin-bottom: 0;
+.resume-career-item .pr-muted {
+	margin: 1.1mm 0 0;
+	font-size: 6.8pt;
+	font-variant-numeric: tabular-nums;
 }
 
-.pr-exp-top {
+.resume-role-head {
 	display: flex;
 	justify-content: space-between;
 	align-items: baseline;
-	margin-bottom: 0;
 	gap: 4mm;
 }
 
-.pr-exp-meta {
+.resume-role-title {
+	margin: 0.7mm 0 0;
+	font-size: 7.3pt;
+	font-weight: 600;
+	color: #6c6a64;
+}
+
+.resume-project-list {
+	display: flex;
+	flex-direction: column;
+	gap: 2.2mm;
+}
+
+.resume-project {
+	display: grid;
+	grid-template-columns: minmax(48mm, 0.9fr) minmax(0, 1.6fr);
+	gap: 5mm;
+	break-inside: avoid;
+}
+
+.resume-project + .resume-project {
+	padding-top: 2.2mm;
+	border-top: 1px solid rgba(20, 20, 19, 0.08);
+}
+
+.resume-project-head {
+	min-width: 0;
+}
+
+.resume-project-head h3 {
+	margin: 0;
+	font-size: 8.4pt;
+	font-weight: 600;
+	line-height: 1.35;
+	color: #141413;
+	overflow-wrap: anywhere;
+	text-wrap: balance;
+}
+
+.resume-project-head span {
+	display: block;
+	margin-top: 0.7mm;
+	font-size: 7pt;
+	color: #6c6a64;
+	font-variant-numeric: tabular-nums;
+}
+
+.resume-project > p {
+	margin: 0;
+	font-size: 7.9pt;
+	font-weight: 500;
+	line-height: 1.45;
+	color: #2d2d2a;
+	text-wrap: pretty;
+}
+
+.resume-impact strong,
+.resume-impact span {
+	display: block;
+}
+
+.resume-impact strong {
+	margin-bottom: 0.6mm;
+	font-size: 8.2pt;
+	font-weight: 600;
+	line-height: 1.35;
+	color: #141413;
+}
+
+.resume-impact span {
+	font-size: 7.4pt;
+	font-weight: 400;
+	line-height: 1.4;
+	color: #4f4e49;
+}
+
+.resume-document .pr-list {
+	gap: 1.1mm;
+}
+
+.resume-document .pr-list li {
+	font-size: 7.8pt;
+	line-height: 1.42;
+}
+
+.resume-footer-grid {
+	display: grid;
+	grid-template-columns: minmax(0, 2fr) minmax(45mm, 1fr);
+	gap: 8mm;
+	margin-top: 4mm;
+	padding-top: 4mm;
+	border-top: 1px solid rgba(20, 20, 19, 0.1);
+	align-items: start;
+	break-inside: avoid;
+}
+
+.resume-footer-grid > .pr-section {
+	margin: 0;
+}
+
+.resume-footer-grid > .pr-section + .pr-section {
+	margin: 0;
+}
+
+.resume-footer-grid .pr-label {
+	margin-bottom: 2.5mm;
+}
+
+.resume-footer-grid .pr-company {
+	line-height: 1.4;
+}
+
+.resume-skill-list {
+	display: flex;
+	flex-direction: column;
+	gap: 1.2mm;
+}
+
+.resume-skill-list p {
+	display: grid;
+	grid-template-columns: 20mm 1fr;
+	gap: 3mm;
+	margin: 0;
+	font-size: 7.5pt;
+	line-height: 1.4;
+	color: #3d3d3a;
+}
+
+.resume-skill-list strong {
+	font-size: 7pt;
+	font-weight: 600;
+	color: #6c6a64;
+}
+
+.resume-page-two {
+	min-height: 267mm;
+	margin: 15mm -15mm -15mm;
+	padding: 15mm;
+	border-top: 24px solid var(--color-surface-card);
+}
+
+.resume-continuation-header {
 	display: flex;
 	align-items: baseline;
-	gap: 2.5mm;
+	justify-content: space-between;
+	gap: 8mm;
+	margin-bottom: 6mm;
+	padding-bottom: 3mm;
+	border-bottom: 1px solid rgba(20, 20, 19, 0.1);
+}
+
+.resume-continuation-header p {
+	margin: 0;
+}
+
+.resume-continuation-header > p {
+	font-family: 'Inter', sans-serif;
+	font-size: 6pt;
+	font-weight: 500;
+	letter-spacing: 0.6pt;
+	color: #6c6a64;
+}
+
+.resume-section-lead {
+	max-width: 160mm;
+	margin: -1mm 0 4mm;
+	font-size: 8.4pt;
+	line-height: 1.55;
+	color: #3d3d3a;
+	text-wrap: pretty;
+}
+
+.resume-principle-list {
+	display: flex;
+	flex-direction: column;
+}
+
+.resume-principle {
+	display: grid;
+	grid-template-columns: 49mm minmax(0, 1fr);
+	gap: 7mm;
+	padding: 3mm 0;
+	break-inside: avoid;
+	border-top: 1px solid rgba(20, 20, 19, 0.08);
+}
+
+.resume-principle-head span {
+	display: block;
+	margin-bottom: 1mm;
+	font-family: 'Inter', sans-serif;
+	font-size: 6.2pt;
+	font-weight: 600;
+	letter-spacing: 0.7pt;
+	color: var(--pr-accent);
+}
+
+.resume-principle-head h3 {
+	margin: 0;
+	font-size: 9pt;
+	font-weight: 600;
+	line-height: 1.4;
+	color: #141413;
+	text-wrap: balance;
+}
+
+.resume-principle-body > p {
+	margin: 0;
+	font-size: 7.8pt;
+	line-height: 1.5;
+	color: #3d3d3a;
+	text-wrap: pretty;
+}
+
+.resume-principle-body > .resume-principle-evidence {
+	margin-top: 1.2mm;
+	font-size: 7.2pt;
+	color: #65635d;
+}
+
+.resume-principle-evidence strong {
+	margin-right: 2mm;
+	font-size: 6.5pt;
+	font-weight: 600;
+	color: var(--pr-accent);
+}
+
+.page.dark .resume-principle-body > .resume-principle-evidence {
+	color: var(--color-muted);
+}
+
+.resume-detail-section + .resume-detail-section {
+	margin-top: 6mm;
+	padding-top: 6mm;
+	border-top: 1px solid rgba(20, 20, 19, 0.1);
+}
+
+.resume-detail-role-list {
+	display: flex;
+	flex-direction: column;
+	gap: 3.5mm;
+}
+
+.resume-detail-role {
+	break-inside: avoid;
+}
+
+.resume-detail-role + .resume-detail-role {
+	padding-top: 3.5mm;
+	border-top: 1px solid rgba(20, 20, 19, 0.08);
+}
+
+.resume-detail-role .resume-role-title {
+	margin-bottom: 0;
+}
+
+.resume-detail-role .pr-list {
+	margin-top: 2mm;
+	gap: 1.2mm;
+}
+
+.resume-detail-role .pr-list li {
+	font-size: 7.6pt;
+	line-height: 1.45;
+}
+
+/* ── 사례형 포트폴리오 ── */
+.portfolio-lead {
+	max-width: 165mm;
+	margin: 0;
+	font-size: 11pt;
+	line-height: 1.7;
+	color: #3d3d3a;
+	text-wrap: pretty;
 }
 
 @media (max-width: 980px) {
@@ -807,6 +1129,75 @@
 		min-height: auto;
 		padding: 8mm;
 	}
+
+	.resume-page-two {
+		min-height: auto;
+		margin: 10mm -8mm -8mm;
+		padding: 8mm;
+	}
+
+	.pr-strength-grid,
+	.resume-career-grid,
+	.resume-footer-grid,
+	.portfolio-footer-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.resume-career-item {
+		padding-right: 0;
+	}
+
+	.resume-career-item + .resume-career-item {
+		margin-top: 3mm;
+		padding-top: 3mm;
+		padding-left: 0;
+		border-top: 1px solid rgba(20, 20, 19, 0.08);
+		border-left: 0;
+	}
+
+	.resume-footer-grid > .pr-section + .pr-section {
+		padding-top: 0;
+		padding-left: 0;
+		border-left: 0;
+	}
+
+	.resume-role-head,
+	.pf-project-head {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 1mm;
+	}
+
+	.resume-project {
+		grid-template-columns: 1fr;
+		gap: 1mm;
+	}
+
+	.resume-principle {
+		grid-template-columns: 1fr;
+		gap: 1.5mm;
+	}
+
+	.pf-evidence > div {
+		grid-template-columns: 1fr;
+		gap: 1mm;
+	}
+
+	.floating-actions {
+		right: 16px;
+		bottom: 16px;
+	}
+
+	.floating-trigger {
+		width: 54px;
+		height: 54px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.floating-trigger {
+		transition: none;
+	}
 }
 
 /* ── 인쇄 시 ── */
@@ -831,7 +1222,8 @@
 		padding-top: 0 !important;
 	}
 
-	.controls {
+	.controls,
+	.floating-actions {
 		display: none;
 	}
 
@@ -848,5 +1240,54 @@
 		min-height: auto;
 		padding: 0;
 		box-shadow: none;
+	}
+
+	.resume-document .pr-header {
+		margin-bottom: 3.5mm;
+	}
+
+	.resume-document .pr-name {
+		font-size: 26pt;
+	}
+
+	.resume-page-two {
+		min-height: auto;
+		margin: 6mm 0 0;
+		padding: 6mm 0 0;
+		border-top: 1px solid rgba(20, 20, 19, 0.1);
+	}
+
+	.page.dark .resume-page-two {
+		border-top-color: var(--color-hairline-soft);
+	}
+
+	.resume-continuation-header {
+		display: none;
+	}
+
+	.pr-label,
+	.resume-role-head,
+	.pf-project-head {
+		break-after: avoid;
+		break-inside: avoid;
+	}
+
+	.resume-detail-role,
+	.pf-case-study {
+		break-inside: auto;
+	}
+
+	.resume-detail-role .pr-list li,
+	.pf-evidence > div,
+	.pf-detail-list li {
+		break-inside: avoid;
+	}
+
+	.resume-document p,
+	.portfolio-document p,
+	.resume-document li,
+	.portfolio-document li {
+		orphans: 3;
+		widows: 3;
 	}
 }
