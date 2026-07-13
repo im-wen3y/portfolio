@@ -1,21 +1,18 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import favicon from '$lib/assets/favicon.svg';
-	import iconDownload from '$lib/assets/icon-download.png';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import { printTheme } from '$lib/stores/print-theme.svelte';
+	import type { LayoutProps } from './$types';
 	import '../app.css';
 
-	let { children } = $props();
+	let { children, data }: LayoutProps = $props();
 
 	let scrolled = $state(false);
 	let menuOpen = $state(false);
 
-	let isPrintPage = $derived(page.url.pathname === '/resume/print');
 	let isResumeActive = $derived(page.url.pathname.startsWith('/resume'));
-	let isPortfolioActive = $derived(page.url.pathname === '/portfolio');
-	let showPdfButton = $derived(page.url.pathname === '/resume');
+	let isPortfolioActive = $derived(page.url.pathname.startsWith('/portfolio'));
+	let isPrintActive = $derived(page.url.pathname.startsWith('/print'));
 
 	function handleScroll() {
 		scrolled = window.scrollY > 10;
@@ -28,10 +25,6 @@
 	function closeMenu() {
 		menuOpen = false;
 	}
-
-	onMount(() => {
-		printTheme.hydrate();
-	});
 </script>
 
 <svelte:window onscroll={handleScroll} onkeydown={handleKeydown} />
@@ -47,65 +40,15 @@
 	<title>im-wen3y</title>
 </svelte:head>
 
-<nav class="top-nav" class:scrolled>
-	<div class="nav-inner">
-		<a href={resolve('/resume')} class="wordmark">im-wen3y</a>
-		{#if isPrintPage}
-			<button
-				type="button"
-				class="theme-switch"
-				onclick={() => printTheme.toggle()}
-				role="switch"
-				aria-checked={printTheme.value === 'dark'}
-			>
-				<span class="theme-switch-track" class:is-dark={printTheme.value === 'dark'}>
-					<span class="theme-switch-thumb">
-						{#if printTheme.value === 'dark'}
-							<svg
-								class="theme-switch-icon"
-								viewBox="0 0 16 16"
-								fill="currentColor"
-								aria-hidden="true"
-							>
-								<path
-									d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a.5.5 0 0 0-.65-.62A6.5 6.5 0 1 0 14.12 10.15a.5.5 0 0 0-.62-.65Z"
-								/>
-							</svg>
-						{:else}
-							<svg
-								class="theme-switch-icon"
-								viewBox="0 0 16 16"
-								fill="currentColor"
-								aria-hidden="true"
-							>
-								<circle cx="8" cy="8" r="3.2" />
-								<g stroke="currentColor" stroke-width="1.3" stroke-linecap="round">
-									<line x1="8" y1="0.8" x2="8" y2="2.4" />
-									<line x1="8" y1="13.6" x2="8" y2="15.2" />
-									<line x1="0.8" y1="8" x2="2.4" y2="8" />
-									<line x1="13.6" y1="8" x2="15.2" y2="8" />
-									<line x1="2.7" y1="2.7" x2="3.8" y2="3.8" />
-									<line x1="12.2" y1="12.2" x2="13.3" y2="13.3" />
-									<line x1="2.7" y1="13.3" x2="3.8" y2="12.2" />
-									<line x1="12.2" y1="3.8" x2="13.3" y2="2.7" />
-								</g>
-							</svg>
-						{/if}
-					</span>
-				</span>
-				<span class="theme-switch-label">{printTheme.value === 'dark' ? 'Dark' : 'Light'}</span>
-			</button>
-		{:else}
+{#if !isPrintActive}
+	<nav class="top-nav" class:scrolled>
+		<div class="nav-inner">
+			<a href={resolve('/resume')} class="wordmark">im-wen3y</a>
 			<ul class="nav-links">
-				<li><a href={resolve('/resume')} class:active={isResumeActive}>Resume</a></li>
-				<li><a href={resolve('/portfolio')} class:active={isPortfolioActive}>Portfolio</a></li>
-				{#if showPdfButton}
-					<li>
-						<a href={resolve('/resume/print')} target="_blank" class="nav-pdf">
-							<img src={iconDownload} alt="PDF 다운로드" class="nav-pdf-icon" />
-							PDF
-						</a>
-					</li>
+				<li><a href={resolve('/resume')} class:active={isResumeActive}>이력서</a></li>
+				<li><a href={resolve('/portfolio')} class:active={isPortfolioActive}>포트폴리오</a></li>
+				{#if data.isOwner}
+					<li><a href={resolve('/print')}>PDF</a></li>
 				{/if}
 			</ul>
 			<button
@@ -118,11 +61,9 @@
 				<span class="bar" class:open={menuOpen}></span>
 				<span class="bar" class:open={menuOpen}></span>
 			</button>
-		{/if}
-	</div>
-</nav>
+		</div>
+	</nav>
 
-{#if !isPrintPage}
 	{#if menuOpen}
 		<div class="drawer-overlay" onclick={closeMenu} aria-hidden="true"></div>
 	{/if}
@@ -170,16 +111,10 @@
 				</a>
 			</li>
 		</ul>
-		{#if showPdfButton}
-			<a href={resolve('/resume/print')} target="_blank" onclick={closeMenu} class="drawer-pdf-btn">
-				<img src={iconDownload} alt="" class="nav-pdf-icon" />
-				이력서 저장
-			</a>
-		{/if}
 	</div>
 {/if}
 
-<main>
+<main class:print-page={isPrintActive}>
 	{@render children()}
 </main>
 
@@ -257,92 +192,6 @@
 		color: var(--color-primary);
 	}
 
-	.nav-pdf-icon {
-		width: 13px;
-		height: 13px;
-		display: inline-block;
-		vertical-align: middle;
-		margin-bottom: 1px;
-		filter: brightness(0) invert(1);
-	}
-
-	.nav-links .nav-pdf {
-		color: var(--color-ink);
-		border: 1px solid var(--color-hairline);
-		padding: 6px 12px;
-		border-radius: var(--rounded-md);
-		transition:
-			background-color 0.15s ease,
-			color 0.15s ease;
-	}
-
-	.nav-links .nav-pdf:hover {
-		background-color: var(--color-surface-card);
-		color: var(--color-ink);
-	}
-
-	.theme-switch {
-		display: flex;
-		align-items: center;
-		gap: 8px;
-		background: none;
-		border: none;
-		padding: 0;
-		cursor: pointer;
-		font-family: var(--font-body);
-	}
-
-	.theme-switch-track {
-		display: flex;
-		align-items: center;
-		width: 44px;
-		height: 24px;
-		padding: 2px;
-		border-radius: var(--rounded-pill);
-		background-color: color-mix(in srgb, var(--color-accent-amber) 30%, transparent);
-		transition: background-color 0.2s ease;
-	}
-
-	.theme-switch-track.is-dark {
-		background-color: var(--color-surface-dark);
-	}
-
-	.theme-switch-thumb {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 20px;
-		height: 20px;
-		border-radius: 50%;
-		background-color: var(--color-accent-amber);
-		color: var(--color-on-primary);
-		transform: translateX(0);
-		transition:
-			transform 0.2s ease,
-			background-color 0.2s ease;
-	}
-
-	.theme-switch-track.is-dark .theme-switch-thumb {
-		background-color: var(--color-primary);
-		transform: translateX(20px);
-	}
-
-	.theme-switch-icon {
-		width: 12px;
-		height: 12px;
-	}
-
-	.theme-switch-label {
-		font-size: 13px;
-		font-weight: 500;
-		color: var(--color-muted);
-		transition: color 0.15s ease;
-	}
-
-	.theme-switch:hover .theme-switch-label {
-		color: var(--color-ink);
-	}
-
 	/* Hamburger */
 	.hamburger {
 		display: none;
@@ -418,30 +267,6 @@
 		flex: 1;
 	}
 
-	.drawer-pdf-btn {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 7px;
-		width: 100%;
-		padding: 14px;
-		background-color: var(--color-primary);
-		color: var(--color-on-primary);
-		font-family: var(--font-body);
-		font-size: 14px;
-		font-weight: 500;
-		border-radius: var(--rounded-md);
-		transition: background-color 0.15s ease;
-	}
-
-	.drawer-pdf-btn:hover {
-		background-color: var(--color-primary-active);
-	}
-
-	.drawer-pdf-btn .nav-pdf-icon {
-		filter: brightness(0);
-	}
-
 	.drawer-close {
 		position: absolute;
 		top: 20px;
@@ -507,6 +332,10 @@
 
 	main {
 		padding-top: 64px;
+	}
+
+	main.print-page {
+		padding-top: 0;
 	}
 
 	@media (max-width: 768px) {
