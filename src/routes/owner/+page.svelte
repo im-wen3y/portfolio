@@ -7,6 +7,7 @@
 
 <svelte:head>
 	<title>소유자 로그인 — im-wen3y</title>
+	<meta name="robots" content="noindex, nofollow, noarchive" />
 	<meta name="description" content="인쇄용 이력서와 포트폴리오에 접근하기 위한 소유자 로그인" />
 </svelte:head>
 

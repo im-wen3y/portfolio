@@ -1,5 +1,4 @@
 <script lang="ts">
-	import favicon from '$lib/assets/favicon.svg';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import type { LayoutProps } from './$types';
@@ -13,6 +12,19 @@
 	let isResumeActive = $derived(page.url.pathname.startsWith('/resume'));
 	let isPortfolioActive = $derived(page.url.pathname.startsWith('/portfolio'));
 	let isPrintActive = $derived(page.url.pathname.startsWith('/print'));
+	let isShareablePage = $derived(isResumeActive || isPortfolioActive);
+	let socialTitle = $derived(
+		isPortfolioActive
+			? '프론트엔드 개발자 · 송누리 · 포트폴리오'
+			: '프론트엔드 개발자 · 송누리 · 이력서'
+	);
+	let socialDescription = $derived(
+		isPortfolioActive
+			? '레거시 분석과 React 리뉴얼, UI·UX, 사용자 흐름과 운영 문제 해결 과정을 담은 송누리의 프론트엔드 포트폴리오입니다.'
+			: '레거시 시스템을 분석해 변경하기 쉬운 구조로 전환하고, 팀의 결정과 사용자 흐름을 함께 설계하는 프론트엔드 개발자 송누리의 이력서입니다.'
+	);
+	let socialUrl = $derived(`${page.url.origin}${page.url.pathname}`);
+	let socialImageUrl = $derived(`${page.url.origin}/og-image.png`);
 
 	function handleScroll() {
 		scrolled = window.scrollY > 10;
@@ -30,14 +42,33 @@
 <svelte:window onscroll={handleScroll} onkeydown={handleKeydown} />
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
+	<link rel="icon" href="/favicon.ico" sizes="any" />
+	{#if isShareablePage}
+		<meta name="description" content={socialDescription} />
+		<meta property="og:type" content="website" />
+		<meta property="og:locale" content="ko_KR" />
+		<meta property="og:site_name" content="im-wen3y" />
+		<meta property="og:title" content={socialTitle} />
+		<meta property="og:description" content={socialDescription} />
+		<meta property="og:url" content={socialUrl} />
+		<meta property="og:image" content={socialImageUrl} />
+		<meta property="og:image:type" content="image/png" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content="코드 괄호와 별 모양이 있는 im-wen3y 아이콘" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={socialTitle} />
+		<meta name="twitter:description" content={socialDescription} />
+		<meta name="twitter:image" content={socialImageUrl} />
+		<meta name="twitter:image:alt" content="코드 괄호와 별 모양이 있는 im-wen3y 아이콘" />
+	{/if}
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 	<link
 		href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans+KR:wght@300;400;500;600&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&family=Noto+Serif+KR:wght@400;500&display=swap"
 		rel="stylesheet"
 	/>
-	<title>im-wen3y</title>
+	<title>{isShareablePage ? socialTitle : 'im-wen3y'}</title>
 </svelte:head>
 
 {#if !isPrintActive}
@@ -47,7 +78,7 @@
 			<ul class="nav-links">
 				<li><a href={resolve('/resume')} class:active={isResumeActive}>이력서</a></li>
 				<li><a href={resolve('/portfolio')} class:active={isPortfolioActive}>포트폴리오</a></li>
-				{#if data.isOwner}
+				{#if data.showPrintMenu}
 					<li><a href={resolve('/print')}>PDF</a></li>
 				{/if}
 			</ul>

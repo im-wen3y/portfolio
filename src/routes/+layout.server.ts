@@ -1,5 +1,6 @@
+import { dev } from '$app/environment';
 import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = ({ locals }) => ({
-	isOwner: locals.isOwner
+	showPrintMenu: dev || locals.isOwner
 });
