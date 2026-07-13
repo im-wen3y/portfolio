@@ -1,74 +1,50 @@
 <script lang="ts">
 	import type { Project } from '$lib/data/projects';
-	import type { ProjectVisual } from '$lib/portfolio/project-visuals';
-	import { renderPixelArt } from '$lib/portfolio/pixel-pet';
+	import type { ProjectVisual as PV } from '$lib/portfolio/project-visuals';
+	import ProjectVisual from './ProjectVisual.svelte';
 
-	let { project, visual, onOpen }: { project: Project; visual: ProjectVisual; onOpen: () => void } =
-		$props();
+	let { project, visual, onOpen }: { project: Project; visual: PV; onOpen: () => void } = $props();
 
-	let spriteCanvas = $state<HTMLCanvasElement>();
-
-	$effect(() => {
-		if (visual.kind === 'sprite') {
-			renderPixelArt(spriteCanvas, visual.frame, visual.palette);
-		}
-	});
+	const shownStack = $derived(project.stack.slice(0, 4));
+	const extraStack = $derived(Math.max(0, project.stack.length - 4));
 </script>
 
-<button class="project-card" onclick={onOpen}>
-	<div class="project-eyebrow">
-		<span class="project-company">{project.company}</span>
-		<span class="project-period">{project.period}</span>
-	</div>
-	<h3 class="project-title">{project.title}</h3>
+<button class="card" class:featured={project.featured} onclick={onOpen}>
+	{#if project.featured}<span class="badge">★ MAIN QUEST</span>{/if}
 
-	<div class="project-visual">
-		{#if visual.kind === 'diagram'}
-			<div class="visual-diagram">
-				{#each visual.nodes as node, i (node)}
-					{#if i > 0}<span class="diagram-arrow">→</span>{/if}
-					<span class="diagram-node">{node}</span>
-				{/each}
-			</div>
-		{:else if visual.kind === 'code'}
-			<div class="visual-code">
-				<div class="code-chrome">
-					<span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span>
-					<span class="code-filename">{visual.filename}</span>
-				</div>
-				<pre class="code-body">{visual.lines.join('\n')}</pre>
-			</div>
-		{:else if visual.kind === 'terminal'}
-			<pre class="visual-terminal">{visual.lines.join('\n')}</pre>
-		{:else if visual.kind === 'sprite'}
-			<div class="visual-sprite">
-				<canvas bind:this={spriteCanvas} class="sprite-canvas" aria-hidden="true"></canvas>
-				<span class="sprite-caption">{visual.caption}</span>
-			</div>
-		{/if}
+	<div class="eyebrow">
+		<span class="company">{project.company}</span>
+		<span class="period">{project.period}</span>
 	</div>
 
-	<p class="project-summary">{project.summary}</p>
+	<h3 class="title">{project.title}</h3>
 
-	<div class="project-stack">
-		{#each project.stack as tech (tech)}
-			<span class="stack-chip">{tech}</span>
+	<ProjectVisual {visual} />
+
+	<p class="summary">{project.summary}</p>
+
+	{#if project.role || project.contribution}
+		<div class="meta">
+			{#if project.role}<span class="meta-item">{project.role}</span>{/if}
+			{#if project.contribution}<span class="meta-item accent">{project.contribution}</span>{/if}
+		</div>
+	{/if}
+
+	<div class="stack">
+		{#each shownStack as tech (tech)}
+			<span class="chip">{tech}</span>
 		{/each}
+		{#if extraStack > 0}<span class="chip more">+{extraStack}</span>{/if}
 	</div>
 
-	<div class="project-tags">
-		{#each project.tags as tag (tag)}
-			<span class="tag-chip" class:tag-pick={tag === '나의 선택'}>{tag}</span>
-		{/each}
-	</div>
-	<span class="project-view">→ 상세보기</span>
+	<span class="view">상세보기 →</span>
 </button>
 
 <style>
-	.project-card {
+	.card {
 		display: flex;
 		flex-direction: column;
-		gap: 12px;
+		gap: 11px;
 		text-align: left;
 		width: 100%;
 		background: linear-gradient(
@@ -91,12 +67,37 @@
 			transform 0.15s;
 	}
 
-	.project-card:hover {
+	.card:hover {
 		border-color: rgba(33, 241, 168, 0.5);
-		transform: translateY(-2px);
+		transform: translateY(-3px);
 	}
 
-	.project-eyebrow {
+	.card:focus-visible {
+		outline: 2px solid var(--ac, #21f1a8);
+		outline-offset: 2px;
+	}
+
+	.card.featured {
+		border-color: rgba(33, 241, 168, 0.4);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.22),
+			0 0 24px rgba(33, 241, 168, 0.12);
+	}
+
+	.badge {
+		align-self: flex-start;
+		font-family: 'IBM Plex Mono', monospace;
+		font-size: 9.5px;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		color: #0b1512;
+		background: var(--ac, #21f1a8);
+		border-radius: 999px;
+		padding: 3px 9px;
+		box-shadow: 0 0 12px rgba(33, 241, 168, 0.35);
+	}
+
+	.eyebrow {
 		display: flex;
 		justify-content: space-between;
 		font-family: 'IBM Plex Mono', monospace;
@@ -104,7 +105,7 @@
 		color: rgba(233, 255, 248, 0.45);
 	}
 
-	.project-title {
+	.title {
 		margin: 0;
 		font-family: 'IBM Plex Sans', sans-serif;
 		font-size: 15px;
@@ -113,104 +114,7 @@
 		color: #eafdf6;
 	}
 
-	.project-visual {
-		min-height: 64px;
-		display: flex;
-		align-items: center;
-	}
-
-	.visual-diagram {
-		display: flex;
-		align-items: center;
-		flex-wrap: wrap;
-		gap: 6px;
-		width: 100%;
-	}
-
-	.diagram-node {
-		font-family: 'IBM Plex Mono', monospace;
-		font-size: 10.5px;
-		color: rgba(233, 255, 248, 0.85);
-		background: rgba(33, 241, 168, 0.07);
-		border: 1px solid rgba(33, 241, 168, 0.2);
-		border-radius: 8px;
-		padding: 5px 8px;
-	}
-
-	.diagram-arrow {
-		color: var(--ac, #21f1a8);
-		font-size: 12px;
-	}
-
-	.visual-code {
-		width: 100%;
-		background: #0c1110;
-		border: 1px solid rgba(233, 255, 248, 0.1);
-		border-radius: 10px;
-		overflow: hidden;
-	}
-
-	.code-chrome {
-		display: flex;
-		align-items: center;
-		gap: 5px;
-		padding: 6px 10px;
-		border-bottom: 1px solid rgba(233, 255, 248, 0.08);
-	}
-
-	.code-dot {
-		width: 6px;
-		height: 6px;
-		border-radius: 50%;
-		background: rgba(233, 255, 248, 0.2);
-	}
-
-	.code-filename {
-		margin-left: 6px;
-		font-family: 'IBM Plex Mono', monospace;
-		font-size: 10px;
-		color: rgba(233, 255, 248, 0.4);
-	}
-
-	.code-body,
-	.visual-terminal {
-		margin: 0;
-		padding: 10px 12px;
-		font-family: 'IBM Plex Mono', monospace;
-		font-size: 11px;
-		line-height: 1.6;
-		color: rgba(233, 255, 248, 0.8);
-		white-space: pre-wrap;
-		overflow-x: auto;
-	}
-
-	.visual-terminal {
-		width: 100%;
-		background: #0c1110;
-		border: 1px solid rgba(233, 255, 248, 0.1);
-		border-radius: 10px;
-		color: var(--ac, #21f1a8);
-	}
-
-	.visual-sprite {
-		display: flex;
-		align-items: center;
-		gap: 10px;
-	}
-
-	.sprite-canvas {
-		width: 40px;
-		height: 24px;
-		image-rendering: pixelated;
-	}
-
-	.sprite-caption {
-		font-family: 'IBM Plex Mono', monospace;
-		font-size: 11px;
-		color: var(--ac, #21f1a8);
-	}
-
-	.project-summary {
+	.summary {
 		margin: 0;
 		font-family: 'IBM Plex Sans', sans-serif;
 		font-size: 12.5px;
@@ -218,13 +122,26 @@
 		color: rgba(233, 255, 248, 0.65);
 	}
 
-	.project-stack {
+	.meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 5px 10px;
+		font-family: 'IBM Plex Mono', monospace;
+		font-size: 10.5px;
+		color: rgba(233, 255, 248, 0.6);
+	}
+
+	.meta-item.accent {
+		color: var(--ac, #21f1a8);
+	}
+
+	.stack {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 5px;
 	}
 
-	.stack-chip {
+	.chip {
 		font-family: 'IBM Plex Mono', monospace;
 		font-size: 10px;
 		color: rgba(233, 255, 248, 0.7);
@@ -234,28 +151,11 @@
 		padding: 3px 9px;
 	}
 
-	.project-tags {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 5px;
+	.chip.more {
+		color: rgba(233, 255, 248, 0.45);
 	}
 
-	.tag-chip {
-		font-family: 'IBM Plex Mono', monospace;
-		font-size: 10px;
-		color: rgba(233, 255, 248, 0.5);
-		padding: 2px 8px;
-		border: 1px solid rgba(233, 255, 248, 0.14);
-		border-radius: 999px;
-	}
-
-	.tag-pick {
-		color: #171717;
-		background: var(--ac, #21f1a8);
-		border-color: var(--ac, #21f1a8);
-	}
-
-	.project-view {
+	.view {
 		margin-top: 2px;
 		font-family: 'IBM Plex Mono', monospace;
 		font-size: 11px;

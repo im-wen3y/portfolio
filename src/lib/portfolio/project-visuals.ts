@@ -1,9 +1,9 @@
 import type { PixelFrame, PixelPalette } from './pixel-pet';
 
-export type DiagramVisual = { kind: 'diagram'; nodes: string[] };
-export type CodeVisual = { kind: 'code'; filename: string; lines: string[] };
-export type TerminalVisual = { kind: 'terminal'; lines: string[] };
-export type SpriteVisual = {
+type DiagramVisual = { kind: 'diagram'; nodes: string[] };
+type CodeVisual = { kind: 'code'; filename: string; lines: string[] };
+type TerminalVisual = { kind: 'terminal'; lines: string[] };
+type SpriteVisual = {
 	kind: 'sprite';
 	frame: PixelFrame;
 	palette: PixelPalette;
@@ -61,6 +61,38 @@ export const projectVisuals: Record<string, ProjectVisual> = {
 	'sales-mobile': {
 		kind: 'diagram',
 		nodes: ['PC 전용 내부 시스템', 'React 리팩터링', '모바일 친화적 UI']
+	},
+	'acuvue-renewal': {
+		kind: 'terminal',
+		lines: [
+			'$ migrate myacuvue-web --from=java/jsp --to=react19',
+			'✓ 15,000줄 제품판매 JS → React 전환',
+			'$ banners --to=admin-dynamic-api',
+			'✓ 하드코딩 → 어드민 동적 등록'
+		]
+	},
+	smartfitting: {
+		kind: 'code',
+		filename: 'smart-fitting.ts',
+		lines: [
+			'// iOS input=number 는 -/+/. 입력 불가',
+			'const combo = new ComboBox({ validate });',
+			'// 동의 전 도수 데이터는 프론트에서만',
+			'usePersist(zustandStore);'
+		]
+	},
+	'nonmyacuvue-promo': {
+		kind: 'terminal',
+		lines: [
+			'$ trace dreamsecurity-api',
+			'✗ no response — 앱 로직 아님',
+			'$ inspect spring-security --filter-chain',
+			'✓ CSRF 차단 특정 → 정식 개선 인계'
+		]
+	},
+	'cre8or-sentry': {
+		kind: 'diagram',
+		nodes: ['웹뷰 크래시·API 에러', 'Sentry 대시보드 추적', 'Slack 실시간 알림']
 	},
 	'shopl-dashboard': {
 		kind: 'terminal',

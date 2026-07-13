@@ -4,49 +4,47 @@
 
 	let { onDone }: { onDone: () => void } = $props();
 
+	// 로딩 오버레이: 3초간 떠 있다가 페이드아웃되며 자동으로 사라짐 (버튼 없음)
+	const TOTAL = 3000; // 총 노출 시간(ms)
+	const FILL = 2400; // 진행률이 100%까지 차는 시간(ms)
+	const FADE = 350; // 페이드아웃 시간(ms)
+
 	let progress = $state(0);
-	let loaded = $state(false);
+	let leaving = $state(false);
 
 	let progressTimer: ReturnType<typeof setInterval> | undefined;
+	let doneTimer: ReturnType<typeof setTimeout> | undefined;
+	let fadeTimer: ReturnType<typeof setTimeout> | undefined;
 
+	const loaded = $derived(progress >= 100);
 	const bootLine = $derived(
 		loaded
 			? '> render complete ✓'
 			: bootLines[Math.min(bootLines.length - 1, Math.floor(progress / (100 / bootLines.length)))]
 	);
 
-	function startProgress() {
-		clearInterval(progressTimer);
-		progressTimer = setInterval(() => {
-			if (loaded) return;
-			const next = Math.min(100, progress + 6 + Math.random() * 6);
-			progress = next;
-			if (next >= 100) {
-				clearInterval(progressTimer);
-				loaded = true;
-			}
-		}, 90);
-	}
-
-	function handleKeydown(e: KeyboardEvent) {
-		if ((e.code === 'Space' || e.code === 'Enter') && loaded) {
-			e.preventDefault();
-			onDone();
-		}
-	}
-
 	onMount(() => {
-		startProgress();
+		const start = performance.now();
+		progressTimer = setInterval(() => {
+			const p = Math.min(100, ((performance.now() - start) / FILL) * 100);
+			progress = p;
+			if (p >= 100) clearInterval(progressTimer);
+		}, 40);
+
+		doneTimer = setTimeout(() => {
+			leaving = true;
+			fadeTimer = setTimeout(onDone, FADE);
+		}, TOTAL);
 	});
 
 	onDestroy(() => {
 		clearInterval(progressTimer);
+		clearTimeout(doneTimer);
+		clearTimeout(fadeTimer);
 	});
 </script>
 
-<svelte:window onkeydown={handleKeydown} />
-
-<div class="intro-overlay">
+<div class="intro-overlay" class:leaving aria-busy={!loaded} aria-live="polite">
 	<div class="intro-loading">
 		<div class="intro-boot-label">SYSTEM BOOT</div>
 		<div class="intro-progress-row">
@@ -61,14 +59,7 @@
 			<div class="intro-fill" style="width: {progress}%"></div>
 		</div>
 		<div class="intro-boot-line">{bootLine}</div>
-		{#if loaded}
-			<button class="intro-btn-start" onclick={onDone}>▶ START</button>
-		{:else}
-			<button class="intro-btn-start" disabled>▶ START</button>
-		{/if}
 	</div>
-
-	<button class="intro-btn-skip" onclick={onDone}>SKIP ▶▶</button>
 </div>
 
 <style>
@@ -83,6 +74,12 @@
 		justify-content: center;
 		gap: 20px;
 		padding: 24px;
+		transition: opacity 0.35s ease;
+	}
+
+	.intro-overlay.leaving {
+		opacity: 0;
+		pointer-events: none;
 	}
 
 	.intro-loading {
@@ -144,46 +141,9 @@
 		color: rgba(233, 255, 248, 0.45);
 	}
 
-	.intro-btn-start {
-		margin-top: 6px;
-		padding: 10px 28px;
-		background: transparent;
-		border: 1px solid var(--ac, #21f1a8);
-		color: var(--ac, #21f1a8);
-		font-family: 'IBM Plex Mono', monospace;
-		font-size: 13px;
-		letter-spacing: 0.08em;
-		cursor: pointer;
-		transition: background-color 0.15s;
-	}
-
-	.intro-btn-start:not(:disabled):hover {
-		background: rgba(33, 241, 168, 0.12);
-	}
-
-	.intro-btn-start:disabled {
-		opacity: 0.4;
-		cursor: default;
-	}
-
-	.intro-btn-skip {
-		position: absolute;
-		top: 20px;
-		right: 20px;
-		background: transparent;
-		border: 1px solid rgba(233, 255, 248, 0.2);
-		color: rgba(233, 255, 248, 0.6);
-		font-family: 'IBM Plex Mono', monospace;
-		font-size: 11px;
-		padding: 6px 12px;
-		cursor: pointer;
-		transition:
-			color 0.15s,
-			border-color 0.15s;
-	}
-
-	.intro-btn-skip:hover {
-		color: #eafdf6;
-		border-color: rgba(233, 255, 248, 0.5);
+	@media (prefers-reduced-motion: reduce) {
+		.intro-blink {
+			animation: none;
+		}
 	}
 </style>
