@@ -29,7 +29,6 @@ export const skills: SkillGroup[] = [
 			'TanStack Query',
 			'Framer Motion',
 			'REST API',
-			'Sentry',
 			'재사용 블록/클래스 설계',
 			'크로스 브라우저'
 		]
@@ -77,7 +76,7 @@ export const exps: Exp[] = [
 			badge: '🏆 QUEST CLEARED',
 			title: '레거시 → React 리뉴얼 & 전사 서비스 리드',
 			narrative:
-				'60개 이상의 안경사·관리자 화면을 Spring/JSP에서 React로 옮기는 리뉴얼을 파트 리더로 이끌었습니다. 15,000줄짜리 제품판매 JavaScript를 기능 단위로 전환하고 운영 배포 시간을 약 20분에서 1분 30초로 단축했습니다.'
+				'60개 이상의 안경사·관리자 화면을 Spring/JSP에서 React로 옮기는 리뉴얼을 파트 리더로 이끌었습니다. 15,000줄짜리 제품판매 JavaScript를 기능 단위로 전환하고 프론트엔드 독립 배포 구조를 구축해 운영 배포 시간을 약 20분에서 1분 30초로 단축했습니다.'
 		},
 		groups: [
 			{
@@ -122,7 +121,7 @@ export const exps: Exp[] = [
 				title: '안경사 통합관리 시스템 리뉴얼 (JSP → React)',
 				items: [
 					'FE 3명의 업무를 배분하며 6개 역할에 따른 60개 이상의 화면과 라우팅 규칙을 React로 전환 (기여도 30%)',
-					'15,000줄 제품판매 JavaScript를 기능 단위로 분리하고 운영 배포 시간을 약 20분에서 1분 30초로 단축',
+					'15,000줄 제품판매 JavaScript를 기능 단위로 분리하고 프론트엔드 독립 배포 구조를 구축해 운영 배포 시간을 약 20분에서 1분 30초로 단축',
 					'날짜 조건으로 하드코딩하던 배너를 DB 기반 어드민 관리 방식으로 전환'
 				]
 			},
@@ -142,14 +141,6 @@ export const exps: Exp[] = [
 					'네이버 OCR에서 AWS 텍스트 스캔으로 전환하고 5차는 Web Components 기반 단계형 흐름으로 재구성',
 					'백엔드팀도 못 찾던 외부 API 연동 장애를 서버 로그를 뜯어보며 Spring Security 필터 체인의 CSRF 차단으로 특정',
 					'약 70개 안경원이 참여해 LOT 스캔 기준 300만 원 이상의 인보이스 발생'
-				]
-			},
-			{
-				title: 'Cre8or-Club · Sentry 에러 모니터링',
-				items: [
-					'LCP·INP·CLS, HTTP 실패율, 화면·플랫폼별 오류와 영향 사용자 수를 Sentry 대시보드로 추적',
-					'Slack 알림을 연동해 CS 접수나 수동 모니터링 전에 이슈를 인지하고 대응',
-					'최적화 썸네일을 우선 사용해 프로필 첫 화면 FSP를 3초 이상에서 1.3초 이하로 개선'
 				]
 			}
 		]

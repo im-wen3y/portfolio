@@ -90,10 +90,6 @@ export const projectVisuals: Record<string, ProjectVisual> = {
 			'✓ CSRF 차단 특정 → 정식 개선 인계'
 		]
 	},
-	'cre8or-sentry': {
-		kind: 'diagram',
-		nodes: ['웹뷰 크래시·API 에러', 'Sentry 대시보드 추적', 'Slack 실시간 알림']
-	},
 	'shopl-dashboard': {
 		kind: 'terminal',
 		lines: [

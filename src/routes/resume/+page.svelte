@@ -158,23 +158,22 @@
 		<span class="section-label reveal" use:reveal>§ ABOUT</span>
 		<h2 class="display-lg reveal" use:reveal={{ delay: 60 }}>소개</h2>
 		<p class="about-lead reveal" use:reveal={{ delay: 120 }}>
-			<strong>사용자 관점</strong>에서 UI/UX를 고민하고, 팀과 함께
-			<strong>안정적인 개발 프로세스</strong>를 만들어가는 것을 중요하게 생각하는 프론트엔드
-			개발자입니다.
+			<strong>서비스의 운영 맥락과 사용자 흐름</strong>을 이해한 뒤,
+			<strong>변경하기 쉬운 구조</strong>로 전환하는 일을 좋아하는 프론트엔드 개발자입니다.
 		</p>
 		<div class="about-body">
 			<p class="reveal" use:reveal={{ delay: 160 }}>
-				다양한 웹/앱 프로젝트를 <strong>React 기반으로 개발·운영</strong>하며, 모바일/웹 리뉴얼과
-				<strong>주요 기능 설계·개발을 주도</strong>했습니다.
+				7년간 웹·앱을 개발·운영하며 <strong>JSP 레거시의 React 전환</strong>, 복잡한 입력과 상태
+				설계, 운영 장애 해결을 경험했습니다.
 			</p>
 			<p class="reveal" use:reveal={{ delay: 220 }}>
-				기획팀, 디자인팀과 협업하며 <strong>요구사항 정의와 우선순위 조율</strong>을 수행하고, 팀 내
-				업무 조율과 <strong>신입 개발자 멘토링</strong>을 통해
-				<strong>팀 생산성과 개발 역량 향상</strong>에 기여했습니다.
+				파트 리더로 FE 3명의 업무를 배분하고 기획·디자인·서버팀과 협업하며
+				<strong>라우팅·결제·인증·정적 리소스 규칙</strong>을 문서로 정리했습니다.
 			</p>
 			<p class="reveal" use:reveal={{ delay: 280 }}>
-				앞으로는 개발자로서의 역량을 넘어, 기술적으로도 성장하는
-				<strong>프론트엔드 파트 리더</strong>로 팀과 조직을 이끄는 역할을 수행하고 싶습니다.
+				기술 선택 자체보다 서비스 제약과 운영 결과를 기준으로 판단하고, 결정의 배경을 공유해
+				<strong>팀원이 같은 기준으로 개선을 이어갈 수 있는 환경</strong>을 만드는 것을 중요하게
+				생각합니다.
 			</p>
 		</div>
 	</div>
@@ -194,54 +193,59 @@
 				<span class="exp-role">프론트엔드 파트 리더</span>
 			</div>
 			<p class="exp-summary">
-				아큐브 전사 서비스(소비자 웹/앱, 안경사용 프로그램, 영업·CS 내부 시스템)를 개발·운영하며
-				프론트엔드 파트 리더로서 주요 기능 설계 및 개발을 주도했습니다.
+				아큐브 전사 서비스(소비자 웹/앱, 안경사용 프로그램, 영업·CS 내부 시스템)를 개발·운영하고,
+				프론트엔드 파트 리더로 요구사항과 우선순위 조율, 업무 배분과 기술 의사결정을 담당했습니다.
 			</p>
 			<div class="exp-projects">
 				<div class="exp-project">
-					<h4 class="exp-project-title">아큐브 전사 서비스 개발 – 파트 리더</h4>
+					<h4 class="exp-project-title">안경사 통합관리 시스템 리뉴얼 (JSP → React)</h4>
 					<ul class="exp-bullets">
 						<li>
-							소비자 웹/앱, 안경사용 프로그램, 영업·CS 내부 시스템 등 전사 서비스 개발 및 운영 총괄
+							FE 3명의 업무를 배분하며 6개 사용자 역할에 따른 60개 이상의 화면과 라우팅 규칙을
+							React로 전환 (기여도 30%)
 						</li>
 						<li>
-							기획·디자인·개발팀과 초기 기획 단계부터 참여, 요구사항 정의 및 기능 우선순위 조율
+							15,000줄 제품판매 JavaScript를 기능 단위 React 구조로 전환하고 프론트엔드 독립 배포
+							구조를 구축해 운영 배포 시간을 약 20분에서 1분 30초로 단축
 						</li>
-						<li>팀 업무 배분, 일정 관리, 의사결정 지원으로 팀 생산성 향상</li>
+						<li>날짜 조건으로 하드코딩하던 배너를 DB 기반 어드민 관리 방식으로 전환</li>
 					</ul>
 				</div>
 				<div class="exp-project">
-					<h4 class="exp-project-title">소비자 대상 프로모션 이벤트 페이지 개발</h4>
+					<h4 class="exp-project-title">안경사 대상 렌즈 시뮬레이터 게임</h4>
 					<ul class="exp-bullets">
-						<li>마케팅 캠페인 요구사항 기반 단기 프로모션 페이지 개발 주도</li>
+						<li>1차는 기획 1명·BE 2명과 협업하며 FE 전반을 단독 개발하고 안경원에 배포</li>
 						<li>
-							GA, Meta Pixel, Kakao Pixel 등 전환·행동 기반 트래킹 연동 및 이벤트 측정 로직 구현
+							Context·Funnel 상태를 Zustand로 통합해 새로고침에도 단계 진행 상태가 유지되도록 개선
 						</li>
-						<li>쿠폰 발급, 럭키드로우 등 프로모션 기능 개발 및 서버 연동 플로우 구축</li>
+						<li>메시지별 stepNumber로 모달 재진입 시 타이핑 애니메이션 반복 문제 해결</li>
 					</ul>
 				</div>
 				<div class="exp-project">
-					<h4 class="exp-project-title">제품 판매 페이지 최대 할인 혜택 기능 개발</h4>
+					<h4 class="exp-project-title">모바일/태블릿용 착용 렌즈 계산기</h4>
 					<ul class="exp-bullets">
 						<li>
-							기존 스캔·쿠폰·결제 로직과 독립적으로 최대 혜택가 기능을 클래스형으로 분리, 모듈화 및
-							유지보수성 확보
+							ComboBox 유효성 검사로 비정상 소수 입력에 따른 400 오류를 제거하고 탭·새로고침 사이
+							도수 상태를 유지
 						</li>
-						<li>관리자 페이지에서 쿠폰 등록·관리 가능하도록 DB 기반 마크업과 기능 구현</li>
+						<li>
+							운영 3일 전 변경된 Lenovo Tab M9의 DPR·논리적 뷰포트를 분석해 반응형 오작동을 기한 내
+							해결
+						</li>
 					</ul>
 				</div>
 				<div class="exp-project">
-					<h4 class="exp-project-title">안경사 대상 렌즈 시뮬레이터 게임 개발</h4>
+					<h4 class="exp-project-title">논마이아큐브 프로모션 (1~5차)</h4>
 					<ul class="exp-bullets">
-						<li>안경원 고객 상담 및 렌즈 맞춤 프로세스 기반 학습형 시뮬레이터 설계·개발</li>
-						<li>React + Framer Motion 애니메이션, Zustand 상태 관리, Okta 기반 인증 구현</li>
-					</ul>
-				</div>
-				<div class="exp-project">
-					<h4 class="exp-project-title">영업사원 현장 지원 프로그램 – 모바일 리뉴얼</h4>
-					<ul class="exp-bullets">
-						<li>기존 PC 전용 내부 시스템을 React 기반 모바일 친화적으로 리뉴얼</li>
-						<li>약정서 체결·승인 프로세스를 재사용 가능한 블록 형태로 공통화, 개발 효율성 강화</li>
+						<li>구매 LOT 스캔·휴대폰 인증 캠페인 1~5차의 FE를 단독 담당</li>
+						<li>
+							네이버 OCR에서 AWS 텍스트 스캔으로 전환하고 5차는 Web Components 기반 단계형 흐름으로
+							재구성
+						</li>
+						<li>
+							외부 API 연동 장애의 원인을 서버 로그에서 Spring Security 필터 체인의 CSRF 차단으로
+							특정하고 백엔드팀에 정식 개선을 인계
+						</li>
 					</ul>
 				</div>
 			</div>
@@ -331,8 +335,8 @@
 			<div class="skills-group reveal" use:reveal>
 				<h3 class="skills-group-title">기술</h3>
 				<ul class="skills-list">
-					<li>JavaScript, TypeScript, React 기반 웹/모바일 개발</li>
-					<li>Zustand, LocalStorage 활용 상태 관리 및 REST API 연동</li>
+					<li>JavaScript, TypeScript, React, Next.js 기반 웹/모바일 개발</li>
+					<li>Zustand, TanStack Query 활용 상태·서버 데이터 관리 및 REST API 연동</li>
 					<li>Framer Motion을 활용한 UI 애니메이션 구현</li>
 					<li>재사용 가능한 블록 또는 클래스형 로직 설계</li>
 					<li>Chrome, Safari 등 주요 브라우저 크로스 브라우저 대응</li>
@@ -351,7 +355,7 @@
 				<h3 class="skills-group-title">AI 도구</h3>
 				<ul class="skills-list">
 					<li>Cursor AI 기반 코드 작성 및 리팩터링 보조</li>
-					<li>Claude, ChatGPT 활용 설계 검토 및 문서화</li>
+					<li>Claude Code, ChatGPT 활용 설계 검토 및 문서화</li>
 					<li>AI 도구를 개발 워크플로우에 통합하여 생산성 향상</li>
 				</ul>
 			</div>

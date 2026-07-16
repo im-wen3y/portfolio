@@ -33,10 +33,9 @@ export const PRINT_EXPERIENCES: PrintExperience[] = [
 		period: '2024.04 — 2026.06 · 2년 2개월',
 		role: '프론트엔드 파트 리더',
 		highlights: [
-			'6개 사용자 역할과 60개 이상의 JSP 화면을 분석해 React로 전환하고, 15,000줄 제품판매 JavaScript를 기능 단위로 분리',
+			'6개 사용자 역할과 60개 이상의 JSP 화면, 15,000줄 제품판매 JavaScript를 기능 단위 React 구조로 전환하고 독립 배포 구조를 구축해 운영 배포 시간을 약 20분에서 1분 30초로 단축',
 			'역할별 라우팅, 결제 성공·실패, 인증·보안, 배너 운영과 S3 정적 리소스 규칙을 문서화해 팀의 공통 기준으로 정리',
-			'모바일 렌즈 계산기의 UI·UX와 API 협업을 조율하고 입력 400 오류, 상태 보존, Lenovo Tab M9 반응형 문제를 해결',
-			'Sentry·Slack 모니터링을 구성하고 최적화 썸네일을 적용해 프로필 첫 화면 FSP를 3초 이상에서 1.3초 이하로 개선'
+			'모바일 렌즈 계산기의 UI·UX와 API 협업을 조율하고 입력 400 오류, 상태 보존, Lenovo Tab M9 반응형 문제를 해결'
 		]
 	},
 	{
@@ -111,7 +110,7 @@ export const PRINT_SKILLS = [
 	},
 	{
 		label: 'Delivery',
-		value: 'Vite · AWS S3/Pipeline · Sentry · Git · Jira · Confluence'
+		value: 'Vite · AWS S3/Pipeline · Git · Jira · Confluence'
 	},
 	{
 		label: 'AI Tools',
