@@ -365,11 +365,6 @@
 	background: linear-gradient(145deg, rgba(108, 92, 231, 0.055), rgba(52, 198, 244, 0.025));
 }
 
-.theme-miricanvas .portfolio-lead {
-	font-size: 9pt;
-	line-height: 1.65;
-}
-
 .page.dark.theme-miricanvas[data-accent] {
 	--pr-accent: #a99fff;
 	border-image: linear-gradient(90deg, #a99fff 0 38%, #65d7f6 38% 68%, #ff9abe 68%) 1;
@@ -1146,8 +1141,8 @@
 .portfolio-lead {
 	max-width: 165mm;
 	margin: 0;
-	font-size: 11pt;
-	line-height: 1.7;
+	font-size: 9pt;
+	line-height: 1.65;
 	color: #3d3d3a;
 	text-wrap: pretty;
 }
@@ -1316,6 +1311,31 @@
 		min-height: auto;
 		padding: 0;
 		box-shadow: none;
+	}
+
+	.page.theme-miricanvas[data-accent] {
+		padding-top: 4mm;
+		border-top: 0;
+		border-image: none;
+		background-image: linear-gradient(90deg, #6c5ce7 0 38%, #34c6f4 38% 68%, #ff77a8 68%);
+		background-repeat: no-repeat;
+		background-position: top left;
+		background-size: 100% 1.5mm;
+		print-color-adjust: exact;
+		-webkit-print-color-adjust: exact;
+	}
+
+	.page.dark.theme-miricanvas[data-accent] {
+		background-image: linear-gradient(90deg, #a99fff 0 38%, #65d7f6 38% 68%, #ff9abe 68%);
+	}
+
+	.page.theme-miricanvas::before,
+	.page.theme-miricanvas::after {
+		display: none;
+	}
+
+	.theme-miricanvas .miricanvas-document-mark {
+		margin-bottom: 3.5mm;
 	}
 
 	.resume-document .pr-header {
