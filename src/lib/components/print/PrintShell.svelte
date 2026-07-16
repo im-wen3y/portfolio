@@ -184,9 +184,16 @@
 		class:dark={printTheme.value === 'dark'}
 		class:resume-document={view === 'resume'}
 		class:portfolio-document={view === 'portfolio'}
+		class:theme-miricanvas={company.theme === 'miricanvas'}
 		data-accent={accentTheme.value}
 	>
 		<header class="pr-header">
+			{#if company.theme === 'miricanvas'}
+				<div class="miricanvas-document-mark" aria-hidden="true">
+					<span>WORKING CANVAS</span>
+					<span>{view === 'resume' ? 'PROFILE' : 'SELECTED WORK'}</span>
+				</div>
+			{/if}
 			<h1 class="pr-name">송누리</h1>
 			<p class="pr-role-line">{company.roleLine}</p>
 			<div class="pr-contact">
@@ -265,26 +272,46 @@
 				</header>
 
 				<section class="pr-section resume-detail-section" aria-labelledby="resume-principles">
-					<h2 id="resume-principles" class="pr-label">HOW I WORK</h2>
+					<h2 id="resume-principles" class="pr-label">
+						{company.workHighlights ? 'WHAT I BUILT' : 'HOW I WORK'}
+					</h2>
 					<p class="resume-section-lead">
-						기술은 코드를 작성하는 방식뿐 아니라 문제를 이해하고, 팀과 결정하고, 다음 변경을
-						준비하는 방식이라고 생각합니다.
+						{company.workHighlights
+							? '직접 개발하거나 기술 의사결정을 맡은 업무를 역할과 결과 중심으로 정리했습니다.'
+							: '기술은 코드를 작성하는 방식뿐 아니라 문제를 이해하고, 팀과 결정하고, 다음 변경을 준비하는 방식이라고 생각합니다.'}
 					</p>
 					<div class="resume-principle-list">
-						{#each PRINT_WORK_PRINCIPLES as principle (principle.title)}
-							<article class="resume-principle">
-								<div class="resume-principle-head">
-									<span>{principle.tag}</span>
-									<h3>{principle.title}</h3>
-								</div>
-								<div class="resume-principle-body">
-									<p>{principle.description}</p>
-									<p class="resume-principle-evidence">
-										<strong>실제 근거</strong>{principle.evidence}
-									</p>
-								</div>
-							</article>
-						{/each}
+						{#if company.workHighlights}
+							{#each company.workHighlights as highlight (highlight.title)}
+								<article class="resume-principle">
+									<div class="resume-principle-head">
+										<span>{highlight.tag}</span>
+										<h3>{highlight.title}</h3>
+									</div>
+									<div class="resume-principle-body">
+										<p>{highlight.description}</p>
+										<p class="resume-principle-evidence">
+											<strong>결과</strong>{highlight.result}
+										</p>
+									</div>
+								</article>
+							{/each}
+						{:else}
+							{#each PRINT_WORK_PRINCIPLES as principle (principle.title)}
+								<article class="resume-principle">
+									<div class="resume-principle-head">
+										<span>{principle.tag}</span>
+										<h3>{principle.title}</h3>
+									</div>
+									<div class="resume-principle-body">
+										<p>{principle.description}</p>
+										<p class="resume-principle-evidence">
+											<strong>실제 근거</strong>{principle.evidence}
+										</p>
+									</div>
+								</article>
+							{/each}
+						{/if}
 					</div>
 				</section>
 

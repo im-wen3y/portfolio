@@ -313,6 +313,82 @@
 	-webkit-print-color-adjust: exact;
 }
 
+/* 미리캔버스 지원 문서: 편집 화면의 선택 영역과 작업 캔버스를 인쇄 문법으로 축약한다. */
+.page.theme-miricanvas[data-accent] {
+	--pr-accent: #6c5ce7;
+	position: relative;
+	border-top: 2.5mm solid transparent;
+	border-image: linear-gradient(90deg, #6c5ce7 0 38%, #34c6f4 38% 68%, #ff77a8 68%) 1;
+}
+
+.page.theme-miricanvas::before,
+.page.theme-miricanvas::after {
+	position: absolute;
+	width: 3mm;
+	height: 3mm;
+	border: 0.6mm solid var(--pr-accent);
+	background: #ffffff;
+	content: '';
+}
+
+.page.theme-miricanvas::before {
+	top: 12mm;
+	right: 12mm;
+}
+
+.page.theme-miricanvas::after {
+	right: 12mm;
+	bottom: 12mm;
+}
+
+.theme-miricanvas .miricanvas-document-mark {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 5mm;
+	padding-bottom: 2mm;
+	border-bottom: 1px solid rgba(108, 92, 231, 0.22);
+	color: var(--pr-accent);
+	font-family: 'Inter', sans-serif;
+	font-size: 6.2pt;
+	font-weight: 700;
+	letter-spacing: 1.2pt;
+}
+
+.theme-miricanvas .pr-name {
+	letter-spacing: -1.2pt;
+}
+
+.theme-miricanvas .pr-strength-card {
+	padding: 3.5mm;
+	border: 1px solid rgba(108, 92, 231, 0.16);
+	border-radius: 2.5mm;
+	background: linear-gradient(145deg, rgba(108, 92, 231, 0.055), rgba(52, 198, 244, 0.025));
+}
+
+.theme-miricanvas .portfolio-lead {
+	font-size: 9pt;
+	line-height: 1.65;
+}
+
+.page.dark.theme-miricanvas[data-accent] {
+	--pr-accent: #a99fff;
+	border-image: linear-gradient(90deg, #a99fff 0 38%, #65d7f6 38% 68%, #ff9abe 68%) 1;
+}
+
+.page.dark.theme-miricanvas::before,
+.page.dark.theme-miricanvas::after {
+	background: var(--color-canvas);
+}
+
+.page.dark.theme-miricanvas .miricanvas-document-mark {
+	border-color: rgba(169, 159, 255, 0.25);
+}
+
+.page.dark.theme-miricanvas .pr-strength-card {
+	border-color: rgba(169, 159, 255, 0.22);
+	background: linear-gradient(145deg, rgba(169, 159, 255, 0.09), rgba(101, 215, 246, 0.03));
+}
+
 /* ── 액센트 색 테마 (라이트) — 스위처블 액센트를 쓰는 페이지(base/portfolio)용.
    회사 고정 페이지는 --pr-accent를 인라인 style로 직접 주입하므로 이 블록은 무해하게 미사용 ── */
 .page[data-accent='terracotta'] {

@@ -4,13 +4,22 @@ export interface PrintStrength {
 	description: string;
 }
 
+export interface PrintWorkHighlight {
+	tag: string;
+	title: string;
+	description: string;
+	result: string;
+}
+
 export interface PrintProfileConfig {
 	companyLabel: string;
 	roleLine: string;
+	theme?: 'default' | 'miricanvas';
 	resumeAbout: string;
 	portfolioAbout: string;
 	strengths: [PrintStrength, PrintStrength];
 	featuredProjectIds: [string, string, string];
+	workHighlights?: PrintWorkHighlight[];
 }
 
 export interface PrintExperience {
