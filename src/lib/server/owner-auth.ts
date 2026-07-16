@@ -5,6 +5,11 @@ import type { Cookies } from '@sveltejs/kit';
 
 export const OWNER_SESSION_COOKIE = 'owner_session';
 export const OWNER_SESSION_DURATION_SECONDS = 60 * 60 * 8;
+const DEV_SESSION_SECRET = 'local-owner-session';
+
+function ownerSessionSecret(): string | undefined {
+	return env.OWNER_SESSION_SECRET || (dev ? DEV_SESSION_SECRET : undefined);
+}
 
 function digest(value: string): Buffer {
 	return createHash('sha256').update(value, 'utf8').digest();
@@ -35,24 +40,24 @@ export function verifySessionToken(token: string, secret: string, now = Date.now
 }
 
 export function isOwnerAuthConfigured(): boolean {
-	return Boolean(env.OWNER_PASSWORD && env.OWNER_SESSION_SECRET);
+	return dev || Boolean(env.OWNER_PASSWORD && env.OWNER_SESSION_SECRET);
 }
 
 export function verifyOwnerPassword(candidate: string): boolean {
-	return Boolean(env.OWNER_PASSWORD && secretsMatch(candidate, env.OWNER_PASSWORD));
+	return dev || Boolean(env.OWNER_PASSWORD && secretsMatch(candidate, env.OWNER_PASSWORD));
 }
 
 export function hasOwnerSession(cookies: Cookies): boolean {
 	const token = cookies.get(OWNER_SESSION_COOKIE);
-	return Boolean(
-		token && env.OWNER_SESSION_SECRET && verifySessionToken(token, env.OWNER_SESSION_SECRET)
-	);
+	const secret = ownerSessionSecret();
+	return Boolean(token && secret && verifySessionToken(token, secret));
 }
 
 export function setOwnerSession(cookies: Cookies): void {
-	if (!env.OWNER_SESSION_SECRET) throw new Error('Owner authentication is not configured.');
+	const secret = ownerSessionSecret();
+	if (!secret) throw new Error('Owner authentication is not configured.');
 
-	cookies.set(OWNER_SESSION_COOKIE, createSessionToken(env.OWNER_SESSION_SECRET), {
+	cookies.set(OWNER_SESSION_COOKIE, createSessionToken(secret), {
 		path: '/',
 		httpOnly: true,
 		secure: !dev,
