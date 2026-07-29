@@ -19,52 +19,35 @@ beforeEach(() => {
 });
 
 describe('AccentThemeStore', () => {
-	it('저장된 값이 없으면 terracotta를 유지한다', () => {
+	it('저장된 값이 없으면 원티드 블루를 유지한다', () => {
 		const theme = new AccentThemeStore();
 		theme.hydrate();
-		expect(theme.value).toBe('terracotta');
+		expect(theme.value).toBe('wanted-blue');
 	});
 
 	it('localStorage에 저장된 유효한 값으로 복원한다', () => {
-		localStorage.setItem('resume-print-accent', 'toss');
+		localStorage.setItem('resume-print-accent', 'wanted-violet');
 		const theme = new AccentThemeStore();
 		theme.hydrate();
-		expect(theme.value).toBe('toss');
+		expect(theme.value).toBe('wanted-violet');
 	});
 
-	it('유효하지 않은 저장값은 무시하고 기본값을 유지한다', () => {
+	it('유효하지 않은 저장값은 원티드 블루로 마이그레이션한다', () => {
 		localStorage.setItem('resume-print-accent', 'chartreuse');
 		const theme = new AccentThemeStore();
 		theme.hydrate();
-		expect(theme.value).toBe('terracotta');
-	});
-
-	it('구버전 값(default/miricanvas/navy)을 새 값으로 마이그레이션한다', () => {
-		localStorage.setItem('resume-print-accent', 'default');
-		const legacyDefault = new AccentThemeStore();
-		legacyDefault.hydrate();
-		expect(legacyDefault.value).toBe('terracotta');
-
-		localStorage.setItem('resume-print-accent', 'miricanvas');
-		const legacyMiricanvas = new AccentThemeStore();
-		legacyMiricanvas.hydrate();
-		expect(legacyMiricanvas.value).toBe('teal');
-
-		localStorage.setItem('resume-print-accent', 'navy');
-		const legacyNavy = new AccentThemeStore();
-		legacyNavy.hydrate();
-		expect(legacyNavy.value).toBe('toss');
+		expect(theme.value).toBe('wanted-blue');
 	});
 
 	it('set은 값을 바꾸고 localStorage에 저장한다', () => {
 		const theme = new AccentThemeStore();
 
-		theme.set('aubergine');
-		expect(theme.value).toBe('aubergine');
-		expect(localStorage.getItem('resume-print-accent')).toBe('aubergine');
+		theme.set('wanted-orange');
+		expect(theme.value).toBe('wanted-orange');
+		expect(localStorage.getItem('resume-print-accent')).toBe('wanted-orange');
 
-		theme.set('forest');
-		expect(theme.value).toBe('forest');
-		expect(localStorage.getItem('resume-print-accent')).toBe('forest');
+		theme.set('wanted-sky-blue');
+		expect(theme.value).toBe('wanted-sky-blue');
+		expect(localStorage.getItem('resume-print-accent')).toBe('wanted-sky-blue');
 	});
 });

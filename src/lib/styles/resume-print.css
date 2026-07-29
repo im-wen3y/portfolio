@@ -1,12 +1,20 @@
-/* 이력서/포트폴리오 print 페이지(기본 + 회사별 JD 맞춤) 공통 스타일.
+/* 이력서 print 페이지 공통 스타일.
    Svelte scoped CSS는 컴포넌트 파일별로 해시가 붙어 다른 컴포넌트가 렌더한 마크업엔 적용되지
    않으므로, 여러 파일(PrintShell + 각 회사 +page.svelte)이 공유하는 pr/pf 접두사 클래스는
    일반 전역 CSS로 둔다. */
 
+@font-face {
+	font-family: 'Wanted Sans Variable';
+	font-style: normal;
+	font-display: swap;
+	font-weight: 400 1000;
+	src: url('/fonts/wanted-sans/WantedSansVariable.woff2') format('woff2-variations');
+}
+
 /* ── 화면 전용 컨트롤 ── */
 .controls {
 	display: grid;
-	grid-template-columns: minmax(96px, 1fr) auto minmax(320px, 1fr);
+	grid-template-columns: minmax(96px, 1fr) auto minmax(96px, 1fr);
 	align-items: center;
 	gap: 12px;
 	padding: 12px 24px;
@@ -17,6 +25,52 @@
 	position: sticky;
 	top: 0;
 	z-index: 10;
+}
+
+.resume-version-control {
+	display: inline-flex;
+	align-items: center;
+	gap: 3px;
+	padding: 3px;
+	border: 1px solid var(--color-hairline);
+	border-radius: var(--rounded-md);
+	background: var(--color-surface-card);
+}
+
+.resume-version-control button {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 7px 11px;
+	border: 0;
+	border-radius: calc(var(--rounded-md) - 3px);
+	background: transparent;
+	color: var(--color-muted);
+	font-family: var(--font-body);
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.resume-version-control button span {
+	display: grid;
+	place-items: center;
+	width: 18px;
+	height: 18px;
+	border: 1px solid currentColor;
+	border-radius: 50%;
+	font-size: 10px;
+}
+
+.resume-version-control button.active {
+	background: var(--color-ink);
+	color: var(--color-canvas);
+}
+
+.resume-version-control button:focus-visible {
+	outline: 2px solid var(--pr-accent);
+	outline-offset: 2px;
 }
 
 .back-link {
@@ -30,51 +84,6 @@
 
 .back-link:hover {
 	color: var(--color-ink);
-}
-
-.view-toggle {
-	justify-self: center;
-	position: relative;
-	display: inline-flex;
-	background-color: var(--color-surface-card);
-	border: 1px solid var(--color-hairline);
-	border-radius: var(--rounded-pill);
-	padding: 4px;
-}
-
-.view-toggle-thumb {
-	position: absolute;
-	top: 4px;
-	left: 4px;
-	width: calc(50% - 4px);
-	height: calc(100% - 8px);
-	background-color: var(--pr-accent);
-	border-radius: var(--rounded-pill);
-	transition: transform 0.25s cubic-bezier(0.65, 0, 0.35, 1);
-}
-
-.view-toggle-thumb.is-portfolio {
-	transform: translateX(100%);
-}
-
-.view-toggle-btn {
-	position: relative;
-	z-index: 1;
-	min-width: 96px;
-	padding: 7px 18px;
-	font-family: var(--font-body);
-	font-size: 13px;
-	font-weight: 600;
-	color: var(--color-muted);
-	background: none;
-	border: none;
-	border-radius: var(--rounded-pill);
-	cursor: pointer;
-	transition: color 0.2s ease;
-}
-
-.view-toggle-btn.active {
-	color: #ffffff;
 }
 
 .save-btn {
@@ -106,12 +115,12 @@
 .accent-picker {
 	display: flex;
 	align-items: center;
-	gap: 7px;
+	gap: 9px;
 }
 
 .accent-dot {
-	width: 17px;
-	height: 17px;
+	width: 22px;
+	height: 22px;
 	padding: 0;
 	border: 0;
 	border-radius: 50%;
@@ -135,7 +144,6 @@
 }
 
 .accent-dot:focus-visible,
-.view-toggle-btn:focus-visible,
 .save-btn:focus-visible,
 .floating-action:focus-visible,
 .floating-trigger:focus-visible {
@@ -159,6 +167,22 @@
 	flex-direction: column;
 	align-items: flex-end;
 	gap: 10px;
+}
+
+.floating-palette {
+	padding: 12px 14px 14px;
+	border: 1px solid rgba(240, 244, 248, 0.18);
+	border-radius: var(--rounded-md);
+	background: #14191e;
+	box-shadow: 0 10px 28px rgba(20, 25, 30, 0.28);
+}
+
+.floating-palette p {
+	margin: 0 0 10px;
+	color: #f0f4f8;
+	font-size: 11px;
+	font-weight: 650;
+	letter-spacing: 0.02em;
 }
 
 .floating-menu form {
@@ -300,9 +324,15 @@
 	box-shadow:
 		0 4px 6px rgba(20, 20, 19, 0.06),
 		0 10px 40px rgba(20, 20, 19, 0.12);
-	font-family: 'IBM Plex Sans KR', 'Inter', sans-serif;
+	font-family:
+		'Wanted Sans Variable',
+		'Wanted Sans',
+		-apple-system,
+		BlinkMacSystemFont,
+		system-ui,
+		sans-serif;
 	color: #141413;
-	--pr-accent: #cc785c;
+	--pr-accent: #0650c0;
 }
 
 /* ── 다크 테마 오버라이드 (사이트 기존 다크 변수 재사용) ── */
@@ -313,116 +343,30 @@
 	-webkit-print-color-adjust: exact;
 }
 
-/* 미리캔버스 지원 문서: 편집 화면의 선택 영역과 작업 캔버스를 인쇄 문법으로 축약한다. */
-.page.theme-miricanvas[data-accent] {
-	--pr-accent: #6c5ce7;
-	position: relative;
-	border-top: 2.5mm solid transparent;
-	border-image: linear-gradient(90deg, #6c5ce7 0 38%, #34c6f4 38% 68%, #ff77a8 68%) 1;
+.resume-document {
+	--resume-font-name: 28pt;
+	--resume-font-section: 15pt;
+	--resume-font-company: 14pt;
+	--resume-font-heading: 11pt;
+	--resume-font-body: 9.5pt;
+	--resume-font-meta: 8.75pt;
 }
 
-.page.theme-miricanvas::before,
-.page.theme-miricanvas::after {
-	position: absolute;
-	width: 3mm;
-	height: 3mm;
-	border: 0.6mm solid var(--pr-accent);
-	background: #ffffff;
-	content: '';
+/* ── 원티드 브랜드 컬러에 Black을 섞은 문서용 저채도 액센트 ── */
+.page[data-accent='wanted-blue'] {
+	--pr-accent: #0650c0;
 }
-
-.page.theme-miricanvas::before {
-	top: 12mm;
-	right: 12mm;
+.page[data-accent='wanted-orange'] {
+	--pr-accent: #bd4908;
 }
-
-.page.theme-miricanvas::after {
-	right: 12mm;
-	bottom: 12mm;
+.page[data-accent='wanted-pink'] {
+	--pr-accent: #bd6dc0;
 }
-
-.theme-miricanvas .miricanvas-document-mark {
-	display: flex;
-	justify-content: space-between;
-	margin-bottom: 5mm;
-	padding-bottom: 2mm;
-	border-bottom: 1px solid rgba(108, 92, 231, 0.22);
-	color: var(--pr-accent);
-	font-family: 'Inter', sans-serif;
-	font-size: 6.2pt;
-	font-weight: 700;
-	letter-spacing: 1.2pt;
+.page[data-accent='wanted-sky-blue'] {
+	--pr-accent: #0684c0;
 }
-
-.theme-miricanvas .pr-name {
-	letter-spacing: -1.2pt;
-}
-
-.theme-miricanvas .pr-strength-card {
-	padding: 3.5mm;
-	border: 1px solid rgba(108, 92, 231, 0.16);
-	border-radius: 2.5mm;
-	background: linear-gradient(145deg, rgba(108, 92, 231, 0.055), rgba(52, 198, 244, 0.025));
-}
-
-.page.dark.theme-miricanvas[data-accent] {
-	--pr-accent: #a99fff;
-	border-image: linear-gradient(90deg, #a99fff 0 38%, #65d7f6 38% 68%, #ff9abe 68%) 1;
-}
-
-.page.dark.theme-miricanvas::before,
-.page.dark.theme-miricanvas::after {
-	background: var(--color-canvas);
-}
-
-.page.dark.theme-miricanvas .miricanvas-document-mark {
-	border-color: rgba(169, 159, 255, 0.25);
-}
-
-.page.dark.theme-miricanvas .pr-strength-card {
-	border-color: rgba(169, 159, 255, 0.22);
-	background: linear-gradient(145deg, rgba(169, 159, 255, 0.09), rgba(101, 215, 246, 0.03));
-}
-
-/* ── 액센트 색 테마 (라이트) — 스위처블 액센트를 쓰는 페이지(base/portfolio)용.
-   회사 고정 페이지는 --pr-accent를 인라인 style로 직접 주입하므로 이 블록은 무해하게 미사용 ── */
-.page[data-accent='terracotta'] {
-	--pr-accent: #cc785c;
-}
-.page[data-accent='teal'] {
-	--pr-accent: #0f766e;
-}
-.page[data-accent='toss'] {
-	--pr-accent: #0064ff;
-}
-.page[data-accent='baemin'] {
-	--pr-accent: #2ac1bc;
-}
-.page[data-accent='aubergine'] {
-	--pr-accent: #6e2a5b;
-}
-.page[data-accent='forest'] {
-	--pr-accent: #2f6b4f;
-}
-
-/* ── 액센트 색 테마 (다크: 배경 대비 밝게) ── */
-.page.dark[data-accent='terracotta'] {
-	--pr-accent: #e0a88f;
-}
-.page.dark[data-accent='teal'] {
-	--pr-accent: #2dd4bf;
-}
-.page.dark[data-accent='toss'] {
-	--pr-accent: #83b4f9;
-}
-.page.dark[data-accent='baemin'] {
-	--pr-accent: #0cefd3;
-}
-.page.dark[data-accent='aubergine'] {
-	--pr-accent: #c77db0;
-}
-.page.dark[data-accent='forest'] {
-	--pr-accent: #6bbf92;
+.page[data-accent='wanted-violet'] {
+	--pr-accent: #644fc0;
 }
 
 .page.dark .pr-name,
@@ -433,15 +377,13 @@
 	color: var(--color-ink);
 }
 
-.page.dark .pr-role-line,
 .page.dark .pr-contact,
 .page.dark .pr-contact a,
 .page.dark .pr-muted,
 .page.dark .pf-project-meta,
 .page.dark .pr-strength-tag,
 .page.dark .resume-role-title,
-.page.dark .resume-project-head span,
-.page.dark .resume-skill-list strong {
+.page.dark .resume-project-head span {
 	color: var(--color-muted);
 }
 
@@ -463,11 +405,16 @@
 .page.dark .resume-skill-list p,
 .page.dark .resume-project > p,
 .page.dark .resume-section-lead,
+.page.dark .pr-header-intro,
 .page.dark .resume-principle-body > p,
 .page.dark .resume-principle-evidence,
 .page.dark .resume-continuation-name,
 .page.dark .resume-continuation-header > p:last-child {
 	color: var(--color-body);
+}
+
+.page.dark .pr-blog-link {
+	color: var(--pr-accent);
 }
 
 .page.dark .resume-project-head h3,
@@ -526,8 +473,8 @@
 }
 
 .pr-name {
-	font-family: 'IBM Plex Sans KR', 'Inter', sans-serif;
-	font-size: 30pt;
+	font-family: 'Wanted Sans Variable', sans-serif;
+	font-size: var(--resume-font-name, 30pt);
 	font-weight: 600;
 	line-height: 1.05;
 	color: #141413;
@@ -535,20 +482,13 @@
 	margin: 0;
 }
 
-.pr-role-line {
-	font-size: 8.5pt;
-	font-weight: 500;
-	color: #4a4844;
-	margin-top: 2mm;
-}
-
 .pr-contact {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: baseline;
 	gap: 0 1.8mm;
-	margin-top: 1.5mm;
-	font-size: 8pt;
+	margin-top: 2mm;
+	font-size: var(--resume-font-meta, 10pt);
 	color: #6c6a64;
 }
 
@@ -561,6 +501,29 @@
 	color: var(--pr-accent);
 	text-decoration: underline;
 	text-underline-offset: 2px;
+}
+
+.pr-blog-link {
+	display: inline-block;
+	margin-top: 1.2mm;
+	font-size: var(--resume-font-meta, 9.5pt);
+	font-weight: 650;
+	color: var(--pr-accent);
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 2px;
+}
+
+.pr-header-intro {
+	max-width: 168mm;
+	margin: 3mm 0 0;
+	padding-left: 4mm;
+	border-left: 2px solid var(--pr-accent);
+	font-size: var(--resume-font-body, 10.5pt);
+	line-height: 1.6;
+	letter-spacing: -0.03pt;
+	color: #3d3d3a;
+	text-wrap: pretty;
 }
 
 .pr-sep {
@@ -633,7 +596,7 @@
 
 /* ── 프로젝트 기술 스택 / 기타 프로젝트 ── */
 .pr-stack {
-	font-size: 7.5pt;
+	font-size: 9.5pt;
 	color: #6c6a64;
 	margin: 1mm 0 2.5mm 0;
 }
@@ -665,7 +628,7 @@
 
 .pf-project-company {
 	margin: 0 0 1mm;
-	font-size: 7pt;
+	font-size: 8.5pt;
 	font-weight: 600;
 	letter-spacing: 0.8pt;
 	text-transform: uppercase;
@@ -674,7 +637,7 @@
 
 .pf-project-title {
 	margin: 0;
-	font-size: 14pt;
+	font-size: 17pt;
 	font-weight: 600;
 	line-height: 1.25;
 	color: #141413;
@@ -683,13 +646,13 @@
 
 .pf-project-meta {
 	flex-shrink: 0;
-	font-size: 8pt;
+	font-size: 10pt;
 	color: #6c6a64;
 }
 
 .pf-project-summary {
 	margin: 2.5mm 0 0;
-	font-size: 9pt;
+	font-size: 11pt;
 	line-height: 1.6;
 	color: #3d3d3a;
 }
@@ -707,7 +670,7 @@
 }
 
 .pf-evidence dt {
-	font-size: 7pt;
+	font-size: 8.5pt;
 	font-weight: 700;
 	letter-spacing: 0.5pt;
 	color: #6c6a64;
@@ -736,22 +699,20 @@
 
 .pf-evidence dd {
 	margin: 0;
-	font-size: 8.5pt;
+	font-size: 10.5pt;
 	line-height: 1.6;
 	color: #3d3d3a;
 }
 
-.pf-evidence dd strong {
-	display: block;
-	margin-bottom: 1mm;
+.pf-evidence .scope dd > strong {
 	color: #141413;
 	font-weight: 600;
 }
 
 .portfolio-footer-grid {
-	display: grid;
-	grid-template-columns: minmax(0, 2fr) minmax(48mm, 1fr);
-	gap: 10mm;
+	display: flex;
+	flex-direction: column;
+	gap: 6mm;
 	margin-top: 10mm;
 	padding-top: 5mm;
 	border-top: 1px solid rgba(20, 20, 19, 0.14);
@@ -760,13 +721,27 @@
 
 /* ── 섹션 레이블 ── */
 .pr-label {
-	font-family: 'Inter', sans-serif;
-	font-size: 7pt;
+	font-family: 'Wanted Sans Variable', sans-serif;
+	font-size: 8.5pt;
 	font-weight: 700;
 	letter-spacing: 1.5pt;
 	text-transform: uppercase;
 	color: var(--pr-accent);
 	margin: 0 0 3.5mm 0;
+}
+
+.resume-document h2.pr-label {
+	margin-bottom: 3mm;
+	font-size: var(--resume-font-section);
+	font-weight: 700;
+	line-height: 1.35;
+	letter-spacing: -0.15pt;
+	text-transform: none;
+	color: var(--pr-accent);
+}
+
+.page.dark.resume-document h2.pr-label {
+	color: var(--pr-accent);
 }
 
 /* ── 불릿 리스트 ── */
@@ -958,13 +933,12 @@
 }
 
 .resume-footer-grid {
-	display: grid;
-	grid-template-columns: minmax(0, 2fr) minmax(45mm, 1fr);
-	gap: 8mm;
+	display: flex;
+	flex-direction: column;
+	gap: 5mm;
 	margin-top: 4mm;
 	padding-top: 4mm;
 	border-top: 1px solid rgba(20, 20, 19, 0.1);
-	align-items: start;
 	break-inside: avoid;
 }
 
@@ -974,6 +948,8 @@
 
 .resume-footer-grid > .pr-section + .pr-section {
 	margin: 0;
+	padding-top: 5mm;
+	border-top: 1px solid rgba(20, 20, 19, 0.08);
 }
 
 .resume-footer-grid .pr-label {
@@ -991,26 +967,61 @@
 }
 
 .resume-skill-list p {
-	display: grid;
-	grid-template-columns: 20mm 1fr;
-	gap: 3mm;
 	margin: 0;
-	font-size: 7.5pt;
-	line-height: 1.4;
+	font-size: var(--resume-font-body, 9.5pt);
+	line-height: 1.5;
 	color: #3d3d3a;
 }
 
 .resume-skill-list strong {
-	font-size: 7pt;
-	font-weight: 600;
-	color: #6c6a64;
+	font-size: inherit;
+	font-weight: 700;
+	color: #141413;
+}
+
+.resume-skill-value {
+	margin-left: 2mm;
+}
+
+.resume-page-one {
+	min-height: 267mm;
 }
 
 .resume-page-two {
-	min-height: 267mm;
+	min-height: calc(297mm + 24px);
 	margin: 15mm -15mm -15mm;
 	padding: 15mm;
 	border-top: 24px solid var(--color-surface-card);
+}
+
+.page.dark .resume-page-two {
+	border-top-color: var(--color-hairline-soft);
+}
+
+.resume-page-break {
+	flex: 0 0 auto;
+	width: auto;
+	height: calc(30mm + 24px);
+	margin: 0 -15mm;
+	background: linear-gradient(
+		to bottom,
+		transparent 0,
+		transparent 15mm,
+		var(--color-surface-card) 15mm,
+		var(--color-surface-card) calc(15mm + 24px),
+		transparent calc(15mm + 24px)
+	);
+}
+
+.page.dark .resume-page-break {
+	background: linear-gradient(
+		to bottom,
+		transparent 0,
+		transparent 15mm,
+		var(--color-hairline-soft) 15mm,
+		var(--color-hairline-soft) calc(15mm + 24px),
+		transparent calc(15mm + 24px)
+	);
 }
 
 .resume-continuation-header {
@@ -1028,7 +1039,7 @@
 }
 
 .resume-continuation-header > p {
-	font-family: 'Inter', sans-serif;
+	font-family: 'Wanted Sans Variable', sans-serif;
 	font-size: 6pt;
 	font-weight: 500;
 	letter-spacing: 0.6pt;
@@ -1061,7 +1072,7 @@
 .resume-principle-head span {
 	display: block;
 	margin-bottom: 1mm;
-	font-family: 'Inter', sans-serif;
+	font-family: 'Wanted Sans Variable', sans-serif;
 	font-size: 6.2pt;
 	font-weight: 600;
 	letter-spacing: 0.7pt;
@@ -1137,11 +1148,681 @@
 	line-height: 1.45;
 }
 
+/* ── 업무 검토형 이력서 ── */
+.resume-thesis {
+	display: flex;
+	flex-direction: column;
+	gap: 2.2mm;
+	padding: 0;
+}
+
+.resume-thesis > p {
+	margin: 0;
+	font-size: var(--resume-font-body);
+	font-weight: 450;
+	line-height: 1.6;
+	letter-spacing: -0.05pt;
+	color: #3d3d3a;
+	text-wrap: pretty;
+}
+
+.resume-overview {
+	margin-top: 6mm;
+	padding-top: 6mm;
+	border-top: 1px solid rgba(20, 20, 19, 0.12);
+}
+
+.resume-summary-list {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5mm;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	color: #3d3d3a;
+	font-size: var(--resume-font-body);
+	line-height: 1.5;
+}
+
+.resume-summary-list li {
+	display: block;
+}
+
+.resume-summary-list strong {
+	color: #141413;
+	font-weight: 700;
+}
+
+.resume-summary-description {
+	margin-left: 2mm;
+}
+
+.template-company-list,
+.template-contribution-list {
+	display: flex;
+	flex-direction: column;
+}
+
+.template-company {
+	padding: 6mm 0;
+}
+
+.template-company:first-child {
+	padding-top: 0;
+}
+
+.template-company-header {
+	margin-bottom: 1.8mm;
+	break-inside: avoid-page;
+	break-after: avoid-page;
+	page-break-inside: avoid;
+	page-break-after: avoid;
+}
+
+.template-company-header h3 {
+	margin: 0;
+	font-size: var(--resume-font-company);
+	font-weight: 750;
+	line-height: 1.25;
+	letter-spacing: -0.18pt;
+	color: #141413;
+}
+
+.template-company-header h4 {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 1.2mm;
+	margin: 1.5mm 0 0;
+	font-size: var(--resume-font-meta);
+	font-weight: 500;
+	line-height: 1.4;
+}
+
+.template-role {
+	color: #6c6a64;
+	font-weight: 500;
+}
+
+.template-role-separator {
+	color: #b0ada5;
+}
+
+.template-role-period {
+	color: #6c6a64;
+	font-weight: 500;
+	font-variant-numeric: tabular-nums;
+}
+
+.template-company-summary {
+	max-width: 170mm;
+	margin: 0 0 5.5mm;
+	font-size: 9.75pt;
+	font-weight: 500;
+	line-height: 1.6;
+	letter-spacing: -0.04pt;
+	color: #2f2f2c;
+	text-wrap: pretty;
+	break-after: avoid;
+	page-break-after: avoid;
+}
+
+.template-company .resume-work-list {
+	gap: 4mm;
+}
+
+.template-work-title {
+	margin: 0 0 1mm;
+	font-size: var(--resume-font-heading);
+	line-height: 1.4;
+	letter-spacing: -0.08pt;
+	color: #141413;
+	text-wrap: balance;
+}
+
+.template-work-title strong {
+	font-weight: 700;
+}
+
+.template-work-meta {
+	display: flex;
+	flex-direction: column;
+	gap: 0.3mm;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	color: #6c6a64;
+}
+
+.template-work-meta p {
+	margin: 0;
+	font-size: 8.5pt;
+	line-height: 1.45;
+}
+
+.template-work-meta-label {
+	margin-right: 2mm;
+	font-weight: 600;
+	color: inherit;
+}
+
+.template-contribution {
+	padding: 3.5mm 0;
+	border-top: 1px solid rgba(20, 20, 19, 0.08);
+	break-inside: avoid;
+}
+
+.template-contribution:first-child {
+	padding-top: 0;
+	border-top: 0;
+}
+
+.template-contribution h3 {
+	margin: 0 0 1.5mm;
+	font-size: var(--resume-font-heading);
+	font-weight: 650;
+	line-height: 1.4;
+	color: #141413;
+}
+
+.template-contribution-details {
+	display: flex;
+	flex-direction: column;
+	gap: 1mm;
+	margin: 0;
+	padding-left: 4mm;
+	font-size: var(--resume-font-body);
+	line-height: 1.65;
+	color: #3d3d3a;
+}
+
+.template-contribution-details li::marker {
+	color: var(--pr-accent);
+}
+
+.template-education-list {
+	display: flex;
+	flex-direction: column;
+	gap: 3.5mm;
+}
+
+.template-education {
+	break-inside: avoid;
+}
+
+.template-education header {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 2mm;
+	margin-bottom: 1.5mm;
+}
+
+.template-education h3 {
+	margin: 0;
+	font-size: var(--resume-font-heading);
+	font-weight: 650;
+	line-height: 1.4;
+	color: #141413;
+}
+
+.template-education header span {
+	font-size: var(--resume-font-meta);
+	font-weight: 500;
+	color: #6c6a64;
+	font-variant-numeric: tabular-nums;
+}
+
+.template-company .resume-work {
+	gap: 1.4mm;
+	padding: 0;
+	border-top: 0;
+	break-inside: auto;
+	page-break-inside: auto;
+}
+
+.template-company .resume-work + .resume-work {
+	padding-top: 4mm;
+	border-top: 1px solid rgba(20, 20, 19, 0.08);
+}
+
+.resume-document[data-resume-version='compact'] .template-company .resume-work-list {
+	gap: 0;
+}
+
+.resume-document[data-resume-version='compact'] .template-company .resume-work + .resume-work {
+	margin-top: 2.5mm;
+	padding-top: 2.5mm;
+}
+
+.template-company .resume-work-header {
+	gap: 0;
+	margin-bottom: 0;
+	break-after: avoid-page;
+	page-break-after: avoid;
+}
+
+.template-company .resume-work:first-child {
+	padding-top: 0;
+}
+
+.template-company .resume-work-details {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+}
+
+.template-company .resume-work-details > div {
+	display: block;
+	padding: 0.45mm 0;
+	border: 0;
+	line-height: 1.42;
+	break-inside: avoid-page;
+	page-break-inside: avoid;
+}
+
+.template-company .resume-work-details dt {
+	display: inline;
+	margin-right: 0.8mm;
+	font-size: var(--resume-font-body);
+	font-weight: 700;
+	line-height: inherit;
+	letter-spacing: 0;
+	color: var(--pr-accent);
+}
+
+.template-company .resume-work-details dd {
+	display: inline;
+	margin: 0;
+	font-size: var(--resume-font-body);
+	line-height: inherit;
+}
+
+.template-company .resume-work-details .resume-work-result {
+	margin-top: 0;
+	padding: 0.45mm 0;
+	border: 0;
+	background: none;
+}
+
+.template-company .resume-work-result dt {
+	color: var(--pr-accent);
+}
+
+.template-company .resume-work-result dd {
+	font-size: var(--resume-font-body);
+	font-weight: 400;
+	line-height: inherit;
+}
+
+/* 이력서 문서: 학력·경력 회사명과 학력 정보는 디자인 스케일에 맞춰 확대 */
+.resume-document .pr-company {
+	font-size: 11.5pt;
+}
+
+.resume-document .pr-edu-sub {
+	font-size: 10.5pt;
+}
+
+.resume-document .pr-muted {
+	font-size: 10pt;
+}
+
+.resume-work-list {
+	display: flex;
+	flex-direction: column;
+}
+
+.resume-work {
+	display: flex;
+	flex-direction: column;
+	gap: 2.5mm;
+	padding: 4mm 0;
+	border-top: 1px solid rgba(20, 20, 19, 0.08);
+	break-inside: avoid;
+}
+
+.resume-work:first-child {
+	padding-top: 0;
+	border-top: 0;
+}
+
+.resume-work-header {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 1mm;
+	margin-bottom: 2.5mm;
+}
+
+.resume-work-headline {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	gap: 4mm;
+	width: 100%;
+	padding-bottom: 2mm;
+}
+
+.resume-work-company {
+	margin: 0 0 0.8mm;
+	font-size: 9pt;
+	font-weight: 600;
+	color: var(--pr-accent);
+}
+
+.resume-work-header h3 {
+	margin: 0;
+	font-size: 15pt;
+	font-weight: 650;
+	line-height: 1.3;
+	letter-spacing: -0.15pt;
+	color: #141413;
+	text-wrap: balance;
+}
+
+.resume-work-meta {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 0.8mm;
+	flex-shrink: 0;
+}
+
+.resume-work-period {
+	margin: 0;
+	font-size: 10pt;
+	color: #6c6a64;
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+.resume-work-team {
+	max-width: none;
+	margin: 0;
+	font-size: 8.5pt;
+	line-height: 1.45;
+	color: #6c6a64;
+	text-align: right;
+}
+
+.resume-work-responsibility {
+	margin: 0;
+	font-size: 10.5pt;
+	line-height: 1.52;
+	color: #3d3d3a;
+	text-wrap: pretty;
+}
+
+.resume-work-stack {
+	margin: 0;
+	font-size: 8.5pt;
+	font-weight: 500;
+	color: #78756e;
+}
+
+.resume-work-details {
+	margin: 0;
+}
+
+.resume-work-details > div {
+	display: grid;
+	grid-template-columns: 20mm minmax(0, 1fr);
+	gap: 4mm;
+	padding: 1.4mm 0;
+	align-items: baseline;
+}
+
+.resume-work-details dt {
+	font-size: var(--resume-font-body, 9pt);
+	font-weight: 650;
+	color: #6c6a64;
+}
+
+.resume-work-details dd {
+	margin: 0;
+	font-size: var(--resume-font-body, 10.5pt);
+	line-height: 1.52;
+	color: #3d3d3a;
+	text-wrap: pretty;
+}
+
+.resume-work-details ul {
+	display: flex;
+	flex-direction: column;
+	gap: 0.6mm;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.resume-work-details li {
+	position: relative;
+	padding-left: 8pt;
+}
+
+.resume-work-details li::before {
+	position: absolute;
+	left: 0;
+	color: #8e8b82;
+	content: '•';
+}
+
+.resume-work-details .resume-work-result {
+	margin-top: 1mm;
+	padding: 2mm 0;
+}
+
+.resume-work-result dt {
+	color: var(--pr-accent);
+}
+
+.resume-work-result dd {
+	padding-right: 2mm;
+	font-size: var(--resume-font-body, 11pt);
+	font-weight: 400;
+	line-height: 1.52;
+	color: #141413;
+}
+
+.document-emphasis {
+	display: inline;
+	margin: 0;
+	font-weight: 650;
+	color: #141413;
+}
+
+.resume-compact-work-list {
+	display: flex;
+	flex-direction: column;
+}
+
+.resume-compact-work {
+	display: flex;
+	flex-direction: column;
+	gap: 1.8mm;
+	padding: 3mm 0;
+	border-top: 1px solid rgba(20, 20, 19, 0.08);
+	break-inside: avoid;
+}
+
+.resume-compact-work:first-child {
+	padding-top: 0;
+	border-top: 0;
+}
+
+.resume-compact-work header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 6mm;
+	margin-bottom: 0.5mm;
+}
+
+.resume-compact-work header > div > p {
+	margin: 0 0 0.8mm;
+	font-size: 8.5pt;
+	font-weight: 600;
+	color: var(--pr-accent);
+}
+
+.resume-compact-work h3 {
+	margin: 0;
+	font-size: 12pt;
+	font-weight: 650;
+	line-height: 1.35;
+	color: #141413;
+	text-wrap: balance;
+}
+
+.resume-compact-work header > span {
+	display: block;
+	margin-top: 1mm;
+	font-size: 8.5pt;
+	color: #6c6a64;
+	white-space: nowrap;
+}
+
+.resume-compact-work > p,
+.resume-compact-work > ul {
+	margin: 0;
+	font-size: 9.5pt;
+	line-height: 1.5;
+	color: #3d3d3a;
+}
+
+.resume-compact-work > ul {
+	display: flex;
+	flex-direction: column;
+	gap: 0.6mm;
+	padding-left: 4mm;
+}
+
+.resume-compact-work .resume-compact-result {
+	color: #141413;
+}
+
+.resume-compact-result strong {
+	margin-right: 2mm;
+	font-size: 8.5pt;
+	color: var(--pr-accent);
+}
+
+.resume-career-list {
+	display: flex;
+	flex-direction: column;
+}
+
+.resume-career-entry {
+	display: flex;
+	flex-direction: column;
+	gap: 1.8mm;
+	padding: 4mm 0;
+	break-inside: avoid;
+}
+
+.resume-career-entry:first-child {
+	padding-top: 0;
+}
+
+.resume-career-entry + .resume-career-entry {
+	border-top: 1px solid rgba(20, 20, 19, 0.1);
+}
+
+.resume-career-entry header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 4mm;
+}
+
+.resume-career-entry .pr-company {
+	margin: 0;
+}
+
+.resume-career-role {
+	font-size: 9pt;
+	font-weight: 500;
+	color: #6c6a64;
+}
+
+.resume-career-entry .pr-muted {
+	font-size: 9pt;
+	white-space: nowrap;
+}
+
+.resume-career-entry > p {
+	margin: 0;
+	font-size: 9.5pt;
+	line-height: 1.55;
+	color: #3d3d3a;
+}
+
+.page.dark .resume-thesis,
+.page.dark .resume-overview,
+.page.dark .resume-overview + .resume-selected-work,
+.page.dark .resume-work,
+.page.dark .resume-additional-work + .resume-career-history,
+.page.dark .resume-career-history + .resume-footer-grid,
+.page.dark .resume-compact-work,
+.page.dark .template-company,
+.page.dark .template-contribution {
+	border-color: var(--color-hairline-soft);
+}
+
+.page.dark .resume-thesis > p,
+.page.dark .template-company-header h3,
+.page.dark .template-work-title,
+.page.dark .template-contribution h3,
+.page.dark .template-education h3,
+.page.dark .resume-work-header h3,
+.page.dark .resume-work-result dd,
+.page.dark .document-emphasis,
+.page.dark .resume-compact-work h3,
+.page.dark .resume-compact-work .resume-compact-result {
+	color: var(--color-ink);
+}
+
+.page.dark .resume-work-details dd,
+.page.dark .resume-summary-list,
+.page.dark .template-company-summary,
+.page.dark .template-contribution-details,
+.page.dark .resume-compact-work > p,
+.page.dark .resume-compact-work > ul,
+.page.dark .resume-career-entry > p {
+	color: var(--color-body);
+}
+
+.page.dark .resume-summary-list strong {
+	color: var(--color-ink);
+}
+
+.page.dark .template-work-meta {
+	color: var(--color-muted);
+}
+
+.page.dark .template-company .resume-work-details dt {
+	color: var(--pr-accent);
+}
+
+.page.dark .template-role,
+.page.dark .template-role-period,
+.page.dark .template-education header span,
+.page.dark .template-work-meta,
+.page.dark .resume-work-period,
+.page.dark .resume-work-team,
+.page.dark .resume-work-details dt,
+.page.dark .resume-work-stack,
+.page.dark .resume-compact-work header > span {
+	color: var(--color-muted);
+}
+
 /* ── 사례형 포트폴리오 ── */
 .portfolio-lead {
 	max-width: 165mm;
 	margin: 0;
-	font-size: 9pt;
+	font-size: 11pt;
 	line-height: 1.65;
 	color: #3d3d3a;
 	text-wrap: pretty;
@@ -1150,11 +1831,6 @@
 @media (max-width: 980px) {
 	.controls {
 		grid-template-columns: auto 1fr;
-	}
-
-	.view-toggle {
-		grid-column: 1 / -1;
-		grid-row: 2;
 	}
 
 	.document-tools {
@@ -1174,20 +1850,15 @@
 		display: none;
 	}
 
-	.view-toggle {
-		grid-column: 1;
-		grid-row: 1;
-		justify-self: stretch;
-	}
-
-	.view-toggle-btn {
-		flex: 1;
-	}
-
 	.document-tools {
 		justify-self: stretch;
-		justify-content: space-between;
+		justify-content: flex-end;
 		flex-wrap: wrap;
+	}
+
+	.resume-version-control {
+		justify-self: stretch;
+		justify-content: center;
 	}
 
 	.preview-wrap {
@@ -1201,10 +1872,38 @@
 		padding: 8mm;
 	}
 
+	.resume-page-one {
+		min-height: auto;
+	}
+
 	.resume-page-two {
 		min-height: auto;
 		margin: 10mm -8mm -8mm;
 		padding: 8mm;
+	}
+
+	.resume-page-break {
+		height: calc(16mm + 16px);
+		margin: 0 -8mm;
+		background: linear-gradient(
+			to bottom,
+			transparent 0,
+			transparent 8mm,
+			var(--color-surface-card) 8mm,
+			var(--color-surface-card) calc(8mm + 16px),
+			transparent calc(8mm + 16px)
+		);
+	}
+
+	.page.dark .resume-page-break {
+		background: linear-gradient(
+			to bottom,
+			transparent 0,
+			transparent 8mm,
+			var(--color-hairline-soft) 8mm,
+			var(--color-hairline-soft) calc(8mm + 16px),
+			transparent calc(8mm + 16px)
+		);
 	}
 
 	.pr-strength-grid,
@@ -1227,8 +1926,9 @@
 	}
 
 	.resume-footer-grid > .pr-section + .pr-section {
-		padding-top: 0;
+		padding-top: 5mm;
 		padding-left: 0;
+		border-top: 1px solid rgba(20, 20, 19, 0.08);
 		border-left: 0;
 	}
 
@@ -1242,6 +1942,35 @@
 	.resume-project {
 		grid-template-columns: 1fr;
 		gap: 1mm;
+	}
+
+	.resume-thesis,
+	.resume-compact-work,
+	.resume-career-entry {
+		grid-template-columns: 1fr;
+		gap: 2mm;
+	}
+
+	.resume-work-header {
+		grid-row: auto;
+	}
+
+	.resume-work {
+		grid-template-columns: 1fr;
+		gap: 2mm;
+	}
+
+	.resume-work-details > div {
+		grid-template-columns: 13mm minmax(0, 1fr);
+		gap: 3mm;
+	}
+
+	.resume-work-stack {
+		margin-left: 0;
+	}
+
+	.resume-compact-work header {
+		grid-row: auto;
 	}
 
 	.resume-principle {
@@ -1313,48 +2042,31 @@
 		box-shadow: none;
 	}
 
-	.page.theme-miricanvas[data-accent] {
-		padding-top: 4mm;
-		border-top: 0;
-		border-image: none;
-		background-image: linear-gradient(90deg, #6c5ce7 0 38%, #34c6f4 38% 68%, #ff77a8 68%);
-		background-repeat: no-repeat;
-		background-position: top left;
-		background-size: 100% 1.5mm;
-		print-color-adjust: exact;
-		-webkit-print-color-adjust: exact;
-	}
-
-	.page.dark.theme-miricanvas[data-accent] {
-		background-image: linear-gradient(90deg, #a99fff 0 38%, #65d7f6 38% 68%, #ff9abe 68%);
-	}
-
-	.page.theme-miricanvas::before,
-	.page.theme-miricanvas::after {
-		display: none;
-	}
-
-	.theme-miricanvas .miricanvas-document-mark {
-		margin-bottom: 3.5mm;
-	}
-
 	.resume-document .pr-header {
 		margin-bottom: 3.5mm;
 	}
 
 	.resume-document .pr-name {
-		font-size: 26pt;
+		font-size: var(--resume-font-name);
 	}
 
 	.resume-page-two {
 		min-height: auto;
-		margin: 6mm 0 0;
-		padding: 6mm 0 0;
-		border-top: 1px solid rgba(20, 20, 19, 0.1);
+		margin: 0;
+		padding: 0;
+		border-top: 0;
+		break-before: page;
+		page-break-before: always;
 	}
 
-	.page.dark .resume-page-two {
-		border-top-color: var(--color-hairline-soft);
+	.resume-page-break {
+		display: block;
+		width: auto;
+		height: 0;
+		margin: 0;
+		background: none;
+		break-before: page;
+		page-break-before: always;
 	}
 
 	.resume-continuation-header {
@@ -1366,6 +2078,8 @@
 	.pf-project-head {
 		break-after: avoid;
 		break-inside: avoid;
+		page-break-after: avoid;
+		page-break-inside: avoid;
 	}
 
 	.resume-detail-role,
@@ -1374,9 +2088,15 @@
 	}
 
 	.resume-detail-role .pr-list li,
+	.template-company-header,
+	.template-company .resume-work-header,
+	.template-company .resume-work-details > div,
+	.template-contribution,
+	.template-education,
 	.pf-evidence > div,
 	.pf-detail-list li {
-		break-inside: avoid;
+		break-inside: avoid-page;
+		page-break-inside: avoid;
 	}
 
 	.resume-document p,

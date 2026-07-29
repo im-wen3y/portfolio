@@ -1,15 +1,20 @@
 const ACCENT_STORAGE_KEY = 'resume-print-accent';
 
-const ACCENTS = ['terracotta', 'teal', 'toss', 'baemin', 'aubergine', 'forest'] as const;
+const ACCENTS = [
+	'wanted-blue',
+	'wanted-orange',
+	'wanted-pink',
+	'wanted-sky-blue',
+	'wanted-violet'
+] as const;
 type Accent = (typeof ACCENTS)[number];
 
 export const ACCENT_OPTIONS: { value: Accent; label: string; dot: string }[] = [
-	{ value: 'terracotta', label: '테라코타', dot: '#cc785c' },
-	{ value: 'teal', label: '딥 틸', dot: '#0f766e' },
-	{ value: 'toss', label: '토스 블루', dot: '#0064FF' },
-	{ value: 'baemin', label: '배민 민트', dot: '#2AC1BC' },
-	{ value: 'aubergine', label: '오베르진', dot: '#6e2a5b' },
-	{ value: 'forest', label: '포레스트', dot: '#2f6b4f' }
+	{ value: 'wanted-blue', label: '뮤트 블루', dot: '#0650C0' },
+	{ value: 'wanted-orange', label: '뮤트 오렌지', dot: '#BD4908' },
+	{ value: 'wanted-pink', label: '뮤트 핑크', dot: '#BD6DC0' },
+	{ value: 'wanted-sky-blue', label: '뮤트 스카이 블루', dot: '#0684C0' },
+	{ value: 'wanted-violet', label: '뮤트 바이올렛', dot: '#644FC0' }
 ];
 
 function isAccent(value: string): value is Accent {
@@ -17,23 +22,12 @@ function isAccent(value: string): value is Accent {
 }
 
 export class AccentThemeStore {
-	value = $state<Accent>('terracotta');
+	value = $state<Accent>('wanted-blue');
 
 	hydrate() {
 		const saved = localStorage.getItem(ACCENT_STORAGE_KEY);
 		if (!saved) return;
-		// 구버전 값(default/miricanvas/navy) 마이그레이션
-		const migrated =
-			saved === 'default'
-				? 'terracotta'
-				: saved === 'miricanvas'
-					? 'teal'
-					: saved === 'navy'
-						? 'toss'
-						: saved;
-		if (isAccent(migrated)) {
-			this.value = migrated;
-		}
+		this.value = isAccent(saved) ? saved : 'wanted-blue';
 	}
 
 	set(accent: Accent) {

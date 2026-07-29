@@ -3,31 +3,34 @@
 	import { resolve } from '$app/paths';
 	import { printTheme } from '$lib/stores/print-theme.svelte';
 	import { accentTheme, ACCENT_OPTIONS } from '$lib/stores/accent-theme.svelte';
-	import { projects } from '$lib/data/projects';
 	import '$lib/styles/resume-print.css';
+	import InlineHighlights from './InlineHighlights.svelte';
 	import {
 		PRINT_EDUCATION,
+		PRINT_COMPACT_EXPERIENCES,
+		PRINT_COMPACT_ORGANIZATION_CONTRIBUTIONS,
 		PRINT_EXPERIENCES,
-		PRINT_SKILLS,
-		PRINT_WORK_PRINCIPLES,
-		type PrintProfileConfig
+		PRINT_HEADER_INTRO,
+		PRINT_INTRO_PARAGRAPHS,
+		PRINT_ORGANIZATION_CONTRIBUTIONS,
+		PRINT_SKILLS
 	} from './print-profile';
 
-	let { company }: { company: PrintProfileConfig } = $props();
-
-	let view = $state<'resume' | 'portfolio'>('resume');
 	let floatingMenuOpen = $state(false);
-
-	const featured = $derived(
-		company.featuredProjectIds
-			.map((id) => projects.find((project) => project.id === id))
-			.filter((project): project is (typeof projects)[number] => project !== undefined)
-	);
+	let resumeVersion = $state<'detailed' | 'compact'>('detailed');
 
 	let toastVisible = $state(false);
 	let toastTimeout: ReturnType<typeof setTimeout> | undefined;
+	const selectedExperiences = $derived(
+		resumeVersion === 'detailed' ? PRINT_EXPERIENCES : PRINT_COMPACT_EXPERIENCES
+	);
+	const selectedContributions = $derived(
+		resumeVersion === 'detailed'
+			? PRINT_ORGANIZATION_CONTRIBUTIONS
+			: PRINT_COMPACT_ORGANIZATION_CONTRIBUTIONS
+	);
 	const controlAccent = $derived(
-		ACCENT_OPTIONS.find((option) => option.value === accentTheme.value)?.dot ?? '#cc785c'
+		ACCENT_OPTIONS.find((option) => option.value === accentTheme.value)?.dot ?? '#0650C0'
 	);
 
 	function handlePrint() {
@@ -54,58 +57,36 @@
 <svelte:window onkeydown={handleKeydown} />
 
 <svelte:head>
-	<title>{view === 'resume' ? '이력서' : '포트폴리오'} — 송누리 ({company.companyLabel})</title>
+	<title>이력서 — 송누리</title>
 	<meta name="robots" content="noindex, nofollow, noarchive" />
-	<meta
-		name="description"
-		content="송누리의 {company.companyLabel} 지원용 {view === 'resume'
-			? '이력서'
-			: '포트폴리오'} PDF 미리보기"
-	/>
+	<meta name="description" content="송누리의 이력서 PDF 미리보기" />
 </svelte:head>
 
 <div class="controls" style="--pr-accent: {controlAccent}">
-	<a href={resolve('/resume')} class="back-link">← 이력서로</a>
-	<div class="view-toggle" role="radiogroup" aria-label="문서 종류">
-		<span class="view-toggle-thumb" class:is-portfolio={view === 'portfolio'} aria-hidden="true"
-		></span>
+	<a href={resolve('/portfolio')} class="back-link">← 포트폴리오로</a>
+	<div class="resume-version-control" role="radiogroup" aria-label="이력서 내용 버전">
 		<button
 			type="button"
+			class:active={resumeVersion === 'detailed'}
 			role="radio"
-			aria-checked={view === 'resume'}
-			class="view-toggle-btn"
-			class:active={view === 'resume'}
-			onclick={() => (view = 'resume')}
+			aria-checked={resumeVersion === 'detailed'}
+			onclick={() => (resumeVersion = 'detailed')}
 		>
-			이력서
+			<span>A</span>
+			기존 상세
 		</button>
 		<button
 			type="button"
+			class:active={resumeVersion === 'compact'}
 			role="radio"
-			aria-checked={view === 'portfolio'}
-			class="view-toggle-btn"
-			class:active={view === 'portfolio'}
-			onclick={() => (view = 'portfolio')}
+			aria-checked={resumeVersion === 'compact'}
+			onclick={() => (resumeVersion = 'compact')}
 		>
-			포트폴리오
+			<span>B</span>
+			페이지 맞춤
 		</button>
 	</div>
 	<div class="document-tools">
-		<div class="accent-picker" role="radiogroup" aria-label="문서 강조 색상">
-			{#each ACCENT_OPTIONS as option (option.value)}
-				<button
-					type="button"
-					class="accent-dot"
-					class:selected={accentTheme.value === option.value}
-					style="--dot: {option.dot}"
-					role="radio"
-					aria-checked={accentTheme.value === option.value}
-					aria-label={option.label}
-					title={option.label}
-					onclick={() => accentTheme.set(option.value)}
-				></button>
-			{/each}
-		</div>
 		<button onclick={handlePrint} class="save-btn">PDF 다운로드</button>
 	</div>
 </div>
@@ -113,6 +94,24 @@
 <div class="floating-actions" style="--pr-accent: {controlAccent}">
 	{#if floatingMenuOpen}
 		<div id="print-floating-menu" class="floating-menu" aria-label="문서 설정">
+			<div class="floating-palette">
+				<p>강조 색상</p>
+				<div class="accent-picker" role="radiogroup" aria-label="원티드 브랜드 강조 색상">
+					{#each ACCENT_OPTIONS as option (option.value)}
+						<button
+							type="button"
+							class="accent-dot"
+							class:selected={accentTheme.value === option.value}
+							style="--dot: {option.dot}"
+							role="radio"
+							aria-checked={accentTheme.value === option.value}
+							aria-label={option.label}
+							title={option.label}
+							onclick={() => accentTheme.set(option.value)}
+						></button>
+					{/each}
+				</div>
+			</div>
 			<button
 				type="button"
 				class="floating-action"
@@ -178,254 +177,202 @@
 	다크 배경이 보이려면 인쇄 설정에서 '배경 그래픽'을 켜주세요.
 </div>
 
-<div class="preview-wrap">
-	<article
-		class="page"
-		class:dark={printTheme.value === 'dark'}
-		class:resume-document={view === 'resume'}
-		class:portfolio-document={view === 'portfolio'}
-		class:theme-miricanvas={company.theme === 'miricanvas'}
-		data-accent={accentTheme.value}
-	>
+{#snippet documentHeader()}
+	<div class="document-header-group">
 		<header class="pr-header">
-			{#if company.theme === 'miricanvas'}
-				<div class="miricanvas-document-mark" aria-hidden="true">
-					<span>WORKING CANVAS</span>
-					<span>{view === 'resume' ? 'PROFILE' : 'SELECTED WORK'}</span>
-				</div>
-			{/if}
 			<h1 class="pr-name">송누리</h1>
-			<p class="pr-role-line">{company.roleLine}</p>
 			<div class="pr-contact">
 				<a href="mailto:gloriosd@gmail.com">gloriosd@gmail.com</a>
 				<span class="pr-sep" aria-hidden="true">·</span>
-				<a href="https://www.linkedin.com/in/im-wen3y" target="_blank" rel="noopener noreferrer"
-					>linkedin.com/in/im-wen3y</a
+				<a href="https://github.com/im-wen3y" target="_blank" rel="noopener noreferrer"
+					>github.com/im-wen3y</a
 				>
 				<span class="pr-sep" aria-hidden="true">·</span>
-				<a href="https://velog.io/@imwen3y" target="_blank" rel="noopener noreferrer"
-					>velog.io/@imwen3y</a
-				>
+				<span>경기도 구리</span>
 			</div>
+			<a
+				class="pr-blog-link"
+				href="https://velog.io/@imwen3y"
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				기술 블로그
+			</a>
+			<p class="pr-header-intro">{PRINT_HEADER_INTRO}</p>
 		</header>
 
 		<hr class="pr-divider" />
+	</div>
+{/snippet}
 
-		{#if view === 'resume'}
-			<section class="pr-section resume-intro" aria-labelledby="resume-about">
-				<h2 id="resume-about" class="pr-label">ABOUT</h2>
-				<p class="pr-about">{company.resumeAbout}</p>
-			</section>
+<div class="preview-wrap">
+	<article
+		class="page resume-document"
+		class:dark={printTheme.value === 'dark'}
+		data-accent={accentTheme.value}
+		data-resume-version={resumeVersion}
+	>
+		<div class="resume-page-one">
+			{@render documentHeader()}
 
-			<section class="pr-section resume-strengths" aria-labelledby="resume-strengths">
-				<h2 id="resume-strengths" class="pr-label">CORE STRENGTHS</h2>
-				<div class="pr-strength-grid">
-					{#each company.strengths as strength (strength.title)}
-						<article class="pr-strength-card">
-							<span class="pr-strength-tag">{strength.tag}</span>
-							<h3 class="pr-strength-title">{strength.title}</h3>
-							<p class="pr-strength-desc">{strength.description}</p>
-						</article>
-					{/each}
-				</div>
-			</section>
-
-			<section class="pr-section resume-experience" aria-labelledby="resume-experience">
-				<h2 id="resume-experience" class="pr-label">SELECTED IMPACT</h2>
-				<div class="resume-project-list">
-					{#each featured as project (project.id)}
-						<article class="resume-project">
-							<div class="resume-project-head">
-								<h3>{project.title}</h3>
-								<span>{project.period}</span>
-							</div>
-							{#if project.resumeImpact}
-								<p class="resume-impact">
-									<strong>{project.resumeImpact.label}</strong>
-									<span>{project.resumeImpact.detail}</span>
-								</p>
-							{:else}
-								<p>{project.result ?? project.bullets.at(-1)}</p>
-							{/if}
-						</article>
-					{/each}
-				</div>
-			</section>
-
-			<section class="pr-section resume-career" aria-labelledby="resume-career">
-				<h2 id="resume-career" class="pr-label">CAREER SNAPSHOT</h2>
-				<div class="resume-career-grid">
-					{#each PRINT_EXPERIENCES as experience (experience.company)}
-						<article class="resume-career-item">
-							<h3 class="pr-company">{experience.company}</h3>
-							<p class="resume-role-title">{experience.role}</p>
-							<p class="pr-muted">{experience.period}</p>
-						</article>
-					{/each}
-				</div>
-			</section>
-
-			<section class="resume-page-two" aria-label="개발 방식과 상세 경력">
-				<header class="resume-continuation-header">
-					<p>송누리 · Frontend Developer · 7년차</p>
-					<p>Engineering Practice · Experience Details</p>
-				</header>
-
-				<section class="pr-section resume-detail-section" aria-labelledby="resume-principles">
-					<h2 id="resume-principles" class="pr-label">
-						{company.workHighlights ? 'WHAT I BUILT' : 'HOW I WORK'}
-					</h2>
-					<p class="resume-section-lead">
-						{company.workHighlights
-							? '직접 개발하거나 기술 의사결정을 맡은 업무를 역할과 결과 중심으로 정리했습니다.'
-							: '기술은 코드를 작성하는 방식뿐 아니라 문제를 이해하고, 팀과 결정하고, 다음 변경을 준비하는 방식이라고 생각합니다.'}
+			<section class="resume-thesis" aria-labelledby="resume-thesis">
+				<h2 id="resume-thesis" class="pr-label">자기소개</h2>
+				{#each PRINT_INTRO_PARAGRAPHS as paragraph (paragraph.text)}
+					<p>
+						<InlineHighlights text={paragraph.text} highlights={paragraph.highlights} />
 					</p>
-					<div class="resume-principle-list">
-						{#if company.workHighlights}
-							{#each company.workHighlights as highlight (highlight.title)}
-								<article class="resume-principle">
-									<div class="resume-principle-head">
-										<span>{highlight.tag}</span>
-										<h3>{highlight.title}</h3>
-									</div>
-									<div class="resume-principle-body">
-										<p>{highlight.description}</p>
-										<p class="resume-principle-evidence">
-											<strong>결과</strong>{highlight.result}
-										</p>
-									</div>
-								</article>
-							{/each}
-						{:else}
-							{#each PRINT_WORK_PRINCIPLES as principle (principle.title)}
-								<article class="resume-principle">
-									<div class="resume-principle-head">
-										<span>{principle.tag}</span>
-										<h3>{principle.title}</h3>
-									</div>
-									<div class="resume-principle-body">
-										<p>{principle.description}</p>
-										<p class="resume-principle-evidence">
-											<strong>실제 근거</strong>{principle.evidence}
-										</p>
-									</div>
-								</article>
-							{/each}
-						{/if}
-					</div>
-				</section>
-
-				<section
-					class="pr-section resume-detail-section"
-					aria-labelledby="resume-experience-details"
-				>
-					<h2 id="resume-experience-details" class="pr-label">EXPERIENCE DETAILS</h2>
-					<div class="resume-detail-role-list">
-						{#each PRINT_EXPERIENCES as experience (experience.company)}
-							<article class="resume-detail-role">
-								<div class="resume-role-head">
-									<div>
-										<h3 class="pr-company">{experience.company}</h3>
-										<p class="resume-role-title">{experience.role}</p>
-									</div>
-									<span class="pr-muted">{experience.period}</span>
-								</div>
-								<ul class="pr-list">
-									{#each experience.highlights as highlight (highlight)}
-										<li>{highlight}</li>
-									{/each}
-								</ul>
-							</article>
-						{/each}
-					</div>
-				</section>
-
-				<section class="resume-footer-grid" aria-label="기술 및 학력">
-					<section class="pr-section" aria-labelledby="resume-skills">
-						<h2 id="resume-skills" class="pr-label">SKILLS</h2>
-						<div class="resume-skill-list">
-							{#each PRINT_SKILLS as skill (skill.label)}
-								<p><strong>{skill.label}</strong><span>{skill.value}</span></p>
-							{/each}
-						</div>
-					</section>
-					<section class="pr-section" aria-labelledby="resume-education">
-						<h2 id="resume-education" class="pr-label">EDUCATION</h2>
-						<h3 class="pr-company">{PRINT_EDUCATION.school}</h3>
-						<p class="pr-edu-sub">{PRINT_EDUCATION.major}</p>
-						<p class="pr-muted">{PRINT_EDUCATION.period}</p>
-					</section>
-				</section>
-			</section>
-		{:else}
-			<section class="pr-section portfolio-intro" aria-labelledby="portfolio-about">
-				<h2 id="portfolio-about" class="pr-label">SELECTED WORK</h2>
-				<p class="portfolio-lead">{company.portfolioAbout}</p>
-			</section>
-
-			<section class="pr-section pf-projects" aria-label="대표 프로젝트 사례">
-				{#each featured as project (project.id)}
-					<article class="pf-case-study">
-						<header class="pf-project-head">
-							<div>
-								<p class="pf-project-company">{project.company}</p>
-								<h3 class="pf-project-title">{project.title}</h3>
-							</div>
-							<span class="pf-project-meta">{project.period}</span>
-						</header>
-						<p class="pf-project-summary">{project.summary}</p>
-						<p class="pr-stack">{project.stack.join(' · ')}</p>
-
-						<dl class="pf-evidence">
-							<div class="scope">
-								<dt>역할·범위</dt>
-								<dd>
-									{[project.role, project.contribution].filter(Boolean).join(' · ')}
-								</dd>
-							</div>
-							<div>
-								<dt>문제</dt>
-								<dd>{project.problem ?? project.summary}</dd>
-							</div>
-							<div>
-								<dt>판단·해결</dt>
-								<dd>{project.solution ?? project.bullets[0]}</dd>
-							</div>
-							<div class="implementation">
-								<dt>핵심 구현</dt>
-								<dd>
-									<ul class="pf-detail-list">
-										{#each project.bullets as detail (detail)}
-											<li>{detail}</li>
-										{/each}
-									</ul>
-								</dd>
-							</div>
-							<div class="result">
-								<dt>결과</dt>
-								<dd>{project.result ?? project.bullets.at(-1)}</dd>
-							</div>
-						</dl>
-					</article>
 				{/each}
 			</section>
 
-			<footer class="portfolio-footer-grid">
-				<section aria-labelledby="portfolio-skills">
-					<h2 id="portfolio-skills" class="pr-label">CAPABILITIES</h2>
-					<div class="resume-skill-list">
-						{#each PRINT_SKILLS as skill (skill.label)}
-							<p><strong>{skill.label}</strong><span>{skill.value}</span></p>
-						{/each}
-					</div>
-				</section>
-				<section aria-labelledby="portfolio-education">
-					<h2 id="portfolio-education" class="pr-label">EDUCATION</h2>
-					<h3 class="pr-company">{PRINT_EDUCATION.school}</h3>
-					<p class="pr-edu-sub">{PRINT_EDUCATION.major}</p>
-					<p class="pr-muted">{PRINT_EDUCATION.period}</p>
-				</section>
-			</footer>
-		{/if}
+			<section
+				class="resume-career-history resume-overview"
+				aria-labelledby="resume-career-history"
+			>
+				<h2 id="resume-career-history" class="pr-label">경력 요약</h2>
+				<ul class="resume-summary-list">
+					{#each selectedExperiences as experience (experience.company)}
+						<li>
+							<strong>{experience.company}</strong>
+							<span class="resume-summary-description">{experience.summary}</span>
+						</li>
+					{/each}
+				</ul>
+			</section>
+
+			<section class="pr-section resume-overview" aria-labelledby="resume-skills">
+				<h2 id="resume-skills" class="pr-label">핵심 기술</h2>
+				<div class="resume-skill-list">
+					{#each PRINT_SKILLS as skill (skill.label)}
+						<p>
+							<strong>{skill.label}</strong><span class="resume-skill-value">{skill.value}</span>
+						</p>
+					{/each}
+				</div>
+			</section>
+		</div>
+
+		<div class="resume-page-two">
+			<section class="resume-selected-work resume-overview" aria-labelledby="resume-selected-work">
+				<h2 id="resume-selected-work" class="pr-label">경력 상세</h2>
+				<div class="template-company-list">
+					{#each selectedExperiences as experience, companyIndex (experience.company)}
+						{#if resumeVersion === 'compact' && companyIndex === 1}
+							<div class="resume-page-break" aria-hidden="true"></div>
+						{/if}
+						<section class="template-company" aria-labelledby={`company-${experience.company}`}>
+							<header class="template-company-header">
+								<h3 id={`company-${experience.company}`}>{experience.company}</h3>
+								<h4>
+									<span class="template-role">{experience.role}</span><span
+										class="template-role-separator"
+										aria-hidden="true"
+									>
+										·
+									</span><span class="template-role-period">
+										{experience.period.replace(' — ', '~')} (총 {experience.duration})
+									</span>
+								</h4>
+							</header>
+							<p class="template-company-summary">{experience.summary}</p>
+							<div class="resume-work-list">
+								{#each experience.works as work (work.id)}
+									<article class="resume-work">
+										<header class="resume-work-header">
+											<p class="template-work-title"><strong>{work.title}</strong></p>
+											<div class="template-work-meta">
+												{#if work.period !== experience.period}
+													<p>
+														<span class="template-work-meta-label">프로젝트 기간</span><span
+															>{work.period.replace(' — ', '~')}</span
+														>
+													</p>
+												{/if}
+												<p>
+													<span class="template-work-meta-label">담당범위</span><span
+														>{work.scope}</span
+													>
+												</p>
+												<p>
+													<span class="template-work-meta-label">기술</span><span
+														>{work.stack.join(' · ')}</span
+													>
+												</p>
+												{#if resumeVersion === 'detailed'}
+													<p>
+														<span class="template-work-meta-label">개요</span><span
+															>{work.overview}</span
+														>
+													</p>
+												{/if}
+											</div>
+										</header>
+										<dl class="resume-work-details">
+											<div>
+												<dt>문제</dt>
+												<dd>{work.problem}</dd>
+											</div>
+											<div>
+												<dt>처리</dt>
+												<dd>{work.process.join(' ')}</dd>
+											</div>
+											<div class="resume-work-result">
+												<dt>효과</dt>
+												<dd>
+													<InlineHighlights text={work.effect} highlights={work.effectHighlights} />
+												</dd>
+											</div>
+										</dl>
+									</article>
+								{/each}
+							</div>
+						</section>
+					{/each}
+				</div>
+			</section>
+
+			{#if resumeVersion === 'compact'}
+				<div class="resume-page-break" aria-hidden="true"></div>
+			{/if}
+
+			<section
+				class="resume-additional-work resume-overview"
+				aria-labelledby="resume-additional-work"
+			>
+				<h2 id="resume-additional-work" class="pr-label">조직기여</h2>
+				<div class="template-contribution-list">
+					{#each selectedContributions as contribution (contribution.title)}
+						<article class="template-contribution">
+							<h3>{contribution.title}</h3>
+							<ul class="template-contribution-details">
+								<li>{contribution.problem}</li>
+								{#each contribution.process as process (process)}
+									<li>{process}</li>
+								{/each}
+								<li>{contribution.effect}</li>
+							</ul>
+						</article>
+					{/each}
+				</div>
+			</section>
+
+			<section class="resume-overview" aria-labelledby="resume-education">
+				<h2 id="resume-education" class="pr-label">학력</h2>
+				<div class="template-education-list">
+					{#each PRINT_EDUCATION as education (education.title)}
+						<article class="template-education">
+							<header>
+								<h3>{education.title}</h3>
+								<span>{education.period}</span>
+							</header>
+							<ul class="template-contribution-details">
+								{#each education.details as detail (detail)}
+									<li>{detail}</li>
+								{/each}
+							</ul>
+						</article>
+					{/each}
+				</div>
+			</section>
+		</div>
 	</article>
 </div>
