@@ -1,616 +1,1029 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { reveal } from '$lib/actions/reveal';
-	import IntroSequence from '$lib/components/portfolio/IntroSequence.svelte';
-	import ChatFab from '$lib/components/portfolio/ChatFab.svelte';
-	import QuestCard from '$lib/components/portfolio/QuestCard.svelte';
-	import ExpDetailModal from '$lib/components/portfolio/ExpDetailModal.svelte';
-	import ProjectCard from '$lib/components/portfolio/ProjectCard.svelte';
-	import SkillBelt from '$lib/components/portfolio/SkillBelt.svelte';
-	import ContactList from '$lib/components/portfolio/ContactList.svelte';
-	import { STAGE_LABELS } from '$lib/portfolio/pixel-pet';
-	import { SvelteSet } from 'svelte/reactivity';
-	import { goto } from '$app/navigation';
-	import { resolve } from '$app/paths';
-	import { exps, skills, contacts } from '$lib/portfolio/content';
-	import { projects } from '$lib/data/projects';
-	import { projectVisuals } from '$lib/portfolio/project-visuals';
+	type Career = {
+		period: string;
+		duration: string;
+		lead?: boolean;
+		company: string;
+		role: string;
+		summary: string;
+		bullets: string[];
+	};
 
-	const SECTION_IDS = ['hero', 'projects', 'experience', 'skills', 'contact'];
-	const GNB_HEIGHT = 64;
-	const INTRO_KEY = 'portfolio-intro-seen';
+	type Project = {
+		id: string;
+		meta: string;
+		badge?: { label: string; tone: 'primary' | 'secondary' };
+		title: string;
+		summary: string;
+		stack: string[];
+		detail: { title: string; bullets?: string[]; text?: string }[];
+	};
 
-	let introDone = $state(false);
-	let visited = new SvelteSet<string>();
-	let detailIndex = $state<number | null>(null);
-	let projectsInView = $state(false);
+	type SkillGroup = { title: string; skills: string[] };
+	type Education = {
+		period: string;
+		ongoing: boolean;
+		title: string;
+		text?: string;
+		topics?: { title: string; text: string }[];
+	};
 
-	// 인트로 로딩 오버레이는 세션당 한 번만 (상세 페이지 갔다 돌아올 때 재생 방지)
-	onMount(() => {
-		if (sessionStorage.getItem(INTRO_KEY)) introDone = true;
-	});
+	const STATS = [
+		{ value: '6년 10개월', label: '총 개발 경력' },
+		{ value: '6명', label: '프론트엔드 파트 운영' },
+		{ value: '2회', label: 'JSP → React 마이그레이션 주도' },
+		{ value: '15,000줄', label: '단일 JS 파일 React 전환' }
+	];
 
-	function finishIntro() {
-		introDone = true;
-		sessionStorage.setItem(INTRO_KEY, '1');
-	}
+	const CAREERS: Career[] = [
+		{
+			period: '2024.04 – 2026.06',
+			duration: '2년 2개월',
+			lead: true,
+			company: '라텔앤드파트너즈',
+			role: '프론트엔드 파트 리더',
+			summary:
+				'아큐브 전사 서비스(소비자 웹/앱, 안경사용 프로그램, 영업·CS 내부 시스템) 개발·운영 총괄. 기획·디자인·개발팀 초기 기획 단계부터 참여해 요구사항과 우선순위를 조율하고, 팀 업무 배분·일정 관리·의사결정을 지원했습니다.',
+			bullets: [
+				'JSP → React 리뉴얼 리드 (레거시 분석·문서화·업무 분배 총괄)',
+				'서로 다른 UI의 3개 렌즈 계산기를 Headless 공통 컴포넌트로 통합, Storybook 기반 공통 컴포넌트 체계 구축',
+				'영업사원 내부 시스템 PC → React 모바일 리뉴얼, 약정서 체결·승인 프로세스 블록 공통화',
+				'프로모션·렌즈 판매 교육 시뮬레이터 등 캠페인성 프로덕트 설계 및 빌드 구조 분리'
+			]
+		},
+		{
+			period: '2021.04 – 2023.08',
+			duration: '2년 4개월',
+			company: '샤플앤컴퍼니',
+			role: '프론트엔드 개발자',
+			summary: '현장 직원 관리 서비스 Shopl의 관리자 대시보드와 채팅 서비스 개발·운영.',
+			bullets: [
+				'JSP → React 마이그레이션 주도 (기술 선택부터 대표·PM 설득, 동시 운영 배포 환경 구성까지)',
+				'아임포트(국내)·Stripe(해외) 결제 및 정기결제 연동',
+				'ShoplChat v2.0 재구현 (Electron + Sendbird 2.0 → React + Vite + Sendbird 3.0)',
+				'게시판 고도화, 연차 사용 촉진, 초과근무시간 관리 등 관리자 기능 다수'
+			]
+		},
+		{
+			period: '2018.07 – 2020.11',
+			duration: '2년 4개월',
+			company: '아이티키',
+			role: 'SI 개발팀',
+			summary:
+				'신한DS LMS 고도화, 롯데마트 웹/웹앱 운영, 공공기관 사이트 유지보수, 미스터피자 리뉴얼 등 다수 SI 프로젝트를 수행하며 신규 팀원용 프로세스·테스트 가이드 문서를 여러 차례 작성했습니다.',
+			bullets: []
+		}
+	];
 
-	function openProject(id: string) {
-		goto(resolve('/portfolio/project/[id]', { id }));
-	}
-
-	// 커서를 따라다니는 앰비언트 글로우 + 터미널 크로스헤어 (초기값은 화면 밖)
-	let glowX = $state(-9999);
-	let glowY = $state(-9999);
-	let cursorHot = $state(false);
-
-	function handlePointer(e: PointerEvent) {
-		glowX = e.clientX;
-		glowY = e.clientY;
-		const t = e.target as Element | null;
-		cursorHot = !!t?.closest('a, button, [role="button"]');
-	}
-
-	const stage = $derived(Math.min(visited.size, 4));
-	const selectedExp = $derived(detailIndex != null ? exps[detailIndex] : null);
-
-	function scrollToProjects() {
-		document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-	}
-
-	$effect(() => {
-		if (!introDone) return;
-		const sections = SECTION_IDS.map((id) => document.getElementById(id)).filter(
-			(el): el is HTMLElement => el !== null
-		);
-		const observer = new IntersectionObserver(
-			(entries) => {
-				for (const entry of entries) {
-					if (entry.isIntersecting) {
-						visited.add(entry.target.id);
-					}
-					if (entry.target.id === 'projects') {
-						projectsInView = entry.isIntersecting;
-					}
+	const PROJECTS: Project[] = [
+		{
+			id: 'acuvue-renewal',
+			meta: '2025.10 – 2026.03 · 라텔앤드파트너즈',
+			badge: { label: 'Lead', tone: 'primary' },
+			title: '안경사 통합관리 시스템 React 리뉴얼',
+			summary:
+				'JSP 기반 화면과 제품 판매 기능을 React로 전환하고, 파트 리더로서 분석·문서화·업무 분배를 맡았습니다.',
+			stack: ['React', 'TypeScript', 'Storybook', '레거시 마이그레이션'],
+			detail: [
+				{
+					title: '한 일',
+					bullets: [
+						'15,000줄 규모 제품판매 JS 파일을 React 컴포넌트 구조로 전환해 유지보수 가능한 형태로 개선',
+						'캘린더·라디오·ComboBox·테이블 공통 컴포넌트와 Storybook 구축, 제품판매·판매내역·공지사항·이벤트·대량결제 화면 구현·연동',
+						'프론트엔드에 하드코딩되어 있던 팝업·배너의 날짜·노출 조건을 서버팀과 합의해 어드민에서 동적으로 관리하도록 전환',
+						'레거시 정책을 문서화해 전 파트가 같은 업무 맥락과 구현 기준을 공유하도록 정립'
+					]
+				},
+				{
+					title: '해결한 문제',
+					text: 'LOT 스캔 입력 오류를 한글→영문 변환, 스캐너별 특수문자 제거, 전송 시점의 변환 순서 조정으로 단계적으로 해결. 일정 변경마다 재배포가 필요했던 운영 구조에서 휴먼에러 가능성을 함께 제거했습니다.'
 				}
-			},
-			{ threshold: 0.35 }
-		);
-		sections.forEach((s) => observer.observe(s));
-		return () => observer.disconnect();
-	});
+			]
+		},
+		{
+			id: 'smartfitting',
+			meta: '2025.05 – 2025.08 · 라텔앤드파트너즈',
+			title: '스마트피팅 — 렌즈 계산기 모바일·태블릿',
+			summary:
+				'안경사 통합관리 시스템의 렌즈 계산기를 현장용 태블릿에서 쓸 수 있도록 재설계. QR 로그인 브릿지와 도수 데이터 처리 구조를 담당했습니다.',
+			stack: ['Zustand + persist', '반응형', 'QR 브릿지'],
+			detail: [
+				{
+					title: '한 일',
+					bullets: [
+						'주문 가능 제품의 구면·난시·멀티포컬 영역과 제품 상세 바텀시트 구현·연동',
+						'저장하지 않는 개인정보(도수 데이터)의 동의 전 상태를 Zustand + persist로 설계해 탭 간 유지와 새로고침 대응을 함께 해결',
+						'프론트엔드 계산 로직의 백엔드 이관을 위해 기존 로직과 FE/BE 경계를 Confluence에 문서화해 회의로 전달'
+					]
+				},
+				{
+					title: '해결한 문제',
+					text: '운영 반영 3일 전 지급 기기가 Lenovo Tab M9으로 변경되며 반응형이 깨졌습니다. DPR과 CSS 논리적 뷰포트를 직접 계산해 원인을 특정하고, 확정된 신규 기기 스펙 기준으로 브레이크포인트를 재조정해 기한 내 배포했습니다.'
+				}
+			]
+		},
+		{
+			id: 'nonmyacuvue-promo',
+			meta: '2024.08 – 2026.06 · 라텔앤드파트너즈',
+			title: '논마이아큐브 프로모션 1~5차',
+			summary:
+				'마이아큐브 비회원 안경점을 대상으로 한 연속 이벤트 프로모션. 구매 LOT 스캔과 휴대폰 본인인증 플로우를 JSP 환경에서 구현했습니다.',
+			stack: ['Web Components', 'OCR / Text Scan API', 'JSP'],
+			detail: [
+				{
+					title: '한 일',
+					bullets: [
+						'LOT 스캔 연동 — 1~3차 네이버 OCR 스캔 API, 4~5차 AWS Text 스캔 API로 전환',
+						'드림시큐리티 휴대폰 인증 플로우 구현',
+						'1~4차는 클래스형 구조, 5차는 Web APIs 기반 Web Components로 전환해 회차 간 재사용성 확보'
+					]
+				},
+				{
+					title: '해결한 문제',
+					text: '백엔드팀도 원인을 찾지 못한 외부 API 연동 장애를 서버 로그 직접 분석으로 진단해 Spring Security 필터 체인과 CSRF 정책 차단을 특정했습니다. 담당 백엔드 부재 상황에서 임시 조치까지 단독 수행한 뒤 정식 개선을 백엔드팀에 인계했습니다.'
+				}
+			]
+		},
+		{
+			id: 'virtual-fitting',
+			meta: '1차 2024.11 – 2025.02 · 2차 2026.04 – 2026.05',
+			title: '안경사 렌즈 판매 교육 시뮬레이터',
+			summary:
+				'안경사가 고객과 대화하며 검사 결과를 확인하고 렌즈를 제안하는 판매 과정을 게임 형태로 연습하는 교육용 웹 시뮬레이터입니다.',
+			stack: ['Zustand', 'overlay-kit', '모노레포'],
+			detail: [
+				{
+					title: '진단과 해결',
+					bullets: [
+						'1차에서 Context API와 Funnel 병행으로 발생한 리렌더링 문제를 진단해 Zustand로 통합하고, 비대해진 store를 도메인별로 분리',
+						'1차에서 변경 주기가 다른 site와 simulator를 모노레포로 분리하고 shared 디자인 시스템과 애플리케이션별 빌드 설정을 구성한 뒤 배포 방식을 인프라 담당자와 협의',
+						'2차에서 모달로 인한 대화 초기화를 localStorage로 우선 대응한 뒤 overlay-kit으로 개선하고, 기존 기능과 기술 맥락을 후속 개발자에게 인계'
+					]
+				}
+			]
+		},
+		{
+			id: 'shopl-migration',
+			meta: '2022.01 – 2023.08 · 샤플앤컴퍼니',
+			badge: { label: 'Lead', tone: 'primary' },
+			title: 'Shopl — JSP → React 마이그레이션',
+			summary:
+				'레거시 관리자 대시보드의 React 전환을 기술 선택부터 설득, 배포 환경 구성까지 주도했습니다.',
+			stack: ['React', '점진적 전환', '기술 의사결정'],
+			detail: [
+				{
+					title: '한 일',
+					bullets: [
+						'서버·프론트 동시 배포 부담을 이유로 반대하던 대표·PM을 설득해 마이그레이션 진행 결정을 이끌어냄',
+						'Vue/React 중 운영·유지보수 관점에서 React를 선택하고 근거를 문서화',
+						'배포 직후 프론트엔드 코드를 롤백하고 오류 응답과 백엔드 리다이렉트 흐름을 추적해, 잘못된 URL이 404와 index.html 재호출을 반복시키는 원인을 특정하고 백엔드 수정으로 연결'
+					]
+				}
+			]
+		},
+		{
+			id: 'shopl-todo-map',
+			meta: '2022 – 2023 · 샤플앤컴퍼니',
+			title: 'Shopl "할 일" — 근무지별 작업률 지도',
+			summary:
+				'1년간 운영한 최장기 프로젝트. 구글·네이버 지도와 클러스터링으로 근무지별 작업률을 시각화했습니다.',
+			stack: ['Google · Naver Map API', '클러스터링', '성능 최적화'],
+			detail: [
+				{
+					title: '해결한 문제',
+					text: '마커 2만 개를 한 번에 렌더링할 때 브라우저가 멈추는 문제를 지도별 클러스터링으로 해결하고 운영에 반영했습니다.'
+				}
+			]
+		}
+	];
+
+	const TROUBLES = [
+		{
+			label: '외부 API 연동 장애',
+			title: '서버 로그를 직접 읽어 Spring Security 차단을 특정',
+			text: '백엔드팀도 원인을 찾지 못한 상태에서 서버 로그를 직접 분석해 필터 체인과 CSRF 정책이 요청을 차단하고 있음을 확인. 담당 부재 상황에서 임시 조치까지 수행하고 정식 개선을 인계했습니다.'
+		},
+		{
+			label: '배포 3일 전 기기 변경',
+			title: 'DPR·논리적 뷰포트 계산으로 반응형 재설계',
+			text: '지급 기기가 Lenovo Tab M9으로 바뀌며 레이아웃이 깨졌습니다. DPR과 CSS 논리적 뷰포트를 계산해 원인을 특정하고 신규 기기 스펙 기준으로 브레이크포인트를 재조정, 기한 내 반영했습니다.'
+		},
+		{
+			label: '마커 2만 개 렌더링',
+			title: '지도별 클러스터링으로 흰 화면 정상화',
+			text: '국내·해외 지도 API에 맞는 클러스터링을 적용해 브라우저가 멈추던 문제를 해결하고 운영에 반영했습니다.'
+		}
+	];
+
+	const SKILL_GROUPS: SkillGroup[] = [
+		{
+			title: '프론트엔드',
+			skills: ['React', 'JavaScript', 'TypeScript', 'JSP', 'Emotion']
+		},
+		{
+			title: '상태 · 데이터',
+			skills: ['Zustand', 'TanStack Query']
+		},
+		{
+			title: '빌드 · 협업',
+			skills: ['Storybook', 'Vite', 'Git', 'Jira', 'Confluence', 'Claude Code']
+		}
+	];
+
+	const TAG_GROUPS = [
+		{
+			title: '외부 연동 · 레거시',
+			tags: [
+				'아임포트',
+				'Stripe',
+				'Google · Naver Map API',
+				'Naver OCR / AWS Text Scan',
+				'Sendbird',
+				'Okta',
+				'JSP',
+				'Spring Security 트러블슈팅'
+			]
+		},
+		{
+			title: '협업 · 도구',
+			tags: ['Git', 'Jira', 'Confluence', 'Slack', 'Notion', 'Figma', 'Claude Code', 'Cursor AI']
+		}
+	];
+
+	const EDUCATION: Education[] = [
+		{
+			period: '2012.02 – 2017.08',
+			ongoing: false,
+			title: '대진대학교',
+			text: '문헌정보학과 전공 · 컴퓨터소프트웨어융합 부전공'
+		}
+	];
 </script>
 
 <svelte:head>
-	<link
-		href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
-		rel="stylesheet"
-	/>
 	<title>Portfolio · 송누리</title>
 </svelte:head>
 
-<svelte:window onpointermove={handlePointer} />
-
-<div class="stage" style="--ac: #21F1A8; --sec: #FF4D9D; --gnb-height: {GNB_HEIGHT}px;">
-	<svg
-		class="crosshair"
-		class:hot={cursorHot}
-		style="transform: translate3d({glowX}px, {glowY}px, 0)"
-		width="26"
-		height="26"
-		viewBox="0 0 26 26"
-		aria-hidden="true"
-	>
-		<line x1="13" y1="0.5" x2="13" y2="8" />
-		<line x1="13" y1="18" x2="13" y2="25.5" />
-		<line x1="0.5" y1="13" x2="8" y2="13" />
-		<line x1="18" y1="13" x2="25.5" y2="13" />
-		<rect class="ch-caret" x="11.5" y="11.5" width="3" height="3" />
-	</svg>
-
-	{#if !introDone}
-		<IntroSequence onDone={finishIntro} />
-	{:else}
-		<ChatFab />
-	{/if}
-
-	<div class="pet-dock">{STAGE_LABELS[stage]}</div>
-
-	<section id="hero" class="hero">
-		<div class="hero-atmosphere" aria-hidden="true"></div>
-
-		<div class="hero-inner">
-			<div class="hero-card reveal" use:reveal>
-				<div class="hero-grid">
-					<div class="hero-text">
-						<span class="hero-tag">
-							<span class="hero-tag-dot"></span>FRONTEND DEVELOPER
-						</span>
-						<h1 class="hero-name">송누리</h1>
-						<p class="hero-pitch">
-							레거시를 React로 옮기는 일을 설득에서 주도로 해왔고, 문서에 없는 문제도 근본 원인까지
-							파고들어 직접 풀어온 7년차 프론트엔드입니다.
-						</p>
-					</div>
-
-					<div class="hero-code">
-						<div class="hero-code-chrome">
-							<span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"
-							></span>
-							<span class="code-filename">song-nuri.ts</span>
-						</div>
-						<pre class="hero-code-body"><code
-								><span class="syn-comment">// song-nuri.ts</span>
-<span class="syn-keyword">const</span> <span class="syn-var">dev</span> <span class="syn-punct"
-									>=</span
-								> <span class="syn-punct">{'{'}</span>
-  <span class="syn-prop">role</span><span class="syn-punct">:</span> <span class="syn-string"
-									>'프론트엔드 파트 리더'</span
-								><span class="syn-punct">,</span>
-  <span class="syn-prop">career</span><span class="syn-punct">:</span> <span class="syn-string"
-									>'7년차'</span
-								><span class="syn-punct">,</span>
-  <span class="syn-prop">stack</span><span class="syn-punct">:</span> <span class="syn-punct"
-									>[</span
-								><span class="syn-string">'React'</span><span class="syn-punct">,</span> <span
-									class="syn-string">'TypeScript'</span
-								><span class="syn-punct">]</span><span class="syn-punct">,</span>
-  <span class="syn-prop">status</span><span class="syn-punct">:</span> <span class="syn-string"
-									>'OPEN_TO_WORK'</span
-								><span class="syn-punct">,</span>
-<span class="syn-punct">}</span></code
-							></pre>
-					</div>
+<div class="page">
+	<section class="hero container">
+		<p class="hero-meta">
+			<span class="hero-meta-dot" aria-hidden="true"></span>
+			<span>프론트엔드 파트 리더</span>
+			<span class="hero-meta-sep" aria-hidden="true">·</span>
+			<span>React · TypeScript</span>
+			<span class="hero-meta-sep" aria-hidden="true">·</span>
+			<span>총 경력 6년 10개월</span>
+		</p>
+		<h1>레거시를 걷어내고, 팀이 계속 굴릴 수 있는 프론트엔드를 만듭니다.</h1>
+		<p class="lede">
+			React 기반 웹·앱 개발과 운영, JSP 레거시 마이그레이션, 모바일 리뉴얼을 주도해왔습니다. 파트
+			리더로 기획·디자인·서버팀 사이의 요구사항을 조율하고, 공통 컴포넌트와 개발 컨벤션으로 팀이
+			반복하지 않을 구조를 남기는 데 집중합니다.
+		</p>
+		<div class="hero-links">
+			<a class="btn-primary" href="mailto:gloriosd@gmail.com">gloriosd@gmail.com</a>
+			<a class="btn-ghost" href="https://github.com/im-wen3y" target="_blank" rel="noreferrer"
+				>GitHub</a
+			>
+			<a class="btn-ghost" href="https://velog.io/@imwen3y" target="_blank" rel="noreferrer"
+				>velog</a
+			>
+		</div>
+		<div class="stats">
+			{#each STATS as stat (stat.label)}
+				<div class="stat">
+					<div class="stat-value">{stat.value}</div>
+					<div class="stat-label">{stat.label}</div>
 				</div>
+			{/each}
+		</div>
+	</section>
+
+	<section id="career" class="container">
+		<div class="eyebrow">Career</div>
+		<h2>경력</h2>
+		<div class="career-list">
+			{#each CAREERS as career (career.company)}
+				<article class="career-row">
+					<div>
+						<div class="career-period">{career.period}</div>
+						<div class="career-duration">{career.duration}</div>
+						{#if career.lead}
+							<span class="pill pill-primary">Lead</span>
+						{/if}
+					</div>
+					<div>
+						<h3>{career.company}</h3>
+						<div class="career-role">{career.role}</div>
+						<p class="career-summary">{career.summary}</p>
+						{#if career.bullets.length > 0}
+							<ul class="bullets">
+								{#each career.bullets as bullet (bullet)}
+									<li>{bullet}</li>
+								{/each}
+							</ul>
+						{/if}
+					</div>
+				</article>
+			{/each}
+		</div>
+	</section>
+
+	<section id="work" class="container">
+		<div class="eyebrow">Selected Work</div>
+		<h2>대표 프로젝트</h2>
+		<p class="section-note">카드를 펼치면 문제 정의 · 진단 · 해결 과정을 볼 수 있습니다.</p>
+		<div class="card-grid two">
+			{#each PROJECTS as project (project.id)}
+				<article class="card project-card">
+					<div class="card-head">
+						<span class="card-meta">{project.meta}</span>
+						{#if project.badge}
+							<span class="pill pill-{project.badge.tone}">{project.badge.label}</span>
+						{/if}
+					</div>
+					<h3>{project.title}</h3>
+					<p class="card-summary">{project.summary}</p>
+					<div class="chips">
+						{#each project.stack as tech (tech)}
+							<span class="chip">{tech}</span>
+						{/each}
+					</div>
+					<details class="detail">
+						<summary>상세 보기</summary>
+						<div class="detail-body">
+							{#each project.detail as block (block.title)}
+								<div>
+									<div class="detail-title">{block.title}</div>
+									{#if block.bullets}
+										<ul class="bullets sm">
+											{#each block.bullets as bullet (bullet)}
+												<li>{bullet}</li>
+											{/each}
+										</ul>
+									{/if}
+									{#if block.text}
+										<p class="detail-text">{block.text}</p>
+									{/if}
+								</div>
+							{/each}
+						</div>
+					</details>
+				</article>
+			{/each}
+		</div>
+	</section>
+
+	<section id="trouble" class="dark">
+		<div class="container">
+			<div class="eyebrow on-dark">Troubleshooting</div>
+			<h2 class="on-dark">직접 원인을 특정해 해결한 문제들</h2>
+			<p class="section-note on-dark">
+				담당 범위가 아니어도 로그와 스펙을 직접 파고들어 원인을 좁혀왔습니다.
+			</p>
+			<div class="card-grid three">
+				{#each TROUBLES as trouble (trouble.label)}
+					<article class="card card-dark">
+						<div class="eyebrow on-dark">{trouble.label}</div>
+						<h3>{trouble.title}</h3>
+						<p>{trouble.text}</p>
+					</article>
+				{/each}
 			</div>
 		</div>
 	</section>
 
-	{#if introDone && !projectsInView}
-		<button
-			class="hero-scroll-btn"
-			use:reveal={{ delay: 260 }}
-			onclick={scrollToProjects}
-			aria-label="아래로 스크롤해 프로젝트 보러가기"
-		>
-			<svg
-				class="scroll-chevron"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-			>
-				<polyline points="6 9 12 15 18 9" />
-			</svg>
-			프로젝트 보러가기
-		</button>
-	{/if}
-
-	<section id="projects" class="section">
-		<h2 class="heading reveal" use:reveal>■ PROJECTS</h2>
-		<p class="note reveal" use:reveal={{ delay: 60 }}>
-			사내·보안 이슈로 실제 화면 스크린샷은 공개할 수 없어, 각 프로젝트의 구조를 재구성해
-			보여드립니다. 카드를 누르면 문제·해결·성과를 상세 페이지에서 볼 수 있어요.
-		</p>
-		<div class="project-grid">
-			{#each projects as project, i (project.id)}
-				<div class="reveal" use:reveal={{ delay: Math.min(i, 5) * 70 }}>
-					<ProjectCard
-						{project}
-						visual={projectVisuals[project.id]}
-						onOpen={() => openProject(project.id)}
-					/>
+	<section id="skills" class="container">
+		<div class="eyebrow">Skills</div>
+		<h2>기술 스택</h2>
+		<div class="card-grid three">
+			{#each SKILL_GROUPS as group (group.title)}
+				<div class="card">
+					<div class="detail-title">{group.title}</div>
+					<ul class="skill-list">
+						{#each group.skills as skill (skill)}
+							<li>
+								<span>{skill}</span>
+							</li>
+						{/each}
+					</ul>
+				</div>
+			{/each}
+		</div>
+		<div class="card-grid two tag-groups">
+			{#each TAG_GROUPS as group (group.title)}
+				<div class="card raised">
+					<div class="detail-title">{group.title}</div>
+					<div class="chips">
+						{#each group.tags as tag (tag)}
+							<span class="chip lg">{tag}</span>
+						{/each}
+					</div>
 				</div>
 			{/each}
 		</div>
 	</section>
 
-	<section id="experience" class="section">
-		<h2 class="heading reveal" use:reveal>▲ EXPERIENCE — QUEST LOG</h2>
-		<div class="quest-list">
-			{#each exps as exp, i (exp.company)}
-				<div class="reveal" use:reveal={{ delay: i * 90 }}>
-					<QuestCard {exp} onOpen={() => (detailIndex = i)} />
-				</div>
+	<section id="ai" class="container">
+		<div class="eyebrow">AI in Practice</div>
+		<h2>AI를 프로세스에 편입시킨 방식</h2>
+		<p class="section-note">
+			코드 자동완성에 그치지 않고, 개인 개발 기준과 커리어 기록을 관리하는 흐름에 활용합니다.
+		</p>
+		<div class="card-grid two">
+			<article class="card">
+				<span class="pill pill-secondary">Workflow</span>
+				<h3>개인 개발 워크플로우에 Claude Code 통합</h3>
+				<p>
+					프로젝트 가이드(<code>CLAUDE.md</code>)를 작성하고, 코드 컨벤션 문서를 Claude Code skills
+					형태로 정리해 반복해서 확인할 개발 기준과 작업 절차를 관리하고 있습니다.
+				</p>
+			</article>
+			<article class="card">
+				<span class="pill pill-primary">Knowledge</span>
+				<h3>AI 기반 개인 커리어 위키 구축</h3>
+				<p>
+					AI를 활용해 이력서·Notion·GitHub 기록을 수집하고 프로젝트·스킬별로 구조화하는 스킬을 직접
+					구현했습니다. 생성된 변경을 검토한 뒤 커밋·푸시하도록 지시하는 방식으로 커리어 위키를
+					운영하고 있습니다.
+				</p>
+			</article>
+		</div>
+	</section>
+
+	<section id="edu" class="container">
+		<div class="eyebrow">Education</div>
+		<h2>학력</h2>
+		<div class="card-grid two">
+			{#each EDUCATION as edu (edu.title)}
+				<article class="card">
+					<div class="card-head start">
+						<span class="card-meta">{edu.period}</span>
+						{#if edu.ongoing}
+							<span class="pill pill-secondary">Ongoing</span>
+						{/if}
+					</div>
+					<h3>{edu.title}</h3>
+					{#if edu.topics}
+						<ul class="education-topics">
+							{#each edu.topics as topic (topic.title)}
+								<li>
+									<strong>{topic.title}</strong>
+									<span>{topic.text}</span>
+								</li>
+							{/each}
+						</ul>
+					{:else if edu.text}
+						<p>{edu.text}</p>
+					{/if}
+				</article>
 			{/each}
 		</div>
 	</section>
 
-	<section id="skills" class="section">
-		<h2 class="heading reveal" use:reveal>◆ SKILLS — INVENTORY</h2>
-		<p class="note reveal" use:reveal={{ delay: 60 }}>
-			×N은 실제로 그 기술을 사용한 프로젝트 수예요.
-		</p>
-		<div class="reveal" use:reveal={{ delay: 120 }}>
-			<SkillBelt groups={skills} {projects} />
-		</div>
-	</section>
-
-	<section id="contact" class="section">
-		<h2 class="heading reveal" use:reveal>● CONTACT</h2>
-		<div class="reveal" use:reveal={{ delay: 80 }}>
-			<ContactList {contacts} />
-		</div>
-	</section>
+	<div class="container closing">
+		<div class="closing-title">함께 일할 이야기를 나눠요</div>
+		<a class="closing-mail" href="mailto:gloriosd@gmail.com">gloriosd@gmail.com</a>
+	</div>
 </div>
 
-{#if selectedExp}
-	<ExpDetailModal exp={selectedExp} onclose={() => (detailIndex = null)} />
-{/if}
-
 <style>
-	:global(html) {
-		scroll-behavior: smooth;
+	.page {
+		background: var(--color-canvas);
+		color: var(--text-body);
+		padding-bottom: 96px;
 	}
 
-	@media (prefers-reduced-motion: reduce) {
-		:global(html) {
-			scroll-behavior: auto;
-		}
-	}
-
-	.reveal {
-		opacity: 0;
-		transform: translateY(24px);
-		transition:
-			opacity 0.6s ease,
-			transform 0.6s ease;
-	}
-
-	.reveal:global(.in-view) {
-		opacity: 1;
-		transform: translateY(0);
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.reveal {
-			opacity: 1;
-			transform: none;
-			transition: none;
-		}
-	}
-
-	.stage {
-		background: #171717;
-		color: #eafdf6;
-		font-family: 'IBM Plex Sans', sans-serif;
-		min-height: 100vh;
-	}
-
-	/* 터미널 크로스헤어 커서 */
-	.crosshair {
-		position: fixed;
-		top: 0;
-		left: 0;
-		margin: -13px 0 0 -13px;
-		pointer-events: none;
-		z-index: 300;
-		color: var(--ac);
-	}
-
-	.crosshair line {
-		stroke: currentColor;
-		stroke-width: 1.5;
-		stroke-linecap: round;
-	}
-
-	.crosshair .ch-caret {
-		fill: currentColor;
-		animation: ch-blink 1.05s steps(1) infinite;
-	}
-
-	.crosshair.hot {
-		color: var(--sec);
-	}
-
-	@keyframes ch-blink {
-		0%,
-		49% {
-			opacity: 1;
-		}
-		50%,
-		100% {
-			opacity: 0;
-		}
-	}
-
-	/* 정밀 포인터(마우스)에서만 네이티브 커서 숨기고 크로스헤어로 대체 */
-	@media (hover: hover) and (pointer: fine) {
-		.stage,
-		.stage :global(*) {
-			cursor: none !important;
-		}
-	}
-
-	/* 터치기기: 크로스헤어 숨김, 네이티브 커서 유지 */
-	@media (hover: none), (pointer: coarse) {
-		.crosshair {
-			display: none;
-		}
-	}
-
-	/* 모션 최소화: 캐럿 깜빡임만 정지, 크로스헤어는 유지 */
-	@media (prefers-reduced-motion: reduce) {
-		.crosshair .ch-caret {
-			animation: none;
-			opacity: 1;
-		}
-	}
-
-	.pet-dock {
-		position: fixed;
-		top: calc(var(--gnb-height) + 16px);
-		right: 16px;
-		z-index: 60;
-		font-family: 'IBM Plex Mono', monospace;
-		font-size: 11px;
-		font-weight: 500;
-		letter-spacing: 0.08em;
-		color: var(--ac);
-	}
-
-	.hero {
-		position: relative;
-		overflow: hidden;
-		min-height: 100vh;
-		display: flex;
-		align-items: center;
-	}
-
-	.hero-atmosphere {
-		position: absolute;
-		inset: 0;
-		z-index: 0;
-		background:
-			radial-gradient(640px circle at 12% 18%, rgba(33, 241, 168, 0.16), transparent 60%),
-			radial-gradient(560px circle at 88% 78%, rgba(255, 77, 157, 0.12), transparent 60%);
-		pointer-events: none;
-	}
-
-	.hero-inner {
-		position: relative;
-		z-index: 1;
-		width: 100%;
-		max-width: 1028px;
+	.container {
+		max-width: var(--container-max, 1200px);
 		margin: 0 auto;
-		padding: 24px clamp(24px, 6vw, 96px);
+		padding: 56px clamp(20px, 5vw, 64px);
 	}
 
-	.hero-card {
-		background: linear-gradient(
-			155deg,
-			rgba(255, 255, 255, 0.14) 0%,
-			rgba(255, 255, 255, 0.04) 40%,
-			rgba(20, 24, 23, 0.35) 100%
-		);
-		backdrop-filter: blur(28px) saturate(180%);
-		-webkit-backdrop-filter: blur(28px) saturate(180%);
-		border: 1px solid rgba(255, 255, 255, 0.22);
-		border-radius: 28px;
-		padding: clamp(28px, 4vw, 56px);
-		box-shadow:
-			inset 0 1px 0 rgba(255, 255, 255, 0.3),
-			0 30px 80px rgba(0, 0, 0, 0.4);
+	section[id] {
+		scroll-margin-top: 88px;
 	}
 
-	.hero-grid {
-		display: grid;
-		grid-template-columns: 1.2fr 1fr;
-		gap: clamp(24px, 4vw, 56px);
-		align-items: center;
-	}
-
-	.hero-tag {
+	/* Buttons */
+	.btn-primary,
+	.btn-ghost {
 		display: inline-flex;
 		align-items: center;
-		gap: 8px;
-		font-family: 'IBM Plex Mono', monospace;
-		font-size: 11px;
-		letter-spacing: 0.14em;
-		color: var(--ac);
-		border: 1px solid rgba(33, 241, 168, 0.3);
-		border-radius: 999px;
-		padding: 6px 14px;
-		margin-bottom: 20px;
-	}
-
-	.hero-tag-dot {
-		width: 6px;
-		height: 6px;
-		border-radius: 50%;
-		background: var(--ac);
-		box-shadow: 0 0 8px var(--ac);
-	}
-
-	.hero-name {
-		font-size: clamp(36px, 6vw, 64px);
-		font-weight: 700;
-		margin: 0 0 16px;
-	}
-
-	.hero-pitch {
+		padding: 11px 22px;
+		border-radius: var(--radius-default);
 		font-size: 16px;
-		line-height: 1.7;
-		color: rgba(233, 255, 248, 0.75);
-		max-width: 42ch;
+		font-weight: 700;
 	}
 
-	.hero-code {
-		background: rgba(12, 17, 16, 0.6);
-		border: 1px solid rgba(233, 255, 248, 0.1);
-		border-radius: 14px;
+	.btn-primary {
+		background: var(--color-primary);
+		color: var(--color-on-primary);
+	}
+
+	.btn-primary:hover {
+		background: var(--color-primary-active);
+	}
+
+	.btn-ghost {
+		border: 1.5px solid var(--border-default);
+		color: var(--text-heading);
+	}
+
+	.btn-ghost:hover {
+		border-color: var(--border-strong);
+	}
+
+	/* Hero */
+	.hero {
+		padding-top: 72px;
+	}
+
+	/* 히어로 메타는 정보이지 조작 대상이 아니다 — 아래 CTA 버튼과 형태를 겹치지 않게 둔다. */
+	.hero-meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 10px;
+		margin-bottom: 28px;
+		font-size: 14px;
+		font-weight: 600;
+		line-height: 1.6;
+		color: var(--color-muted);
+	}
+
+	.hero-meta-dot {
+		width: 7px;
+		height: 7px;
+		border-radius: var(--radius-full);
+		background: var(--color-primary);
+	}
+
+	.hero-meta-sep {
+		color: var(--color-hairline);
+	}
+
+	h1 {
+		max-width: 860px;
+		margin-bottom: 24px;
+		font-family: var(--font-display);
+		font-size: clamp(32px, 5vw, 52px);
+		font-weight: 800;
+		line-height: 1.25;
+		letter-spacing: -0.025em;
+		color: var(--text-heading);
+	}
+
+	.lede {
+		max-width: 660px;
+		margin-bottom: 36px;
+		font-size: 18px;
+		line-height: 1.7;
+	}
+
+	.hero-links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px;
+		margin-bottom: 56px;
+	}
+
+	.stats {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		gap: 1px;
+		background: var(--border-default);
+		border: 1px solid var(--border-default);
+		border-radius: var(--radius-lg);
 		overflow: hidden;
 	}
 
-	.hero-code-chrome {
-		display: flex;
-		align-items: center;
-		gap: 6px;
-		padding: 10px 14px;
-		border-bottom: 1px solid rgba(233, 255, 248, 0.08);
+	.stat {
+		background: var(--surface-card-raised);
+		padding: 24px;
 	}
 
-	.code-dot {
-		width: 8px;
-		height: 8px;
-		border-radius: 50%;
-		background: rgba(233, 255, 248, 0.2);
+	.stat-value {
+		font-family: var(--font-display);
+		font-size: 34px;
+		font-weight: 800;
+		line-height: 1.2;
+		color: var(--text-heading);
 	}
 
-	.code-filename {
-		margin-left: 6px;
-		font-family: 'IBM Plex Mono', monospace;
-		font-size: 11px;
-		color: rgba(233, 255, 248, 0.4);
-	}
-
-	.hero-code-body {
-		margin: 0;
-		padding: 18px 20px;
-		font-family: 'IBM Plex Mono', monospace;
-		font-size: 12.5px;
-		line-height: 1.8;
-		white-space: pre-wrap;
-	}
-
-	.syn-comment {
-		color: rgba(233, 255, 248, 0.35);
-	}
-
-	.syn-keyword {
-		color: var(--sec);
-	}
-
-	.syn-var {
-		color: #eafdf6;
-	}
-
-	.syn-punct {
-		color: rgba(233, 255, 248, 0.5);
-	}
-
-	.syn-prop {
-		color: rgba(233, 255, 248, 0.75);
-	}
-
-	.syn-string {
-		color: var(--ac);
-	}
-
-	.hero-scroll-btn {
-		position: fixed;
-		left: 50%;
-		bottom: 32px;
-		transform: translateX(-50%);
-		z-index: 60;
-		display: inline-flex;
-		align-items: center;
-		gap: 8px;
-		padding: 12px 24px;
-		border-radius: 999px;
-		background: var(--ac);
-		border: none;
-		color: #0b1512;
-		font-family: 'IBM Plex Mono', monospace;
+	.stat-label {
+		margin-top: 6px;
 		font-size: 13px;
 		font-weight: 600;
-		letter-spacing: 0.03em;
-		cursor: pointer;
-		box-shadow: 0 0 24px rgba(33, 241, 168, 0.35);
-		opacity: 0;
-		transition:
-			opacity 0.5s ease,
-			box-shadow 0.15s;
+		color: var(--color-muted);
 	}
 
-	.hero-scroll-btn:global(.in-view) {
-		opacity: 1;
-	}
-
-	.hero-scroll-btn:hover {
-		box-shadow: 0 0 32px rgba(33, 241, 168, 0.5);
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.hero-scroll-btn {
-			opacity: 1;
-		}
-	}
-
-	.scroll-chevron {
-		width: 16px;
-		height: 16px;
-		animation: bob 1.6s ease-in-out infinite;
-	}
-
-	@keyframes bob {
-		50% {
-			transform: translateY(4px);
-		}
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.scroll-chevron {
-			animation: none;
-		}
-	}
-
-	@media (max-width: 800px) {
-		.hero-grid {
-			grid-template-columns: 1fr;
-		}
-
-		.hero-scroll-btn {
-			bottom: 20px;
-		}
-	}
-
-	.section {
-		padding: 64px clamp(24px, 6vw, 96px);
-		max-width: 1028px;
-		margin: 0 auto;
-	}
-
-	.heading {
-		font-family: 'IBM Plex Mono', monospace;
-		font-size: 14px;
-		letter-spacing: 0.14em;
+	/* Section shells */
+	.eyebrow {
+		margin-bottom: 10px;
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 0.05em;
 		text-transform: uppercase;
-		color: #eafdf6;
-		margin: 0 0 24px;
+		color: var(--color-primary-strong);
 	}
 
-	.note {
-		margin: -12px 0 24px;
+	h2 {
+		margin-bottom: 12px;
+		font-family: var(--font-display);
+		font-size: clamp(24px, 3vw, 32px);
+		font-weight: 700;
+		line-height: 1.3;
+		letter-spacing: -0.01em;
+		color: var(--text-heading);
+	}
+
+	.section-note {
+		max-width: 640px;
+		margin-bottom: 32px;
+		font-size: 16px;
+		color: var(--color-muted);
+	}
+
+	h2 + .card-grid,
+	h2 + .career-list {
+		margin-top: 40px;
+	}
+
+	/* Career */
+	.career-row {
+		display: grid;
+		grid-template-columns: 220px 1fr;
+		gap: 32px;
+		padding: 32px 0;
+		border-top: 1px solid var(--border-default);
+	}
+
+	.career-row:last-child {
+		border-bottom: 1px solid var(--border-default);
+	}
+
+	.career-period {
+		font-size: 14px;
+		font-weight: 700;
+		color: var(--text-heading);
+	}
+
+	.career-duration {
+		margin-top: 6px;
 		font-size: 13px;
-		color: rgba(233, 255, 248, 0.5);
+		color: var(--color-muted);
 	}
 
-	.quest-list {
+	.career-row h3 {
+		margin-bottom: 4px;
+		font-family: var(--font-display);
+		font-size: 22px;
+		font-weight: 700;
+		color: var(--text-heading);
+	}
+
+	.career-role {
+		margin-bottom: 14px;
+		font-size: 15px;
+		font-weight: 600;
+		color: var(--color-secondary-strong);
+	}
+
+	.career-summary {
+		max-width: 720px;
+		margin-bottom: 16px;
+	}
+
+	.bullets {
 		display: flex;
 		flex-direction: column;
-		gap: 16px;
+		gap: 8px;
+		padding-left: 18px;
+		font-size: 15px;
+		line-height: 1.7;
 	}
 
-	.project-grid {
+	.bullets.sm {
+		gap: 6px;
+		font-size: 14px;
+	}
+
+	/* Cards */
+	.card-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-		gap: 18px;
+		gap: 24px;
 	}
 
-	.project-grid > .reveal {
+	.card-grid.two {
+		grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+	}
+
+	.card-grid.three {
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	}
+
+	.tag-groups {
+		margin-top: 32px;
+	}
+
+	.card {
 		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		padding: 28px;
+		background: var(--surface-card);
+		border: 1px solid var(--border-default);
+		border-radius: var(--radius-lg);
 	}
 
-	.project-grid > .reveal > :global(*) {
+	.card.raised {
+		padding: 24px;
+		background: var(--surface-card-raised);
+	}
+
+	.card h3 {
+		margin-bottom: 12px;
+		font-family: var(--font-display);
+		font-size: 20px;
+		font-weight: 700;
+		line-height: 1.5;
+		color: var(--text-heading);
+	}
+
+	.project-card h3 {
+		font-size: 22px;
+		line-height: 1.4;
+	}
+
+	.card p {
+		font-size: 15px;
+		line-height: 1.7;
+	}
+
+	.education-topics {
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+		padding-left: 18px;
+	}
+
+	.education-topics li::marker {
+		color: var(--color-primary-strong);
+	}
+
+	.education-topics strong,
+	.education-topics span {
+		display: block;
+	}
+
+	.education-topics strong {
+		margin-bottom: 3px;
+		color: var(--text-heading);
+		font-size: 15px;
+	}
+
+	.education-topics span {
+		font-size: 14px;
+		line-height: 1.7;
+	}
+
+	.card code {
+		padding: 1px 6px;
+		border-radius: var(--radius-default);
+		background: var(--surface-recessed);
+		font-family: var(--font-code);
+		font-size: 14px;
+	}
+
+	.card-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
 		width: 100%;
+		margin-bottom: 14px;
 	}
 
-	@media (max-width: 640px) {
-		.pet-dock {
-			right: 8px;
+	.card-head.start {
+		justify-content: flex-start;
+		margin-bottom: 12px;
+	}
+
+	.card-meta {
+		font-size: 13px;
+		font-weight: 700;
+		color: var(--color-muted);
+	}
+
+	.card-summary {
+		margin-bottom: 18px;
+	}
+
+	.pill {
+		display: inline-flex;
+		align-items: center;
+		padding: 2px 10px;
+		border-radius: var(--radius-full);
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+	}
+
+	.pill-primary {
+		background: var(--color-primary);
+		color: var(--color-on-primary);
+	}
+
+	.pill-secondary {
+		background: var(--color-secondary);
+		color: var(--color-ink);
+	}
+
+	.career-row .pill {
+		margin-top: 12px;
+	}
+
+	.card > .pill {
+		margin-bottom: 14px;
+	}
+
+	.chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+	}
+
+	.chip {
+		padding: 4px 10px;
+		border: 1px solid var(--border-default);
+		border-radius: var(--radius-default);
+		background: var(--surface-recessed);
+		font-size: 13px;
+		font-weight: 600;
+		color: var(--text-body);
+	}
+
+	.chip.lg {
+		padding: 5px 12px;
+		background: var(--surface-card);
+		font-size: 14px;
+	}
+
+	/* Project detail disclosure */
+	.detail {
+		display: flex;
+		flex-direction: column-reverse;
+		width: 100%;
+		margin-top: auto;
+	}
+
+	.detail summary {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		align-self: flex-start;
+		margin-top: 20px;
+		padding: 9px 16px;
+		border: 1.5px solid var(--border-default);
+		border-radius: var(--radius-default);
+		font-size: 14px;
+		font-weight: 700;
+		color: var(--text-heading);
+		cursor: pointer;
+		list-style: none;
+	}
+
+	.detail summary::-webkit-details-marker {
+		display: none;
+	}
+
+	.detail summary::after {
+		content: '+';
+		font-weight: 800;
+	}
+
+	.detail[open] summary::after {
+		content: '−';
+	}
+
+	.detail summary:hover {
+		border-color: var(--border-strong);
+	}
+
+	.detail-body {
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+		padding-top: 18px;
+		border-top: 1px solid var(--border-default);
+	}
+
+	.detail-title {
+		margin-bottom: 6px;
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		color: var(--color-secondary-strong);
+	}
+
+	.detail-text {
+		font-size: 14px;
+		line-height: 1.7;
+	}
+
+	/* Dark troubleshooting section */
+	.dark {
+		margin-top: 56px;
+		padding: 72px 0;
+		background: var(--color-surface-dark);
+	}
+
+	.dark .container {
+		padding-block: 0;
+	}
+
+	.on-dark {
+		color: var(--color-on-dark);
+	}
+
+	.eyebrow.on-dark {
+		color: var(--color-primary);
+	}
+
+	.section-note.on-dark,
+	.card-dark p {
+		color: var(--color-on-dark-soft);
+	}
+
+	.card-dark {
+		background: var(--color-surface-dark-elevated);
+		border-color: var(--color-surface-dark-soft);
+	}
+
+	/* `.card h3`와 같은 (0,1,1) 특정성이어야 잉크색 기본값을 덮는다. */
+	.card-dark h3 {
+		font-size: 19px;
+		color: var(--color-on-dark);
+	}
+
+	.card-dark p {
+		font-size: 14px;
+	}
+
+	/* Skills */
+	.skill-list {
+		display: grid;
+		width: 100%;
+		list-style: none;
+	}
+
+	.skill-list li {
+		padding: 10px 0;
+		border-bottom: 1px solid var(--border-default);
+		font-size: 14px;
+		font-weight: 600;
+		color: var(--text-heading);
+	}
+
+	.skill-list li:last-child {
+		border-bottom: 0;
+	}
+
+	/* Closing */
+	.closing {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 32px;
+		margin-top: 24px;
+		padding-top: 40px;
+		border-top: 1px solid var(--border-default);
+	}
+
+	.closing-title {
+		font-family: var(--font-display);
+		font-size: 24px;
+		font-weight: 800;
+		color: var(--text-heading);
+	}
+
+	.closing-mail {
+		font-size: 16px;
+		font-weight: 600;
+		color: var(--link-color);
+	}
+
+	.closing-mail:hover {
+		color: var(--link-color-hover);
+	}
+
+	@media (max-width: 768px) {
+		.career-row {
+			grid-template-columns: 1fr;
+			gap: 16px;
 		}
 	}
 </style>

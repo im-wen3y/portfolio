@@ -7,27 +7,22 @@
 	let { children, data }: LayoutProps = $props();
 
 	let scrolled = $state(false);
+	let scrollProgress = $state(0);
 	let menuOpen = $state(false);
 
-	let isResumeActive = $derived(page.url.pathname.startsWith('/resume'));
 	let isPortfolioActive = $derived(page.url.pathname.startsWith('/portfolio'));
 	let isPrintActive = $derived(page.url.pathname.startsWith('/print'));
-	let isShareablePage = $derived(isResumeActive || isPortfolioActive);
-	let socialTitle = $derived(
-		isPortfolioActive
-			? '프론트엔드 개발자 · 송누리 · 포트폴리오'
-			: '프론트엔드 개발자 · 송누리 · 이력서'
-	);
-	let socialDescription = $derived(
-		isPortfolioActive
-			? '레거시 분석과 React 리뉴얼, UI·UX, 사용자 흐름과 운영 문제 해결 과정을 담은 송누리의 프론트엔드 포트폴리오입니다.'
-			: '레거시 시스템을 분석해 변경하기 쉬운 구조로 전환하고, 팀의 결정과 사용자 흐름을 함께 설계하는 프론트엔드 개발자 송누리의 이력서입니다.'
-	);
+	let isShareablePage = $derived(isPortfolioActive);
+	const socialTitle = '프론트엔드 개발자 · 송누리 · 포트폴리오';
+	const socialDescription =
+		'레거시 분석과 React 리뉴얼, UI·UX, 사용자 흐름과 운영 문제 해결 과정을 담은 송누리의 프론트엔드 포트폴리오입니다.';
 	let socialUrl = $derived(`${page.url.origin}${page.url.pathname}`);
 	let socialImageUrl = $derived(`${page.url.origin}/og-image.png`);
 
 	function handleScroll() {
 		scrolled = window.scrollY > 10;
+		const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+		scrollProgress = scrollable > 0 ? Math.min(window.scrollY / scrollable, 1) : 0;
 	}
 
 	function handleKeydown(e: KeyboardEvent) {
@@ -37,12 +32,21 @@
 	function closeMenu() {
 		menuOpen = false;
 	}
+
+	// 이미 포트폴리오에 있으면 같은 주소로의 이동 대신 맨 위로 올린다.
+	function handleBrandClick(event: MouseEvent) {
+		if (!isPortfolioActive) return;
+		event.preventDefault();
+		closeMenu();
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	}
 </script>
 
 <svelte:window onscroll={handleScroll} onkeydown={handleKeydown} />
 
 <svelte:head>
-	<link rel="icon" href="/favicon.ico" sizes="any" />
+	<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+	<link rel="alternate icon" href="/favicon.ico" sizes="any" />
 	{#if isShareablePage}
 		<meta name="description" content={socialDescription} />
 		<meta property="og:type" content="website" />
@@ -62,25 +66,33 @@
 		<meta name="twitter:image" content={socialImageUrl} />
 		<meta name="twitter:image:alt" content="코드 괄호와 별 모양이 있는 im-wen3y 아이콘" />
 	{/if}
-	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
-	<link
-		href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans+KR:wght@300;400;500;600&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&family=Noto+Serif+KR:wght@400;500&display=swap"
-		rel="stylesheet"
-	/>
 	<title>{isShareablePage ? socialTitle : 'im-wen3y'}</title>
 </svelte:head>
 
 {#if !isPrintActive}
 	<nav class="top-nav" class:scrolled>
 		<div class="nav-inner">
-			<a href={resolve('/resume')} class="wordmark">im-wen3y</a>
+			<a
+				href={resolve('/portfolio')}
+				class="brand"
+				aria-label="송누리 홈"
+				onclick={handleBrandClick}
+			>
+				<span class="brand-name">송누리</span>
+				<span class="brand-role">Frontend Engineer</span>
+			</a>
 			<ul class="nav-links">
-				<li><a href={resolve('/resume')} class:active={isResumeActive}>이력서</a></li>
-				<li><a href={resolve('/portfolio')} class:active={isPortfolioActive}>포트폴리오</a></li>
+				{#if isPortfolioActive}
+					<li><a href="#career">경력</a></li>
+					<li><a href="#work">프로젝트</a></li>
+					<li><a href="#trouble">트러블슈팅</a></li>
+					<li><a href="#skills">기술</a></li>
+					<li><a href="#ai">AI 활용</a></li>
+				{/if}
 				{#if data.showPrintMenu}
 					<li><a href={resolve('/print')}>PDF</a></li>
 				{/if}
+				<li><a class="nav-cta" href="mailto:gloriosd@gmail.com">연락하기</a></li>
 			</ul>
 			<button
 				class="hamburger"
@@ -93,6 +105,11 @@
 				<span class="bar" class:open={menuOpen}></span>
 			</button>
 		</div>
+		<div
+			class="scroll-progress"
+			style="transform: scaleX({scrollProgress})"
+			aria-hidden="true"
+		></div>
 	</nav>
 
 	{#if menuOpen}
@@ -129,25 +146,41 @@
 			</svg>
 		</button>
 		<ul class="drawer-links">
-			<li>
-				<a href={resolve('/resume')} onclick={closeMenu} class:active={isResumeActive}>
-					<span class="drawer-en">Resume</span>
-					<span class="drawer-ko">이력서</span>
-				</a>
-			</li>
-			<li>
-				<a href={resolve('/portfolio')} onclick={closeMenu} class:active={isPortfolioActive}>
-					<span class="drawer-en">Portfolio</span>
-					<span class="drawer-ko">포트폴리오</span>
-				</a>
-			</li>
+			<li><a href="#career" onclick={closeMenu}>경력</a></li>
+			<li><a href="#work" onclick={closeMenu}>프로젝트</a></li>
+			<li><a href="#trouble" onclick={closeMenu}>트러블슈팅</a></li>
+			<li><a href="#skills" onclick={closeMenu}>기술</a></li>
+			<li><a href="#ai" onclick={closeMenu}>AI 활용</a></li>
+			{#if data.showPrintMenu}
+				<li><a href={resolve('/print')} onclick={closeMenu}>PDF</a></li>
+			{/if}
 		</ul>
+		<a class="drawer-cta" href="mailto:gloriosd@gmail.com" onclick={closeMenu}>연락하기</a>
 	</div>
 {/if}
 
 <main class:print-page={isPrintActive}>
 	{@render children()}
 </main>
+
+{#if isShareablePage}
+	<footer class="site-footer">
+		<div class="site-footer-inner">
+			<div>
+				<strong>송누리</strong>
+				<p>Frontend Developer · 7년차</p>
+			</div>
+			<div class="site-footer-links">
+				<a href="mailto:gloriosd@gmail.com">gloriosd@gmail.com</a>
+				<a href="https://www.linkedin.com/in/im-wen3y" target="_blank" rel="noopener noreferrer"
+					>LinkedIn</a
+				>
+				<a href="https://velog.io/@imwen3y/posts" target="_blank" rel="noopener noreferrer">Velog</a
+				>
+			</div>
+		</div>
+	</footer>
+{/if}
 
 <style>
 	.top-nav {
@@ -157,10 +190,10 @@
 		right: 0;
 		z-index: 100;
 		height: 64px;
-		background-color: rgba(23, 23, 23, 0.72);
+		background-color: rgba(241, 247, 245, 0.92);
 		backdrop-filter: blur(12px);
 		-webkit-backdrop-filter: blur(12px);
-		transition: box-shadow 0.3s ease;
+		transition: background-color 0.2s ease;
 	}
 
 	.top-nav::after {
@@ -168,59 +201,122 @@
 		position: absolute;
 		left: 0;
 		right: 0;
-		top: 100%;
-		height: 24px;
-		background-color: rgba(23, 23, 23, 0.72);
-		backdrop-filter: blur(12px);
-		-webkit-backdrop-filter: blur(12px);
-		mask-image: linear-gradient(to bottom, #000, transparent);
-		-webkit-mask-image: linear-gradient(to bottom, #000, transparent);
+		bottom: 0;
+		height: 1px;
+		background-color: var(--color-hairline);
 		pointer-events: none;
 	}
 
+	.scroll-progress {
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		z-index: 1;
+		height: 3px;
+		background: var(--color-primary);
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 80ms linear;
+	}
+
 	.top-nav.scrolled {
-		box-shadow: 0 1px 3px rgba(33, 241, 168, 0.12);
+		background-color: rgba(241, 247, 245, 0.98);
 	}
 
 	.nav-inner {
-		max-width: 1028px;
+		max-width: var(--container-max, 1200px);
 		margin: 0 auto;
 		height: 100%;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 0 var(--space-lg);
+		gap: var(--space-lg);
+		padding: 0 clamp(20px, 5vw, 64px);
 	}
 
-	.wordmark {
+	.brand {
+		position: relative;
+		display: inline-flex;
+		align-items: baseline;
+		gap: var(--space-sm);
+	}
+
+	.brand-name {
 		font-family: var(--font-display);
-		font-size: 22px;
-		font-weight: 500;
+		font-size: 20px;
+		font-weight: 800;
+		line-height: 1;
+		letter-spacing: -0.01em;
 		color: var(--color-ink);
-		letter-spacing: -0.5px;
+	}
+
+	.brand-role {
+		font-size: 13px;
+		font-weight: 600;
+		line-height: 1;
+		color: var(--color-muted);
+	}
+
+	.brand::after {
+		position: absolute;
+		bottom: -7px;
+		left: 0;
+		width: 2.6em;
+		height: 2px;
+		border-radius: var(--rounded-pill);
+		background: var(--color-primary);
+		content: '';
+		opacity: 0;
+		transform: scaleX(0.4);
+		transform-origin: left;
+		transition:
+			opacity 0.18s ease,
+			transform 0.18s ease;
+	}
+
+	.brand:hover::after,
+	.brand:focus-visible::after {
+		opacity: 1;
+		transform: scaleX(1);
 	}
 
 	.nav-links {
 		display: flex;
-		gap: var(--space-xl);
+		align-items: center;
+		gap: clamp(16px, 2.2vw, 28px);
 		list-style: none;
 	}
 
 	.nav-links a {
 		font-family: var(--font-body);
 		font-size: 14px;
-		font-weight: 500;
+		font-weight: 600;
 		line-height: 1.4;
-		color: var(--color-muted);
+		color: var(--color-ink);
 		transition: color 0.2s ease;
 	}
 
 	.nav-links a:hover {
-		color: var(--color-ink);
+		color: var(--color-primary-strong);
 	}
 
-	.nav-links a.active {
-		color: var(--color-primary);
+	.nav-cta {
+		display: inline-flex;
+		align-items: center;
+		padding: 8px 16px;
+		border-radius: var(--radius-default);
+		background: var(--color-primary);
+		font-weight: 700;
+	}
+
+	.nav-links a.nav-cta,
+	.nav-links a.nav-cta:hover {
+		color: var(--color-on-primary);
+	}
+
+	.nav-cta:hover {
+		background: var(--color-primary-active);
 	}
 
 	/* Hamburger */
@@ -278,7 +374,7 @@
 		width: 260px;
 		height: 100dvh;
 		background-color: var(--color-canvas);
-		box-shadow: -4px 0 24px rgba(33, 241, 168, 0.18);
+		border-left: 1px solid var(--color-hairline);
 		transform: translateX(100%);
 		transition: transform 0.25s ease;
 		display: flex;
@@ -323,42 +419,30 @@
 	}
 
 	.drawer-links a {
-		display: flex;
-		flex-direction: column;
-		gap: 2px;
+		display: block;
 		padding: var(--space-sm) 0;
 		border-bottom: 1px solid var(--color-hairline-soft);
+		font-family: var(--font-display);
+		font-size: 20px;
+		font-weight: 700;
+		letter-spacing: -0.4px;
+		color: var(--color-ink);
 		transition: color 0.15s ease;
-		color: var(--color-muted);
 	}
 
 	.drawer-links a:hover {
-		color: var(--color-ink);
+		color: var(--color-primary-strong);
 	}
 
-	.drawer-links a.active {
-		color: var(--color-primary);
-	}
-
-	.drawer-links a.active .drawer-ko {
-		color: var(--color-primary);
-	}
-
-	.drawer-en {
-		font-family: var(--font-body);
-		font-size: 11px;
-		font-weight: 500;
-		letter-spacing: 0.5px;
-		text-transform: uppercase;
-	}
-
-	.drawer-ko {
-		font-family: var(--font-display);
-		font-size: 28px;
-		font-weight: 400;
-		letter-spacing: -0.5px;
-		line-height: 1.1;
-		color: var(--color-ink);
+	.drawer-cta {
+		display: block;
+		padding: var(--space-sm);
+		border-radius: var(--radius-default);
+		background: var(--color-primary);
+		color: var(--color-on-primary);
+		font-size: 15px;
+		font-weight: 700;
+		text-align: center;
 	}
 
 	main {
@@ -369,6 +453,44 @@
 		padding-top: 0;
 	}
 
+	.site-footer {
+		padding: 40px var(--space-lg);
+		background: var(--color-surface-dark);
+		color: var(--color-on-dark);
+	}
+
+	.site-footer-inner {
+		display: flex;
+		justify-content: space-between;
+		gap: var(--space-xl);
+		max-width: 1028px;
+		margin: 0 auto;
+	}
+
+	.site-footer strong {
+		font-size: 18px;
+	}
+
+	.site-footer p {
+		margin-top: 4px;
+		color: var(--color-on-dark-soft);
+		font-size: 13px;
+	}
+
+	.site-footer-links {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: flex-end;
+		gap: var(--space-lg);
+		font-size: 13px;
+		color: var(--color-on-dark-soft);
+	}
+
+	.site-footer-links a:hover {
+		color: #ffffff;
+	}
+
 	@media (max-width: 768px) {
 		.nav-links {
 			display: none;
@@ -376,6 +498,14 @@
 
 		.hamburger {
 			display: flex;
+		}
+
+		.site-footer-inner,
+		.site-footer-links {
+			flex-direction: column;
+			align-items: flex-start;
+			justify-content: flex-start;
+			gap: var(--space-sm);
 		}
 	}
 </style>

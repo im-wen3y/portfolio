@@ -39,7 +39,7 @@
 			{/if}
 		</form>
 
-		<a class="back-link" href={resolve('/resume')}>공개 이력서로 돌아가기 →</a>
+		<a class="back-link" href={resolve('/portfolio')}>공개 포트폴리오로 돌아가기 →</a>
 	</div>
 </section>
 
