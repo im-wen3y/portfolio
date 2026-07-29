@@ -17,7 +17,7 @@
 	const socialDescription =
 		'레거시 분석과 React 리뉴얼, UI·UX, 사용자 흐름과 운영 문제 해결 과정을 담은 송누리의 프론트엔드 포트폴리오입니다.';
 	let socialUrl = $derived(`${page.url.origin}${page.url.pathname}`);
-	let socialImageUrl = $derived(`${page.url.origin}/og-image.png`);
+	let socialImageUrl = $derived(`${page.url.origin}${data.socialImagePath}`);
 
 	function handleScroll() {
 		scrolled = window.scrollY > 10;
