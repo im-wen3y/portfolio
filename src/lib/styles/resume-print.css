@@ -368,6 +368,21 @@
 .page[data-accent='wanted-violet'] {
 	--pr-accent: #644fc0;
 }
+.page[data-accent='portfolio-green'] {
+	--pr-accent: #47d7a4;
+}
+.page[data-accent='velog-green'] {
+	--pr-accent: #20c997;
+}
+.page[data-accent='toss-blue'] {
+	--pr-accent: #3182f6;
+}
+.page[data-accent='baemin-mint'] {
+	--pr-accent: rgb(12, 239, 211);
+}
+.page[data-accent='carrot-orange'] {
+	--pr-accent: #ff6f0f;
+}
 
 .page.dark .pr-name,
 .page.dark .pr-company,

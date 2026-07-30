@@ -46,8 +46,24 @@ describe('AccentThemeStore', () => {
 		expect(theme.value).toBe('wanted-orange');
 		expect(localStorage.getItem('resume-print-accent')).toBe('wanted-orange');
 
-		theme.set('wanted-sky-blue');
-		expect(theme.value).toBe('wanted-sky-blue');
-		expect(localStorage.getItem('resume-print-accent')).toBe('wanted-sky-blue');
+		theme.set('portfolio-green');
+		expect(theme.value).toBe('portfolio-green');
+		expect(localStorage.getItem('resume-print-accent')).toBe('portfolio-green');
+
+		theme.set('velog-green');
+		expect(theme.value).toBe('velog-green');
+		expect(localStorage.getItem('resume-print-accent')).toBe('velog-green');
+
+		theme.set('toss-blue');
+		expect(theme.value).toBe('toss-blue');
+		expect(localStorage.getItem('resume-print-accent')).toBe('toss-blue');
+
+		theme.set('baemin-mint');
+		expect(theme.value).toBe('baemin-mint');
+		expect(localStorage.getItem('resume-print-accent')).toBe('baemin-mint');
+
+		theme.set('carrot-orange');
+		expect(theme.value).toBe('carrot-orange');
+		expect(localStorage.getItem('resume-print-accent')).toBe('carrot-orange');
 	});
 });
