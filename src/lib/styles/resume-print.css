@@ -1190,7 +1190,7 @@
 .resume-summary-list {
 	display: flex;
 	flex-direction: column;
-	gap: 1.5mm;
+	gap: 2.5mm;
 	margin: 0;
 	padding: 0;
 	list-style: none;
@@ -1200,7 +1200,15 @@
 }
 
 .resume-summary-list li {
-	display: block;
+	display: grid;
+	gap: 0.75mm;
+}
+
+.resume-summary-header {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 4mm;
 }
 
 .resume-summary-list strong {
@@ -1208,8 +1216,17 @@
 	font-weight: 700;
 }
 
+.resume-summary-period {
+	flex: 0 0 auto;
+	color: #6f6f69;
+	font-size: var(--resume-font-meta);
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
 .resume-summary-description {
-	margin-left: 2mm;
+	margin: 0;
+	text-wrap: pretty;
 }
 
 .template-company-list,
@@ -1813,6 +1830,10 @@
 	color: var(--color-ink);
 }
 
+.page.dark .resume-summary-period {
+	color: var(--color-muted);
+}
+
 .page.dark .template-work-meta {
 	color: var(--color-muted);
 }
@@ -1874,6 +1895,12 @@
 	.resume-version-control {
 		justify-self: stretch;
 		justify-content: center;
+	}
+
+	.resume-summary-header {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 0.5mm;
 	}
 
 	.preview-wrap {

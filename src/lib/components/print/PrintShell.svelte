@@ -232,8 +232,13 @@
 				<ul class="resume-summary-list">
 					{#each selectedExperiences as experience (experience.company)}
 						<li>
-							<strong>{experience.company}</strong>
-							<span class="resume-summary-description">{experience.summary}</span>
+							<div class="resume-summary-header">
+								<strong>{experience.company}</strong>
+								<span class="resume-summary-period">
+									{experience.period.replace(' — ', '~')} (총 {experience.duration})
+								</span>
+							</div>
+							<p class="resume-summary-description">{experience.summary}</p>
 						</li>
 					{/each}
 				</ul>
