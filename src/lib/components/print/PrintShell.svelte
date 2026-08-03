@@ -182,11 +182,9 @@
 		<header class="pr-header">
 			<h1 class="pr-name">송누리</h1>
 			<div class="pr-contact">
-				<a href="mailto:gloriosd@gmail.com">gloriosd@gmail.com</a>
+				<a href="tel:010-5108-5493">010-5108-5493</a>
 				<span class="pr-sep" aria-hidden="true">·</span>
-				<a href="https://github.com/im-wen3y" target="_blank" rel="noopener noreferrer"
-					>github.com/im-wen3y</a
-				>
+				<a href="mailto:gloriosd@gmail.com">gloriosd@gmail.com</a>
 				<span class="pr-sep" aria-hidden="true">·</span>
 				<span>경기도 구리</span>
 			</div>
@@ -377,6 +375,24 @@
 						</article>
 					{/each}
 				</div>
+			</section>
+
+			<section class="resume-overview" aria-labelledby="resume-links">
+				<h2 id="resume-links" class="pr-label">링크</h2>
+				<ul class="resume-link-list">
+					<li>
+						<span class="resume-link-label">GitHub</span>
+						<a href="https://github.com/im-wen3y" target="_blank" rel="noopener noreferrer"
+							>github.com/im-wen3y</a
+						>
+					</li>
+					<li>
+						<span class="resume-link-label">LinkedIn</span>
+						<a href="https://www.linkedin.com/in/im-wen3y" target="_blank" rel="noopener noreferrer"
+							>linkedin.com/in/im-wen3y</a
+						>
+					</li>
+				</ul>
 			</section>
 		</div>
 	</article>
