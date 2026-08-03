@@ -392,6 +392,14 @@
 							>linkedin.com/in/im-wen3y</a
 						>
 					</li>
+					<li>
+						<span class="resume-link-label">Portfolio</span>
+						<a
+							href="https://im-wen3yz.vercel.app/portfolio"
+							target="_blank"
+							rel="noopener noreferrer">https://im-wen3yz.vercel.app/portfolio</a
+						>
+					</li>
 				</ul>
 			</section>
 		</div>
