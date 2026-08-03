@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
+	import { PORTFOLIO_PROJECTS } from '$lib/data/portfolio-projects';
+
 	type Career = {
 		period: string;
 		duration: string;
@@ -7,16 +10,6 @@
 		role: string;
 		summary: string;
 		bullets: string[];
-	};
-
-	type Project = {
-		id: string;
-		meta: string;
-		badge?: { label: string; tone: 'primary' | 'secondary' };
-		title: string;
-		summary: string;
-		stack: string[];
-		detail: { title: string; bullets?: string[]; text?: string }[];
 	};
 
 	type SkillGroup = { title: string; skills: string[] };
@@ -43,12 +36,12 @@
 			company: '라텔앤드파트너즈',
 			role: '프론트엔드 파트 리더',
 			summary:
-				'아큐브 전사 서비스(소비자 웹/앱, 안경사용 프로그램, 영업·CS 내부 시스템) 개발·운영 총괄. 기획·디자인·개발팀 초기 기획 단계부터 참여해 요구사항과 우선순위를 조율하고, 팀 업무 배분·일정 관리·의사결정을 지원했습니다.',
+				'아큐브 소비자 웹·앱, 안경사용 프로그램, 영업·CS 내부 시스템을 개발·운영하고 6명 규모의 프론트엔드 파트를 이끌었습니다. 기획 리뷰부터 업무 범위·예상 작업량·우선순위를 조율하고 프로젝트별 담당자와 운영 이슈 대응 흐름을 정리했습니다.',
 			bullets: [
-				'JSP → React 리뉴얼 리드 (레거시 분석·문서화·업무 분배 총괄)',
-				'서로 다른 UI의 3개 렌즈 계산기를 Headless 공통 컴포넌트로 통합, Storybook 기반 공통 컴포넌트 체계 구축',
-				'영업사원 내부 시스템 PC → React 모바일 리뉴얼, 약정서 체결·승인 프로세스 블록 공통화',
-				'프로모션·렌즈 판매 교육 시뮬레이터 등 캠페인성 프로덕트 설계 및 빌드 구조 분리'
+				'안경사 통합관리 시스템의 React 리뉴얼에서 레거시 정책을 문서화하고 프론트엔드 개발자 3명의 업무와 요구사항 우선순위를 조율',
+				'서로 다른 UI의 렌즈 계산기 3개를 Headless 공통 구조로 통합해 입력·포커스 이동·유효성 검사 기준을 표준화',
+				'JSP 경험이 없던 신입 4명의 프로젝트 세팅과 개발 방식을 문서화하고, 이벤트 업무 이후 3명은 관리자 기능, 1명은 모바일 시스템과 주문·결제 영역으로 담당 범위를 확대',
+				'주임급 개발자의 React 학습과 프로젝트 리드를 지원해 스마트피팅 운영 반영 후 유지보수까지 독립적으로 맡을 수 있도록 역할을 확장'
 			]
 		},
 		{
@@ -56,144 +49,22 @@
 			duration: '2년 4개월',
 			company: '샤플앤컴퍼니',
 			role: '프론트엔드 개발자',
-			summary: '현장 직원 관리 서비스 Shopl의 관리자 대시보드와 채팅 서비스 개발·운영.',
+			summary:
+				'현장 직원을 관리하는 Shopl의 관리자 대시보드와 채팅 서비스를 개발·운영했습니다. 운영 중인 JSP 화면의 점진적 React 전환과 국내·해외 결제, 대규모 근무지 지도 기능을 맡았습니다.',
 			bullets: [
-				'JSP → React 마이그레이션 주도 (기술 선택부터 대표·PM 설득, 동시 운영 배포 환경 구성까지)',
-				'아임포트(국내)·Stripe(해외) 결제 및 정기결제 연동',
-				'ShoplChat v2.0 재구현 (Electron + Sendbird 2.0 → React + Vite + Sendbird 3.0)',
-				'게시판 고도화, 연차 사용 촉진, 초과근무시간 관리 등 관리자 기능 다수'
+				'React 선택 근거와 점진 전환 방식을 대표·PM에게 설명해 기존 서비스를 중단하지 않고 약 1년간 JSP와 React를 병행 운영',
+				'아임포트·Stripe를 연동해 국내·해외 고객이 요금제와 결제수단을 직접 관리하는 흐름을 구현',
+				'근무지 마커 2만 개로 브라우저가 멈추던 ‘할 일’ 분석 지도에 국내·해외 지도별 클러스터링을 적용해 운영 화면 정상화'
 			]
 		},
 		{
 			period: '2018.07 – 2020.11',
 			duration: '2년 4개월',
 			company: '아이티키',
-			role: 'SI 개발팀',
+			role: 'SI 개발팀 사원',
 			summary:
-				'신한DS LMS 고도화, 롯데마트 웹/웹앱 운영, 공공기관 사이트 유지보수, 미스터피자 리뉴얼 등 다수 SI 프로젝트를 수행하며 신규 팀원용 프로세스·테스트 가이드 문서를 여러 차례 작성했습니다.',
+				'신한DS LMS, 롯데마트 웹·웹앱, 공공기관 사이트와 미스터피자 리뉴얼을 수행했습니다. 관리자·회원·주문·결제 화면과 API를 개발하고 운영 장애에 대응했으며, 신규 팀원을 위한 업무·테스트 가이드를 작성했습니다.',
 			bullets: []
-		}
-	];
-
-	const PROJECTS: Project[] = [
-		{
-			id: 'acuvue-renewal',
-			meta: '2025.10 – 2026.03 · 라텔앤드파트너즈',
-			badge: { label: 'Lead', tone: 'primary' },
-			title: '안경사 통합관리 시스템 React 리뉴얼',
-			summary:
-				'JSP 기반 화면과 제품 판매 기능을 React로 전환하고, 파트 리더로서 분석·문서화·업무 분배를 맡았습니다.',
-			stack: ['React', 'TypeScript', 'Storybook', '레거시 마이그레이션'],
-			detail: [
-				{
-					title: '한 일',
-					bullets: [
-						'15,000줄 규모 제품판매 JS 파일을 React 컴포넌트 구조로 전환해 유지보수 가능한 형태로 개선',
-						'캘린더·라디오·ComboBox·테이블 공통 컴포넌트와 Storybook 구축, 제품판매·판매내역·공지사항·이벤트·대량결제 화면 구현·연동',
-						'프론트엔드에 하드코딩되어 있던 팝업·배너의 날짜·노출 조건을 서버팀과 합의해 어드민에서 동적으로 관리하도록 전환',
-						'레거시 정책을 문서화해 전 파트가 같은 업무 맥락과 구현 기준을 공유하도록 정립'
-					]
-				},
-				{
-					title: '해결한 문제',
-					text: 'LOT 스캔 입력 오류를 한글→영문 변환, 스캐너별 특수문자 제거, 전송 시점의 변환 순서 조정으로 단계적으로 해결. 일정 변경마다 재배포가 필요했던 운영 구조에서 휴먼에러 가능성을 함께 제거했습니다.'
-				}
-			]
-		},
-		{
-			id: 'smartfitting',
-			meta: '2025.05 – 2025.08 · 라텔앤드파트너즈',
-			title: '스마트피팅 — 렌즈 계산기 모바일·태블릿',
-			summary:
-				'안경사 통합관리 시스템의 렌즈 계산기를 현장용 태블릿에서 쓸 수 있도록 재설계. QR 로그인 브릿지와 도수 데이터 처리 구조를 담당했습니다.',
-			stack: ['Zustand + persist', '반응형', 'QR 브릿지'],
-			detail: [
-				{
-					title: '한 일',
-					bullets: [
-						'주문 가능 제품의 구면·난시·멀티포컬 영역과 제품 상세 바텀시트 구현·연동',
-						'저장하지 않는 개인정보(도수 데이터)의 동의 전 상태를 Zustand + persist로 설계해 탭 간 유지와 새로고침 대응을 함께 해결',
-						'프론트엔드 계산 로직의 백엔드 이관을 위해 기존 로직과 FE/BE 경계를 Confluence에 문서화해 회의로 전달'
-					]
-				},
-				{
-					title: '해결한 문제',
-					text: '운영 반영 3일 전 지급 기기가 Lenovo Tab M9으로 변경되며 반응형이 깨졌습니다. DPR과 CSS 논리적 뷰포트를 직접 계산해 원인을 특정하고, 확정된 신규 기기 스펙 기준으로 브레이크포인트를 재조정해 기한 내 배포했습니다.'
-				}
-			]
-		},
-		{
-			id: 'nonmyacuvue-promo',
-			meta: '2024.08 – 2026.06 · 라텔앤드파트너즈',
-			title: '논마이아큐브 프로모션 1~5차',
-			summary:
-				'마이아큐브 비회원 안경점을 대상으로 한 연속 이벤트 프로모션. 구매 LOT 스캔과 휴대폰 본인인증 플로우를 JSP 환경에서 구현했습니다.',
-			stack: ['Web Components', 'OCR / Text Scan API', 'JSP'],
-			detail: [
-				{
-					title: '한 일',
-					bullets: [
-						'LOT 스캔 연동 — 1~3차 네이버 OCR 스캔 API, 4~5차 AWS Text 스캔 API로 전환',
-						'드림시큐리티 휴대폰 인증 플로우 구현',
-						'1~4차는 클래스형 구조, 5차는 Web APIs 기반 Web Components로 전환해 회차 간 재사용성 확보'
-					]
-				},
-				{
-					title: '해결한 문제',
-					text: '백엔드팀도 원인을 찾지 못한 외부 API 연동 장애를 서버 로그 직접 분석으로 진단해 Spring Security 필터 체인과 CSRF 정책 차단을 특정했습니다. 담당 백엔드 부재 상황에서 임시 조치까지 단독 수행한 뒤 정식 개선을 백엔드팀에 인계했습니다.'
-				}
-			]
-		},
-		{
-			id: 'virtual-fitting',
-			meta: '1차 2024.11 – 2025.02 · 2차 2026.04 – 2026.05',
-			title: '안경사 렌즈 판매 교육 시뮬레이터',
-			summary:
-				'안경사가 고객과 대화하며 검사 결과를 확인하고 렌즈를 제안하는 판매 과정을 게임 형태로 연습하는 교육용 웹 시뮬레이터입니다.',
-			stack: ['Zustand', 'overlay-kit', '모노레포'],
-			detail: [
-				{
-					title: '진단과 해결',
-					bullets: [
-						'1차에서 Context API와 Funnel 병행으로 발생한 리렌더링 문제를 진단해 Zustand로 통합하고, 비대해진 store를 도메인별로 분리',
-						'1차에서 변경 주기가 다른 site와 simulator를 모노레포로 분리하고 shared 디자인 시스템과 애플리케이션별 빌드 설정을 구성한 뒤 배포 방식을 인프라 담당자와 협의',
-						'2차에서 모달로 인한 대화 초기화를 localStorage로 우선 대응한 뒤 overlay-kit으로 개선하고, 기존 기능과 기술 맥락을 후속 개발자에게 인계'
-					]
-				}
-			]
-		},
-		{
-			id: 'shopl-migration',
-			meta: '2022.01 – 2023.08 · 샤플앤컴퍼니',
-			badge: { label: 'Lead', tone: 'primary' },
-			title: 'Shopl — JSP → React 마이그레이션',
-			summary:
-				'레거시 관리자 대시보드의 React 전환을 기술 선택부터 설득, 배포 환경 구성까지 주도했습니다.',
-			stack: ['React', '점진적 전환', '기술 의사결정'],
-			detail: [
-				{
-					title: '한 일',
-					bullets: [
-						'서버·프론트 동시 배포 부담을 이유로 반대하던 대표·PM을 설득해 마이그레이션 진행 결정을 이끌어냄',
-						'Vue/React 중 운영·유지보수 관점에서 React를 선택하고 근거를 문서화',
-						'배포 직후 프론트엔드 코드를 롤백하고 오류 응답과 백엔드 리다이렉트 흐름을 추적해, 잘못된 URL이 404와 index.html 재호출을 반복시키는 원인을 특정하고 백엔드 수정으로 연결'
-					]
-				}
-			]
-		},
-		{
-			id: 'shopl-todo-map',
-			meta: '2022 – 2023 · 샤플앤컴퍼니',
-			title: 'Shopl "할 일" — 근무지별 작업률 지도',
-			summary:
-				'1년간 운영한 최장기 프로젝트. 구글·네이버 지도와 클러스터링으로 근무지별 작업률을 시각화했습니다.',
-			stack: ['Google · Naver Map API', '클러스터링', '성능 최적화'],
-			detail: [
-				{
-					title: '해결한 문제',
-					text: '마커 2만 개를 한 번에 렌더링할 때 브라우저가 멈추는 문제를 지도별 클러스터링으로 해결하고 운영에 반영했습니다.'
-				}
-			]
 		}
 	];
 
@@ -201,17 +72,17 @@
 		{
 			label: '외부 API 연동 장애',
 			title: '서버 로그를 직접 읽어 Spring Security 차단을 특정',
-			text: '백엔드팀도 원인을 찾지 못한 상태에서 서버 로그를 직접 분석해 필터 체인과 CSRF 정책이 요청을 차단하고 있음을 확인. 담당 부재 상황에서 임시 조치까지 수행하고 정식 개선을 인계했습니다.'
+			text: '본인인증 요청이 응답 없이 멈춰 애플리케이션 코드와 서버 설정 중 원인을 구분해야 했습니다. 로그와 XML 보안 설정을 확인해 CSRF 차단을 특정하고 서비스를 우선 정상화한 뒤, 백엔드팀의 정식 예외 처리로 연결했습니다.'
 		},
 		{
 			label: '배포 3일 전 기기 변경',
 			title: 'DPR·논리적 뷰포트 계산으로 반응형 재설계',
-			text: '지급 기기가 Lenovo Tab M9으로 바뀌며 레이아웃이 깨졌습니다. DPR과 CSS 논리적 뷰포트를 계산해 원인을 특정하고 신규 기기 스펙 기준으로 브레이크포인트를 재조정, 기한 내 반영했습니다.'
+			text: '지급 기기가 Lenovo Tab M9으로 바뀌면서 태블릿이 모바일 화면으로 인식됐습니다. 물리 해상도와 DPR로 CSS 논리적 너비를 계산해 원인을 찾고, 확정된 기기 기준으로 반응형 구간을 다시 정했습니다.'
 		},
 		{
 			label: '마커 2만 개 렌더링',
 			title: '지도별 클러스터링으로 흰 화면 정상화',
-			text: '국내·해외 지도 API에 맞는 클러스터링을 적용해 브라우저가 멈추던 문제를 해결하고 운영에 반영했습니다.'
+			text: '전체 근무지 마커를 한 번에 표시하면 브라우저가 멈췄습니다. Google Maps와 NAVER Maps의 기능 차이를 반영한 클러스터링을 구현해 지역별 작업률과 직원별 완료 상태를 확인할 수 있도록 운영 화면을 정상화했습니다.'
 		}
 	];
 
@@ -236,12 +107,10 @@
 			tags: [
 				'아임포트',
 				'Stripe',
-				'Google · Naver Map API',
-				'Naver OCR / AWS Text Scan',
-				'Sendbird',
+				'Google Maps · NAVER Maps API',
+				'NAVER OCR / AWS Text Scan',
 				'Okta',
-				'JSP',
-				'Spring Security 트러블슈팅'
+				'JSP'
 			]
 		},
 		{
@@ -274,11 +143,11 @@
 			<span class="hero-meta-sep" aria-hidden="true">·</span>
 			<span>총 경력 6년 10개월</span>
 		</p>
-		<h1>레거시를 걷어내고, 팀이 계속 굴릴 수 있는 프론트엔드를 만듭니다.</h1>
+		<h1>레거시의 맥락을 읽고, 팀이 계속 운영할 수 있는 프론트엔드를 만듭니다.</h1>
 		<p class="lede">
-			React 기반 웹·앱 개발과 운영, JSP 레거시 마이그레이션, 모바일 리뉴얼을 주도해왔습니다. 파트
-			리더로 기획·디자인·서버팀 사이의 요구사항을 조율하고, 공통 컴포넌트와 개발 컨벤션으로 팀이
-			반복하지 않을 구조를 남기는 데 집중합니다.
+			사용자와 운영자가 막히는 흐름을 기준으로 레거시 정책과 제약을 분석하고, React 기반 웹·앱
+			전환과 모바일 리뉴얼을 이끌어왔습니다. 파트 리더로 기획·디자인·백엔드팀과 해결 범위를
+			조율하고, 공통 구조와 문서화된 기준으로 팀이 같은 문제를 반복하지 않도록 개선합니다.
 		</p>
 		<div class="hero-links">
 			<a class="btn-primary" href="mailto:gloriosd@gmail.com">gloriosd@gmail.com</a>
@@ -332,9 +201,11 @@
 	<section id="work" class="container">
 		<div class="eyebrow">Selected Work</div>
 		<h2>대표 프로젝트</h2>
-		<p class="section-note">카드를 펼치면 문제 정의 · 진단 · 해결 과정을 볼 수 있습니다.</p>
+		<p class="section-note">
+			각 프로젝트의 문제 정의 · 직접 맡은 범위 · 결과를 확인할 수 있습니다.
+		</p>
 		<div class="card-grid two">
-			{#each PROJECTS as project (project.id)}
+			{#each PORTFOLIO_PROJECTS as project (project.id)}
 				<article class="card project-card">
 					<div class="card-head">
 						<span class="card-meta">{project.meta}</span>
@@ -349,26 +220,9 @@
 							<span class="chip">{tech}</span>
 						{/each}
 					</div>
-					<details class="detail">
-						<summary>상세 보기</summary>
-						<div class="detail-body">
-							{#each project.detail as block (block.title)}
-								<div>
-									<div class="detail-title">{block.title}</div>
-									{#if block.bullets}
-										<ul class="bullets sm">
-											{#each block.bullets as bullet (bullet)}
-												<li>{bullet}</li>
-											{/each}
-										</ul>
-									{/if}
-									{#if block.text}
-										<p class="detail-text">{block.text}</p>
-									{/if}
-								</div>
-							{/each}
-						</div>
-					</details>
+					<a class="project-link" href={resolve('/portfolio/project/[id]', { id: project.id })}>
+						상세 보기 <span aria-hidden="true">→</span>
+					</a>
 				</article>
 			{/each}
 		</div>
@@ -379,7 +233,7 @@
 			<div class="eyebrow on-dark">Troubleshooting</div>
 			<h2 class="on-dark">직접 원인을 특정해 해결한 문제들</h2>
 			<p class="section-note on-dark">
-				담당 범위가 아니어도 로그와 스펙을 직접 파고들어 원인을 좁혀왔습니다.
+				증상만 고치지 않고 로그·기기 스펙·데이터 규모를 확인해 문제가 발생한 경계를 좁혔습니다.
 			</p>
 			<div class="card-grid three">
 				{#each TROUBLES as trouble (trouble.label)}
@@ -428,7 +282,8 @@
 		<div class="eyebrow">AI in Practice</div>
 		<h2>AI를 프로세스에 편입시킨 방식</h2>
 		<p class="section-note">
-			코드 자동완성에 그치지 않고, 개인 개발 기준과 커리어 기록을 관리하는 흐름에 활용합니다.
+			코드 자동완성에 그치지 않고 개발 기준과 커리어 기록을 구조화하고, 생성된 변경을 직접 검토하는
+			흐름에 활용합니다.
 		</p>
 		<div class="card-grid two">
 			<article class="card">
@@ -755,6 +610,10 @@
 		line-height: 1.4;
 	}
 
+	.project-card .chips {
+		margin-bottom: 20px;
+	}
+
 	.card p {
 		font-size: 15px;
 		line-height: 1.7;
@@ -870,53 +729,30 @@
 		font-size: 14px;
 	}
 
-	/* Project detail disclosure */
-	.detail {
-		display: flex;
-		flex-direction: column-reverse;
-		width: 100%;
-		margin-top: auto;
-	}
-
-	.detail summary {
+	.project-link {
 		display: inline-flex;
 		align-items: center;
 		gap: 8px;
-		align-self: flex-start;
-		margin-top: 20px;
+		margin-top: auto;
 		padding: 9px 16px;
 		border: 1.5px solid var(--border-default);
 		border-radius: var(--radius-default);
 		font-size: 14px;
 		font-weight: 700;
 		color: var(--text-heading);
-		cursor: pointer;
-		list-style: none;
+		transition:
+			border-color 0.15s ease,
+			color 0.15s ease;
 	}
 
-	.detail summary::-webkit-details-marker {
-		display: none;
-	}
-
-	.detail summary::after {
-		content: '+';
-		font-weight: 800;
-	}
-
-	.detail[open] summary::after {
-		content: '−';
-	}
-
-	.detail summary:hover {
+	.project-link:hover {
 		border-color: var(--border-strong);
+		color: var(--color-primary-strong);
 	}
 
-	.detail-body {
-		display: flex;
-		flex-direction: column;
-		gap: 14px;
-		padding-top: 18px;
-		border-top: 1px solid var(--border-default);
+	.project-link:focus-visible {
+		outline: 2px solid var(--color-ink);
+		outline-offset: 3px;
 	}
 
 	.detail-title {
@@ -926,11 +762,6 @@
 		letter-spacing: 0.05em;
 		text-transform: uppercase;
 		color: var(--color-secondary-strong);
-	}
-
-	.detail-text {
-		font-size: 14px;
-		line-height: 1.7;
 	}
 
 	/* Dark troubleshooting section */
