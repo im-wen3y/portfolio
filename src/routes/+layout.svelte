@@ -11,6 +11,7 @@
 	let menuOpen = $state(false);
 
 	let isPortfolioActive = $derived(page.url.pathname.startsWith('/portfolio'));
+	let isPortfolioIndex = $derived(page.url.pathname === '/portfolio');
 	let isPrintActive = $derived(page.url.pathname.startsWith('/print'));
 	let isShareablePage = $derived(isPortfolioActive);
 	const socialTitle = '프론트엔드 개발자 · 송누리 · 포트폴리오';
@@ -35,7 +36,7 @@
 
 	// 이미 포트폴리오에 있으면 같은 주소로의 이동 대신 맨 위로 올린다.
 	function handleBrandClick(event: MouseEvent) {
-		if (!isPortfolioActive) return;
+		if (!isPortfolioIndex) return;
 		event.preventDefault();
 		closeMenu();
 		window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -82,12 +83,14 @@
 				<span class="brand-role">Frontend Engineer</span>
 			</a>
 			<ul class="nav-links">
-				{#if isPortfolioActive}
+				{#if isPortfolioIndex}
 					<li><a href="#career">경력</a></li>
 					<li><a href="#work">프로젝트</a></li>
 					<li><a href="#trouble">트러블슈팅</a></li>
 					<li><a href="#skills">기술</a></li>
 					<li><a href="#ai">AI 활용</a></li>
+				{:else if isPortfolioActive}
+					<li><a href={resolve('/portfolio')}>포트폴리오</a></li>
 				{/if}
 				{#if data.showPrintMenu}
 					<li><a href={resolve('/print')}>PDF</a></li>
@@ -146,11 +149,15 @@
 			</svg>
 		</button>
 		<ul class="drawer-links">
-			<li><a href="#career" onclick={closeMenu}>경력</a></li>
-			<li><a href="#work" onclick={closeMenu}>프로젝트</a></li>
-			<li><a href="#trouble" onclick={closeMenu}>트러블슈팅</a></li>
-			<li><a href="#skills" onclick={closeMenu}>기술</a></li>
-			<li><a href="#ai" onclick={closeMenu}>AI 활용</a></li>
+			{#if isPortfolioIndex}
+				<li><a href="#career" onclick={closeMenu}>경력</a></li>
+				<li><a href="#work" onclick={closeMenu}>프로젝트</a></li>
+				<li><a href="#trouble" onclick={closeMenu}>트러블슈팅</a></li>
+				<li><a href="#skills" onclick={closeMenu}>기술</a></li>
+				<li><a href="#ai" onclick={closeMenu}>AI 활용</a></li>
+			{:else if isPortfolioActive}
+				<li><a href={resolve('/portfolio')} onclick={closeMenu}>포트폴리오</a></li>
+			{/if}
 			{#if data.showPrintMenu}
 				<li><a href={resolve('/print')} onclick={closeMenu}>PDF</a></li>
 			{/if}
