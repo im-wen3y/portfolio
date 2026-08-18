@@ -111,7 +111,7 @@
 다음 공개 화면은 같은 경력 정보를 서로 다른 데이터에서 관리하므로 수정 후 함께 확인한다.
 
 - `/resume`: `src/routes/resume/+page.svelte`
-- `/portfolio`: `src/lib/portfolio/content.ts`, `src/lib/data/projects.ts`
+- `/portfolio`: `src/lib/data/portfolio-projects.ts`
 - `/print`: `src/lib/components/print/print-profile.ts`
 - `/print/miricanvas`: `src/lib/components/print/profiles/MiricanvasProfile.svelte`
 - `/print/miricanvas-senior`: `src/lib/components/print/profiles/MiricanvasSeniorProfile.svelte`

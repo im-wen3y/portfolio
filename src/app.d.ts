@@ -12,4 +12,10 @@ declare global {
 	}
 }
 
+// vite/client는 '*.pdf'만 선언하고 ?inline 접미사는 다루지 않는다
+declare module '*.pdf?inline' {
+	const dataUri: string;
+	export default dataUri;
+}
+
 export {};

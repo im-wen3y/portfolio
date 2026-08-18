@@ -6,29 +6,24 @@
 	import '$lib/styles/resume-print.css';
 	import InlineHighlights from './InlineHighlights.svelte';
 	import {
+		PRINT_CORE_COMPETENCIES,
 		PRINT_EDUCATION,
 		PRINT_COMPACT_EXPERIENCES,
 		PRINT_COMPACT_ORGANIZATION_CONTRIBUTIONS,
-		PRINT_EXPERIENCES,
 		PRINT_HEADER_INTRO,
 		PRINT_INTRO_PARAGRAPHS,
-		PRINT_ORGANIZATION_CONTRIBUTIONS,
-		PRINT_SKILLS
+		PRINT_ROLE,
+		PRINT_SKILLS,
+		PRINT_TAGLINE,
+		PRINT_TOTAL_EXPERIENCE
 	} from './print-profile';
 
 	let floatingMenuOpen = $state(false);
-	let resumeVersion = $state<'detailed' | 'compact'>('detailed');
-
 	let toastVisible = $state(false);
 	let toastTimeout: ReturnType<typeof setTimeout> | undefined;
-	const selectedExperiences = $derived(
-		resumeVersion === 'detailed' ? PRINT_EXPERIENCES : PRINT_COMPACT_EXPERIENCES
-	);
-	const selectedContributions = $derived(
-		resumeVersion === 'detailed'
-			? PRINT_ORGANIZATION_CONTRIBUTIONS
-			: PRINT_COMPACT_ORGANIZATION_CONTRIBUTIONS
-	);
+
+	const selectedExperiences = PRINT_COMPACT_EXPERIENCES;
+	const selectedContributions = PRINT_COMPACT_ORGANIZATION_CONTRIBUTIONS;
 	const controlAccent = $derived(
 		ACCENT_OPTIONS.find((option) => option.value === accentTheme.value)?.dot ?? '#0650C0'
 	);
@@ -57,37 +52,15 @@
 <svelte:window onkeydown={handleKeydown} />
 
 <svelte:head>
-	<title>이력서 — 송누리</title>
+	<title>이력서 - 송누리</title>
 	<meta name="robots" content="noindex, nofollow, noarchive" />
 	<meta name="description" content="송누리의 이력서 PDF 미리보기" />
 </svelte:head>
 
 <div class="controls" style="--pr-accent: {controlAccent}">
 	<a href={resolve('/portfolio')} class="back-link">← 포트폴리오로</a>
-	<div class="resume-version-control" role="radiogroup" aria-label="이력서 내용 버전">
-		<button
-			type="button"
-			class:active={resumeVersion === 'detailed'}
-			role="radio"
-			aria-checked={resumeVersion === 'detailed'}
-			onclick={() => (resumeVersion = 'detailed')}
-		>
-			<span>A</span>
-			기존 상세
-		</button>
-		<button
-			type="button"
-			class:active={resumeVersion === 'compact'}
-			role="radio"
-			aria-checked={resumeVersion === 'compact'}
-			onclick={() => (resumeVersion = 'compact')}
-		>
-			<span>B</span>
-			페이지 맞춤
-		</button>
-	</div>
 	<div class="document-tools">
-		<button onclick={handlePrint} class="save-btn">PDF 다운로드</button>
+		<button type="button" onclick={handlePrint} class="save-btn">PDF 다운로드</button>
 	</div>
 </div>
 
@@ -181,6 +154,7 @@
 	<div class="document-header-group">
 		<header class="pr-header">
 			<h1 class="pr-name">송누리</h1>
+			<p class="pr-role">{PRINT_ROLE}</p>
 			<div class="pr-contact">
 				<a href="tel:010-5108-5493">010-5108-5493</a>
 				<span class="pr-sep" aria-hidden="true">·</span>
@@ -190,12 +164,13 @@
 			</div>
 			<a
 				class="pr-blog-link"
-				href="https://velog.io/@imwen3y"
+				href="https://velog.io/@imwen3y/posts"
 				target="_blank"
 				rel="noopener noreferrer"
 			>
 				기술 블로그
 			</a>
+			<p class="pr-tagline">{PRINT_TAGLINE}</p>
 			<p class="pr-header-intro">{PRINT_HEADER_INTRO}</p>
 		</header>
 
@@ -208,7 +183,7 @@
 		class="page resume-document"
 		class:dark={printTheme.value === 'dark'}
 		data-accent={accentTheme.value}
-		data-resume-version={resumeVersion}
+		data-resume-version="compact"
 	>
 		<div class="resume-page-one">
 			{@render documentHeader()}
@@ -227,17 +202,41 @@
 				aria-labelledby="resume-career-history"
 			>
 				<h2 id="resume-career-history" class="pr-label">경력 요약</h2>
-				<ul class="resume-summary-list">
-					{#each selectedExperiences as experience (experience.company)}
-						<li>
-							<div class="resume-summary-header">
-								<strong>{experience.company}</strong>
-								<span class="resume-summary-period">
-									{experience.period.replace(' — ', '~')} (총 {experience.duration})
-								</span>
-							</div>
-							<p class="resume-summary-description">{experience.summary}</p>
-						</li>
+				<p class="resume-total-experience">
+					<strong>총 경력</strong>
+					{PRINT_TOTAL_EXPERIENCE}
+				</p>
+				<table class="resume-summary-table">
+					<thead>
+						<tr>
+							<th scope="col">기간</th>
+							<th scope="col">회사</th>
+							<th scope="col">역할 및 담당업무</th>
+						</tr>
+					</thead>
+					<tbody>
+						{#each selectedExperiences as experience (experience.company)}
+							<tr>
+								<td class="resume-summary-period">
+									{experience.period.replace(' - ', '~')}<br />
+									<span class="resume-summary-duration">(총 {experience.duration})</span>
+								</td>
+								<td><strong>{experience.company}</strong></td>
+								<td>
+									<strong>{experience.role}</strong>
+									<span class="resume-summary-responsibilities">{experience.responsibilities}</span>
+								</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+			</section>
+
+			<section class="pr-section resume-overview" aria-labelledby="resume-competency">
+				<h2 id="resume-competency" class="pr-label">핵심 역량</h2>
+				<ul class="resume-competency-list">
+					{#each PRINT_CORE_COMPETENCIES as competency (competency.label)}
+						<li><strong>{competency.label}</strong>{competency.value}</li>
 					{/each}
 				</ul>
 			</section>
@@ -259,7 +258,7 @@
 				<h2 id="resume-selected-work" class="pr-label">경력 상세</h2>
 				<div class="template-company-list">
 					{#each selectedExperiences as experience, companyIndex (experience.company)}
-						{#if resumeVersion === 'compact' && companyIndex === 1}
+						{#if companyIndex === 1}
 							<div class="resume-page-break" aria-hidden="true"></div>
 						{/if}
 						<section class="template-company" aria-labelledby={`company-${experience.company}`}>
@@ -272,21 +271,33 @@
 									>
 										·
 									</span><span class="template-role-period">
-										{experience.period.replace(' — ', '~')} (총 {experience.duration})
+										{experience.period.replace(' - ', '~')} (총 {experience.duration})
 									</span>
 								</h4>
 							</header>
+							<div class="template-company-meta">
+								<p>
+									<span class="template-work-meta-label">고용 형태</span><span>정규직</span>
+								</p>
+								<p>
+									<span class="template-work-meta-label">회사·서비스</span><span
+										>{experience.service}</span
+									>
+								</p>
+							</div>
 							<p class="template-company-summary">{experience.summary}</p>
 							<div class="resume-work-list">
 								{#each experience.works as work (work.id)}
 									<article class="resume-work">
 										<header class="resume-work-header">
-											<p class="template-work-title"><strong>{work.title}</strong></p>
+											{#if work.title}
+												<p class="template-work-title"><strong>{work.title}</strong></p>
+											{/if}
 											<div class="template-work-meta">
 												{#if work.period !== experience.period}
 													<p>
 														<span class="template-work-meta-label">프로젝트 기간</span><span
-															>{work.period.replace(' — ', '~')}</span
+															>{work.period.replace(' - ', '~')}</span
 														>
 													</p>
 												{/if}
@@ -300,15 +311,9 @@
 														>{work.stack.join(' · ')}</span
 													>
 												</p>
-												{#if resumeVersion === 'detailed'}
-													<p>
-														<span class="template-work-meta-label">개요</span><span
-															>{work.overview}</span
-														>
-													</p>
-												{/if}
 											</div>
 										</header>
+										<p class="template-work-overview">{work.overview}</p>
 										<dl class="resume-work-details">
 											<div>
 												<dt>문제</dt>
@@ -333,9 +338,7 @@
 				</div>
 			</section>
 
-			{#if resumeVersion === 'compact'}
-				<div class="resume-page-break" aria-hidden="true"></div>
-			{/if}
+			<div class="resume-page-break" aria-hidden="true"></div>
 
 			<section
 				class="resume-additional-work resume-overview"

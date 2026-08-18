@@ -46,8 +46,7 @@
 <svelte:window onscroll={handleScroll} onkeydown={handleKeydown} />
 
 <svelte:head>
-	<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-	<link rel="alternate icon" href="/favicon.ico" sizes="any" />
+	<link rel="icon" href="/favicon.ico" sizes="any" />
 	{#if isShareablePage}
 		<meta name="description" content={socialDescription} />
 		<meta property="og:type" content="website" />
@@ -71,7 +70,12 @@
 </svelte:head>
 
 {#if !isPrintActive}
-	<nav class="top-nav" class:scrolled>
+	<nav
+		class="top-nav"
+		class:portfolio-nav={isPortfolioActive}
+		class:portfolio-index-nav={isPortfolioIndex}
+		class:scrolled
+	>
 		<div class="nav-inner">
 			<a
 				href={resolve('/portfolio')}
@@ -119,7 +123,12 @@
 		<div class="drawer-overlay" onclick={closeMenu} aria-hidden="true"></div>
 	{/if}
 
-	<div class="drawer" class:drawer-open={menuOpen} aria-hidden={!menuOpen}>
+	<div
+		class="drawer"
+		class:portfolio-drawer={isPortfolioActive}
+		class:drawer-open={menuOpen}
+		aria-hidden={!menuOpen}
+	>
 		<button class="drawer-close" onclick={closeMenu} aria-label="메뉴 닫기">
 			<svg
 				width="18"
@@ -166,12 +175,20 @@
 	</div>
 {/if}
 
-<main class:print-page={isPrintActive}>
+<main
+	class:portfolio-page={isPortfolioActive}
+	class:portfolio-index-page={isPortfolioIndex}
+	class:print-page={isPrintActive}
+>
 	{@render children()}
 </main>
 
 {#if isShareablePage}
-	<footer class="site-footer">
+	<footer
+		class="site-footer"
+		class:portfolio-footer={isPortfolioActive}
+		class:portfolio-index-footer={isPortfolioIndex}
+	>
 		<div class="site-footer-inner">
 			<div>
 				<strong>송누리</strong>
@@ -336,7 +353,6 @@
 		height: 36px;
 		background: none;
 		border: none;
-		cursor: pointer;
 		padding: 4px;
 	}
 
@@ -412,7 +428,6 @@
 		justify-content: center;
 		background: none;
 		border: none;
-		cursor: pointer;
 		color: var(--color-muted);
 		border-radius: var(--rounded-md);
 		transition:
@@ -496,6 +511,230 @@
 
 	.site-footer-links a:hover {
 		color: #ffffff;
+	}
+
+	/* Portfolio is presented as a focused mobile-width reading surface on every viewport. */
+	.portfolio-nav {
+		left: 50%;
+		z-index: 250;
+		width: min(100%, 540px);
+		right: auto;
+		transform: translateX(-50%);
+		box-shadow: 0 1px 0 var(--color-hairline);
+	}
+
+	:global(body:has(main.portfolio-page)) {
+		background:
+			radial-gradient(circle, rgb(46 51 64 / 12%) 1px, transparent 1.5px) 0 0 / 18px 18px,
+			#eeeaff;
+	}
+
+	.portfolio-nav .nav-inner {
+		padding-inline: 20px;
+	}
+
+	.portfolio-nav .brand-role,
+	.portfolio-nav .nav-links {
+		display: none;
+	}
+
+	.portfolio-nav .hamburger {
+		display: flex;
+		gap: 6px;
+		align-items: center;
+	}
+
+	.portfolio-drawer {
+		top: 64px;
+		right: 50%;
+		width: min(100%, 540px);
+		height: auto;
+		max-height: calc(100dvh - 64px);
+		padding: 20px 24px 28px;
+		border-top: 1px solid var(--color-hairline-soft);
+		border-left: 0;
+		border-radius: 0 0 16px 16px;
+		opacity: 0;
+		overflow-y: auto;
+		visibility: hidden;
+		transform: translate(50%, -12px) scale(0.98);
+		transform-origin: top center;
+		transition:
+			opacity 180ms ease,
+			transform 180ms ease,
+			visibility 180ms ease;
+	}
+
+	.portfolio-drawer.drawer-open {
+		opacity: 1;
+		visibility: visible;
+		transform: translate(50%, 0) scale(1);
+	}
+
+	.portfolio-drawer .drawer-close {
+		display: none;
+	}
+
+	.portfolio-nav .bar {
+		width: 20px;
+	}
+
+	.portfolio-nav .bar:nth-child(3) {
+		display: none;
+	}
+
+	.portfolio-nav .bar:nth-child(1).open {
+		transform: translateY(4px) rotate(45deg);
+	}
+
+	.portfolio-nav .bar:nth-child(2).open {
+		opacity: 1;
+		transform: translateY(-4px) rotate(-45deg);
+	}
+
+	.portfolio-drawer .drawer-links {
+		gap: 0;
+	}
+
+	.portfolio-drawer .drawer-links a {
+		padding: 14px 0;
+		font-size: 18px;
+	}
+
+	.portfolio-drawer .drawer-cta {
+		margin-top: 20px;
+		border-radius: 10px;
+	}
+
+	main.portfolio-page {
+		width: min(100%, 540px);
+		margin-inline: auto;
+		background: var(--color-canvas);
+		box-shadow: 0 0 48px color-mix(in srgb, var(--color-ink) 14%, transparent);
+	}
+
+	.portfolio-footer {
+		width: min(100%, 540px);
+		margin-inline: auto;
+		padding-inline: 28px;
+	}
+
+	.portfolio-footer .site-footer-inner,
+	.portfolio-footer .site-footer-links {
+		flex-direction: column;
+		align-items: flex-start;
+		justify-content: flex-start;
+		gap: var(--space-sm);
+	}
+
+	.portfolio-nav {
+		border-inline: 2px solid #2e3340;
+		border-bottom: 2px solid #2e3340;
+		background: #fffdf8;
+		box-shadow: 5px 5px 0 #77deb9;
+		backdrop-filter: none;
+		-webkit-backdrop-filter: none;
+	}
+
+	.portfolio-nav::after {
+		display: none;
+	}
+
+	.portfolio-nav.scrolled {
+		background: #fffdf8;
+	}
+
+	.portfolio-nav .brand-name {
+		display: inline-block;
+		padding: 4px 9px;
+		border: 1.5px solid #2e3340;
+		border-radius: 8px;
+		background: #fff4bf;
+		box-shadow: 2px 2px 0 #2e3340;
+		font-size: 15px;
+		transform: rotate(-1deg);
+	}
+
+	.portfolio-nav .hamburger {
+		border: 2px solid #2e3340;
+		border-radius: 10px;
+		background: #dff8ef;
+		box-shadow: 3px 3px 0 #2e3340;
+	}
+
+	.portfolio-nav .bar {
+		background: #2e3340;
+	}
+
+	.portfolio-drawer {
+		border: 2px solid #2e3340;
+		border-top: 0;
+		background: #fffdf8;
+		box-shadow: 6px 6px 0 #b9a7ec;
+	}
+
+	.portfolio-drawer .drawer-links a {
+		border-bottom: 1.5px dashed #7a7f89;
+	}
+
+	.portfolio-drawer .drawer-cta {
+		border: 2px solid #2e3340;
+		background: #77deb9;
+		box-shadow: 3px 3px 0 #2e3340;
+		color: #2e3340;
+	}
+
+	/* 포트폴리오에서는 링크·버튼·텍스트 등 모든 상태를 같은 스티커 커서로 통일한다 */
+	@media (pointer: fine) {
+		:global(body:has(main.portfolio-page)),
+		:global(body:has(main.portfolio-page) *) {
+			cursor:
+				url('/cursor-isometric.png') 4 4,
+				auto;
+		}
+	}
+
+	@media (min-width: 900px) {
+		:global(body:has(main.portfolio-index-page)) {
+			overflow: hidden;
+		}
+
+		.portfolio-nav,
+		main.portfolio-page,
+		.portfolio-footer {
+			width: min(100%, 1040px);
+		}
+
+		.portfolio-index-nav {
+			right: max(0px, calc((100vw - 964px) / 2));
+			left: auto;
+			width: 520px;
+			transform: none;
+		}
+
+		.portfolio-drawer {
+			right: max(0px, calc((100vw - 964px) / 2));
+			width: 520px;
+			transform: translateY(-12px) scale(0.98);
+			transform-origin: top right;
+		}
+
+		.portfolio-drawer.drawer-open {
+			transform: translateY(0) scale(1);
+		}
+
+		main.portfolio-index-page {
+			width: min(100%, 964px);
+			height: 100dvh;
+			padding-top: 0;
+			overflow: hidden;
+			background: transparent;
+			box-shadow: none;
+		}
+
+		.portfolio-index-footer {
+			display: none;
+		}
 	}
 
 	@media (max-width: 768px) {

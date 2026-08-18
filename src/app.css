@@ -1,3 +1,5 @@
+@import './lib/styles/pretendard.css';
+
 :root {
 	/* Neo-refined portfolio system */
 	--color-primary: #47d7a4;
@@ -33,8 +35,8 @@
 	--color-hairline-soft: #d7e0de;
 
 	/* Typography */
-	--font-display: 'Wanted Sans Variable', 'Wanted Sans', sans-serif;
-	--font-body: 'Wanted Sans Variable', 'Wanted Sans', sans-serif;
+	--font-display: 'Pretendard Variable', sans-serif;
+	--font-body: 'Pretendard Variable', sans-serif;
 	--font-code: 'JetBrains Mono', ui-monospace, monospace;
 
 	/* Spacing */
@@ -73,6 +75,19 @@
 	--link-color-hover: var(--color-secondary);
 	--progress-track: var(--color-surface-high);
 	--progress-fill: var(--color-surface-dark);
+
+	/* Isometric sticker-book art direction (포트폴리오 목록·상세 공통) */
+	--sticker-ink: #2e3340;
+	--sticker-paper: #fffdf8;
+	--sticker-mint: #77deb9;
+	--sticker-mint-soft: #dff8ef;
+	--sticker-coral: #ff8c7b;
+	--sticker-coral-soft: #ffe2dc;
+	--sticker-yellow: #f6d970;
+	--sticker-yellow-soft: #fff4bf;
+	--sticker-lilac: #b9a7ec;
+	--sticker-lilac-soft: #eee8ff;
+	--sticker-grid: #f7f5ff;
 }
 
 *,
@@ -98,17 +113,14 @@ body {
 	-moz-osx-font-smoothing: grayscale;
 }
 
-@font-face {
-	font-family: 'Wanted Sans Variable';
-	font-style: normal;
-	font-display: swap;
-	font-weight: 100 1000;
-	src: url('/fonts/wanted-sans/WantedSansVariable.woff2') format('woff2');
-}
-
 a {
 	color: inherit;
 	text-decoration: none;
+}
+
+/* 컴포넌트에서 개별 선언하면 Svelte 스코프 클래스 때문에 포트폴리오 커스텀 커서를 이겨버린다 */
+button {
+	cursor: pointer;
 }
 
 img {

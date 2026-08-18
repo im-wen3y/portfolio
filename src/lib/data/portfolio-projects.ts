@@ -17,7 +17,7 @@ export type PortfolioProject = {
 export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
 	{
 		id: 'acuvue-renewal',
-		meta: '2025.10 – 2026.03 · 라텔앤드파트너즈',
+		meta: '2025.10 - 2026.03 · 라텔앤드파트너즈',
 		badge: { label: 'Lead', tone: 'primary' },
 		title: '안경사 통합관리 시스템 React 리뉴얼',
 		summary:
@@ -66,8 +66,8 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
 	},
 	{
 		id: 'smartfitting',
-		meta: '2025.05 – 2025.08 · 라텔앤드파트너즈',
-		title: '스마트피팅 — 렌즈 계산기 모바일·태블릿',
+		meta: '2025.05 - 2025.08 · 라텔앤드파트너즈',
+		title: '스마트피팅 - 렌즈 계산기 모바일·태블릿',
 		summary:
 			'안경사가 PC에서 사용하던 렌즈 계산기를 모바일·태블릿 상담 현장에서 사용할 수 있도록 구현했습니다. 주문 가능 제품과 상세 화면, 동의 전 도수 상태의 유지 범위와 전체 QA를 맡았습니다.',
 		stack: ['React', 'Zustand', '반응형'],
@@ -113,7 +113,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
 	},
 	{
 		id: 'nonmyacuvue-promo',
-		meta: '2024.08 – 2026.06 · 라텔앤드파트너즈',
+		meta: '2024.08 - 2026.06 · 라텔앤드파트너즈',
 		title: '논마이아큐브 프로모션 1~5차',
 		summary:
 			'마이아큐브에 가입하지 않은 안경점을 대상으로 한 연속 이벤트 프로모션입니다. 구매 LOT 스캔과 휴대폰 본인인증 흐름을 JSP 환경에서 구현했습니다.',
@@ -160,7 +160,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
 	},
 	{
 		id: 'virtual-fitting',
-		meta: '1차 2024.11 – 2025.02 · 2차 2026.04 – 2026.05',
+		meta: '1차 2024.11 - 2025.02 · 2차 2026.04 - 2026.05',
 		title: '안경사 렌즈 판매 교육 시뮬레이터',
 		summary:
 			'안경사가 고객과 대화하며 검사 결과를 확인하고 렌즈를 제안하는 판매 과정을 게임 형태로 연습하는 교육용 웹 시뮬레이터입니다.',
@@ -204,8 +204,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
 	},
 	{
 		id: 'shopl-migration',
-		meta: '2022.01 – 2023.08 · 샤플앤컴퍼니',
-		badge: { label: 'Lead', tone: 'primary' },
+		meta: '2022.01 - 2023.08 · 샤플앤컴퍼니',
 		title: 'Shopl 관리자 페이지 React 점진적 마이그레이션',
 		summary:
 			'프론트엔드 변경에도 서버와 함께 배포해야 했던 JSP 관리자 대시보드를 운영하면서, 기능 단위로 React 화면을 함께 제공하는 점진 전환을 제안하고 구현했습니다.',
@@ -254,7 +253,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
 	{
 		id: 'shopl-todo-map',
 		meta: '재직 기간 중 약 1년 · 샤플앤컴퍼니',
-		title: 'Shopl 관리자 페이지 ‘할 일’ 분석 — 근무지·직원별 지도 클러스터링',
+		title: 'Shopl 관리자 페이지 ‘할 일’ 분석 - 근무지·직원별 지도 클러스터링',
 		summary:
 			'관리자가 날짜·근무지·직원 기준으로 작업·검수 완료율을 분석할 수 있도록 국내외 지도와 데스크톱·모바일 화면을 약 1년간 개발·운영했습니다.',
 		stack: ['Google Maps · NAVER Maps API', '클러스터링', '반응형 UI', '성능 최적화'],

@@ -16,6 +16,10 @@ export interface PrintExperience {
 	period: string;
 	duration: string;
 	role: string;
+	/** 경력 요약 표의 "역할 및 담당업무" 한 줄 */
+	responsibilities: string;
+	/** 회사·서비스 소개 */
+	service: string;
 	summary: string;
 	works: PrintWork[];
 }
@@ -37,6 +41,30 @@ export interface PrintEducation {
 	period: string;
 	details: string[];
 }
+
+export const PRINT_ROLE = '프론트엔드 개발자';
+
+export const PRINT_TAGLINE =
+	'운영 중인 레거시를 고치고, 팀이 이어서 관리할 수 있는 프론트엔드를 만듭니다.';
+
+export const PRINT_TOTAL_EXPERIENCE = '6년 10개월';
+
+export const PRINT_CORE_COMPETENCIES: PrintSkill[] = [
+	{
+		label: '제품 개발',
+		value:
+			'고객·운영자의 흐름을 기준으로 요구사항을 구체화하고 웹·앱, 모바일·태블릿 화면을 설계·구현'
+	},
+	{
+		label: '구조 개선',
+		value:
+			'JSP 서비스를 React로 점진 전환하고 상태·입력·빌드 경계를 재설계해 변경과 운영 부담을 축소'
+	},
+	{
+		label: '리더십',
+		value: '6명 규모 프론트엔드 파트의 업무 배분·일정 협의·기술 지원과 신입 온보딩'
+	}
+];
 
 export const PRINT_HEADER_INTRO =
 	'레거시 서비스의 구조를 개선하고, 팀이 지속해서 운영할 수 있는 프론트엔드를 만드는 개발자입니다. 사용자 흐름과 운영 제약을 기준으로 문제를 분석하고 기획·디자인·백엔드팀과 해결 범위를 조율합니다.';
@@ -93,7 +121,9 @@ export const PRINT_SKILLS: PrintSkill[] = [
 export const PRINT_EXPERIENCES: PrintExperience[] = [
 	{
 		company: '라텔앤드파트너즈',
-		period: '2024.04 — 2026.06',
+		responsibilities: '아큐브 전사 웹·앱 개발 및 운영, React 전환, 프론트엔드 파트 리딩',
+		service: '아큐브 소비자 웹·앱, 안경사용 프로그램, 영업·CS 내부 시스템',
+		period: '2024.04 - 2026.06',
 		duration: '2년 2개월',
 		role: '프론트엔드 파트 리더',
 		summary:
@@ -102,7 +132,7 @@ export const PRINT_EXPERIENCES: PrintExperience[] = [
 			{
 				id: 'acuvue-renewal',
 				title: '하드코딩 운영과 입력 오류를 동적 관리·공통 구조로 전환',
-				period: '2025.10 — 2026.03',
+				period: '2025.10 - 2026.03',
 				scope:
 					'권한별 정책 분석 및 구현 기준 정리, 공통 컴포넌트·렌즈 계산 구조 설계, 주요 화면 구현과 요구사항·우선순위 조율',
 				overview:
@@ -126,7 +156,7 @@ export const PRINT_EXPERIENCES: PrintExperience[] = [
 			{
 				id: 'smartfitting',
 				title: '지급 기기 변경에도 모바일 상담 흐름을 일정 안에 복구',
-				period: '2025.05 — 2025.08',
+				period: '2025.05 - 2025.08',
 				scope:
 					'초기 UI·UX 의사결정, 주문 가능 제품·상세 화면 구현과 API 연동, FE·BE 책임 경계 문서화, 전체 QA',
 				overview:
@@ -146,7 +176,7 @@ export const PRINT_EXPERIENCES: PrintExperience[] = [
 			{
 				id: 'virtual-fitting',
 				title: '안경사 렌즈 판매 교육 시뮬레이터의 상태·빌드 경계 분리',
-				period: '1차 2024.11 — 2025.02 · 2차 2026.04 — 2026.05',
+				period: '1차 2024.11 - 2025.02 · 2차 2026.04 - 2026.05',
 				scope:
 					'모노레포·상태 구조 설계, 공통 디자인 시스템 분리, 애플리케이션별 빌드 설정과 배포 방식 협의, 후속 개발자 인계',
 				overview:
@@ -166,7 +196,7 @@ export const PRINT_EXPERIENCES: PrintExperience[] = [
 			{
 				id: 'nonmyacuvue-promo',
 				title: '응답 없는 본인인증 요청을 서버 단계까지 추적해 운영 정상화',
-				period: '2024.08 — 2026.06',
+				period: '2024.08 - 2026.06',
 				scope: '프로모션 1~5차 프론트엔드 구현, 외부 API 장애 진단과 임시 조치 후 백엔드 인계',
 				overview:
 					'마이아큐브 비회원 안경점의 구매 LOT 스캔과 휴대폰 본인인증 흐름을 JSP 환경에서 구현했습니다.',
@@ -193,7 +223,9 @@ export const PRINT_EXPERIENCES: PrintExperience[] = [
 	},
 	{
 		company: '샤플앤컴퍼니',
-		period: '2021.04 — 2023.08',
+		responsibilities: '관리자 대시보드·채팅 개발·운영, JSP의 React 점진 전환',
+		service: '현장 직원 관리 서비스 Shopl의 관리자 대시보드와 채팅 서비스',
+		period: '2021.04 - 2023.08',
 		duration: '2년 4개월',
 		role: '프론트엔드 개발자',
 		summary: '현장 직원 관리 서비스 Shopl의 관리자 대시보드와 채팅 서비스를 개발·운영했습니다.',
@@ -201,7 +233,7 @@ export const PRINT_EXPERIENCES: PrintExperience[] = [
 			{
 				id: 'shopl-migration',
 				title: '운영 중인 JSP 대시보드를 중단 없이 React로 점진 전환',
-				period: '2022.01 — 2023.08',
+				period: '2022.01 - 2023.08',
 				scope: '마이그레이션 제안·기술 선택, 주요 관리자 기능 구현, 동시 운영 배포 환경 구성',
 				overview:
 					'JSP 기반 관리자 대시보드를 운영하면서 기능 단위로 React 화면을 함께 제공하는 전환 구조를 만들었습니다.',
@@ -237,7 +269,7 @@ export const PRINT_EXPERIENCES: PrintExperience[] = [
 			{
 				id: 'shopl-payment',
 				title: '수기 인보이스 업무를 국내·해외 정기결제 기능으로 전환',
-				period: '2022.11 — 2023.02',
+				period: '2022.11 - 2023.02',
 				scope: '요금제·결제수단 관리 화면과 API 연동, 국내·해외 결제 상태 흐름 정의',
 				overview: '고객이 요금제와 결제수단을 직접 등록하고 관리하는 정기결제 기능을 개발했습니다.',
 				problem:
@@ -255,7 +287,9 @@ export const PRINT_EXPERIENCES: PrintExperience[] = [
 	},
 	{
 		company: '아이티키',
-		period: '2018.07 — 2020.11',
+		responsibilities: '고객사 웹·관리자 화면과 API 개발, 주문·결제 운영 장애 대응',
+		service: '신한DS LMS, 롯데마트 웹·웹앱, 공공기관 사이트, 미스터피자 리뉴얼 등 고객사 SI 서비스',
+		period: '2018.07 - 2020.11',
 		duration: '2년 4개월',
 		role: 'SI 개발팀 사원',
 		summary:
@@ -264,7 +298,7 @@ export const PRINT_EXPERIENCES: PrintExperience[] = [
 			{
 				id: 'itkey-si',
 				title: '여러 고객사의 주문·결제 운영과 반복 인수인계를 함께 개선',
-				period: '2018.07 — 2020.11',
+				period: '2018.07 - 2020.11',
 				scope: '관리자 화면·API와 회원·주문·결제 화면 개발, 운영 오류 대응, 신규 팀원 가이드 작성',
 				overview:
 					'신한DS LMS, 롯데마트 웹·웹앱, 공공기관 사이트와 미스터피자 리뉴얼 등 여러 SI 프로젝트를 수행했습니다.',
@@ -330,7 +364,9 @@ export const PRINT_EDUCATION: PrintEducation[] = [
 export const PRINT_COMPACT_EXPERIENCES: PrintExperience[] = [
 	{
 		company: '라텔앤드파트너즈',
-		period: '2024.04 — 2026.06',
+		responsibilities: '아큐브 전사 웹·앱 개발 및 운영, React 전환, 프론트엔드 파트 리딩',
+		service: '아큐브 소비자 웹·앱, 안경사용 프로그램, 영업·CS 내부 시스템',
+		period: '2024.04 - 2026.06',
 		duration: '2년 2개월',
 		role: '프론트엔드 파트 리더',
 		summary:
@@ -338,154 +374,155 @@ export const PRINT_COMPACT_EXPERIENCES: PrintExperience[] = [
 		works: [
 			{
 				id: 'acuvue-renewal',
-				title: '하드코딩 운영과 입력 오류를 동적 관리·공통 구조로 전환',
-				period: '2025.10 — 2026.03',
+				title: '안경사 통합관리 시스템 React 전환',
+				period: '2025.10 - 2026.03',
 				scope: '권한별 정책 분석, 공통 컴포넌트·렌즈 계산 구조 설계, 주요 화면 구현',
 				overview:
 					'안경사가 제품 판매·고객 관리·렌즈 계산에 사용하는 JSP 기반 통합관리 시스템을 React로 전환했습니다.',
 				problem:
-					'권한별 정책과 하드코딩된 배너·팝업으로 일정 변경마다 재배포해야 했고, 입력 환경에 따른 LOT 오류도 반복됐습니다.',
+					'권한별 정책이 복잡한 데다 제품 판매 JavaScript는 15,000줄까지 커져 있었습니다. 배너·팝업 운영 조건도 코드에 들어 있어 일정이 바뀔 때마다 다시 배포해야 했고, 키보드와 스캐너에 따라 LOT 입력 오류도 반복됐습니다.',
 				process: [
-					'정책을 문서화해 구현 기준으로 공유하고 공통 UI와 렌즈 입력·검증 구조를 통합했습니다. 배너·팝업은 DB·API 관리로 전환하고 LOT 값은 전송 전에 정제했습니다.'
+					'먼저 권한 정책을 문서로 정리해 모든 파트가 같은 기준으로 개발하게 했습니다. 공통 UI와 렌즈 계산기 세 개에 흩어진 입력·포커스·검증 로직은 Headless 구조로 묶었습니다. 배너와 팝업은 DB·API에서 관리하도록 기획·백엔드와 조율했고, LOT 값은 서버로 보내기 직전에 변환하고 정제했습니다.'
 				],
 				effect:
-					'운영자가 일정 변경을 재배포 없이 처리할 수 있게 했고, 공통 검증과 입력값 정제로 운영 오류와 중복 구현을 줄였습니다.',
-				effectHighlights: ['재배포 없이 처리', '운영 오류와 중복 구현을 줄였습니다'],
-				stack: ['React', 'TypeScript', 'TanStack Query', 'Emotion', 'Storybook', 'Vite']
+					'운영 일정이 바뀌어도 프론트엔드를 다시 배포할 필요가 없어졌습니다. LOT 값도 키보드와 스캐너 입력 환경에 맞게 서버로 전달됩니다.',
+				effectHighlights: ['다시 배포할 필요가 없어졌습니다', '키보드와 스캐너 입력 환경에 맞게'],
+				stack: ['React', 'TypeScript', 'Zustand', 'TanStack Query', 'Emotion', 'Storybook', 'Vite']
 			},
 			{
 				id: 'smartfitting',
-				title: '지급 기기 변경에도 모바일 상담 흐름을 일정 안에 복구',
-				period: '2025.05 — 2025.08',
+				title: '모바일/태블릿 전용 착용 렌즈 계산기',
+				period: '2025.05 - 2025.08',
 				scope: 'UI·UX 결정, 주문 가능 제품·상세 화면과 API 연동, 전체 QA',
 				overview:
 					'안경사 통합관리 시스템의 렌즈 계산기를 모바일·태블릿 현장에서 사용할 수 있도록 별도 서비스로 구현했습니다.',
 				problem:
-					'동의 전 도수 정보를 서버에 저장할 수 없었고, 운영 3일 전 지급 기기 변경으로 화면이 깨졌습니다.',
+					'개인정보 동의 전에는 도수 정보를 서버에 저장할 수 없었습니다. 여기에 운영 3일 전 지급 기기까지 바뀌었습니다. 새 기기의 논리적 뷰포트가 모바일로 잡히면서 레이아웃도 깨졌습니다.',
 				process: [
-					'입력 상태가 탭 이동·새로고침에도 유지되도록 설계하고 제품 화면을 API와 연동했습니다. 지급 기기의 논리적 뷰포트를 확인해 반응형 기준을 재조정했습니다.'
+					'입력 중인 도수는 Zustand persist에 보관해 탭을 옮기거나 새로고침해도 남도록 했습니다. 지급 기기의 DPR과 논리적 뷰포트를 다시 확인한 뒤 반응형 기준을 조정했습니다.'
 				],
 				effect:
-					'서버 저장 전에도 상담 입력을 유지하고, 기기 변경에 대응해 예정된 일정 안에 모바일·태블릿 흐름을 완성했습니다.',
-				effectHighlights: ['상담 입력을 유지', '예정된 일정 안에'],
+					'서버에 저장하기 전에도 상담하던 내용을 이어서 입력할 수 있었고, 바뀐 기기에서도 예정된 일정에 맞춰 모바일·태블릿 화면을 운영했습니다.',
+				effectHighlights: ['상담하던 내용을 이어서 입력할 수 있었고', '예정된 일정에 맞춰'],
 				stack: ['React', 'TypeScript', 'Zustand', 'TanStack Query', 'Emotion', 'Vite']
 			},
 			{
 				id: 'virtual-fitting',
-				title: '렌즈 판매 교육 시뮬레이터의 상태·빌드 경계 분리',
-				period: '1차 2024.11 — 2025.02 · 2차 2026.04 — 2026.05',
+				title: '렌즈 판매 교육 시뮬레이터',
+				period: '1차 2024.11 - 2025.02 · 2차 2026.04 - 2026.05',
 				scope: 'site·simulator 모노레포 분리, 공통 UI·빌드·상태 구조 설계, 기술 인계',
 				overview:
 					'안경사가 고객과 대화하며 렌즈를 제안하는 판매 과정을 게임 형태로 연습하는 교육용 웹 시뮬레이터를 개발했습니다.',
 				problem:
-					'안내 사이트와 시뮬레이터가 함께 배포되고 단계 상태가 비대했으며, 2차에는 모달 진입 시 대화가 초기화됐습니다.',
+					'안내 사이트와 시뮬레이터는 변경 주기가 달랐지만 한 번에 배포되고 있었습니다. 커스텀 모달에 들어가면 진행 중이던 교육 대화가 처음으로 돌아가는 문제도 있었습니다.',
 				process: [
-					'1차에서 두 애플리케이션과 공통 UI를 분리하고 Vite 빌드 설정과 Zustand store를 재구성했습니다. 2차에서 모달 렌더링 구조를 조정하고 기능·기술 맥락을 문서화해 인계했습니다.'
+					'두 애플리케이션은 따로 빌드하되 UI는 함께 쓸 수 있도록 Vite 빌드 경계를 나눴습니다. 대화가 초기화되지 않도록 Zustand 상태와 모달 렌더링 구조도 손봤습니다. 2차 작업을 마친 뒤에는 기능과 기술 맥락을 문서로 정리해 후속 개발자에게 넘겼습니다.'
 				],
 				effect:
-					'빌드 경계와 공통 UI 재사용 구조를 마련하고, 모달 재진입에도 교육 대화가 유지되도록 개선했습니다.',
-				effectHighlights: ['빌드 경계와 공통 UI 재사용 구조', '교육 대화가 유지'],
+					'공통 UI를 유지하면서 안내 사이트와 시뮬레이터를 각각 배포하게 됐습니다. 모달에 다시 들어가도 진행하던 대화가 이어집니다.',
+				effectHighlights: ['각각 배포하게 됐습니다', '진행하던 대화가 이어집니다'],
 				stack: ['React', 'TypeScript', 'Zustand', 'Emotion', 'Vite']
 			},
 			{
 				id: 'nonmyacuvue-promo',
-				title: '응답 없는 본인인증 요청을 서버 단계까지 추적해 운영 정상화',
-				period: '2024.08 — 2026.06',
+				title: '논마이아큐브 프로모션',
+				period: '2024.08 - 2026.06',
 				scope: '프로모션 1~5차 구현, 외부 API 장애 진단과 백엔드 인계',
 				overview:
 					'마이아큐브 비회원 안경점의 구매 LOT 스캔과 휴대폰 본인인증 흐름을 JSP 환경에서 구현했습니다.',
 				problem:
-					'본인인증 요청이 응답 없이 막혀 애플리케이션 코드와 서버 보안 설정 중 원인을 구분해야 했습니다.',
+					'휴대폰 본인인증 요청이 응답 없이 멈췄습니다. 애플리케이션 코드와 서버 보안 설정 가운데 어디서 막히는지부터 찾아야 했습니다.',
 				process: [
-					'로그·보안 설정으로 CSRF 차단을 특정해 서비스를 정상화하고 백엔드팀에 인계했습니다. OCR·Text Scan API와 인증을 연동하고 마지막 프로모션을 단계형 구조로 전환했습니다.'
+					'서버 로그와 XML 설정을 확인해 Spring Security의 CSRF 차단이 원인임을 찾았습니다. 우선 서비스를 정상화하고, 확인한 원인과 필요한 조치를 백엔드팀에 넘겼습니다.'
 				],
-				effect: '프로모션 운영을 재개하고 백엔드팀의 안전한 보안 예외 처리로 연결했습니다.',
-				effectHighlights: ['프로모션 운영을 재개', '안전한 보안 예외 처리로 연결'],
+				effect: '중단됐던 프로모션을 다시 열었고, 이후 백엔드팀이 정식 보안 예외를 적용했습니다.',
+				effectHighlights: ['중단됐던 프로모션을 다시 열었고', '정식 보안 예외를 적용했습니다'],
 				stack: ['JSP', 'JavaScript', 'Web Components', 'Spring Security']
 			}
 		]
 	},
 	{
 		company: '샤플앤컴퍼니',
-		period: '2021.04 — 2023.08',
+		responsibilities: '관리자 대시보드·채팅 개발·운영, JSP의 React 점진 전환',
+		service: '현장 직원 관리 서비스 Shopl의 관리자 대시보드와 채팅 서비스',
+		period: '2021.04 - 2023.08',
 		duration: '2년 4개월',
 		role: '프론트엔드 개발자',
 		summary: '현장 직원 관리 서비스 Shopl의 관리자 대시보드와 채팅 서비스를 개발·운영했습니다.',
 		works: [
 			{
 				id: 'shopl-migration',
-				title: '운영 중인 JSP 대시보드를 중단 없이 React로 점진 전환',
-				period: '2022.01 — 2023.08',
+				title: 'JSP 대시보드의 React 점진 전환',
+				period: '2022.01 - 2023.08',
 				scope: '마이그레이션 제안·기술 선택, 주요 관리자 기능 구현, 동시 운영 구조 구성',
 				overview:
 					'JSP 기반 관리자 대시보드를 운영하면서 기능 단위로 React 화면을 함께 제공하는 전환 구조를 만들었습니다.',
 				problem:
-					'프론트엔드 변경에도 서버와 함께 배포해야 했고, JSP와 React를 동시에 운영할 때의 복잡도를 해소해야 했습니다.',
+					'프론트엔드만 바꿔도 서버를 함께 배포해야 했습니다. 대표와 PM은 JSP와 React를 동시에 운영하면 오히려 관리가 복잡해질 수 있다고 우려했습니다.',
 				process: [
-					'기술 선택 근거와 점진 전환 방식을 대표·PM에게 설명하고, 주요 관리자 기능을 React로 전환했습니다.',
-					'배포 직후 무한 호출이 발생했을 때 롤백 후 오류·리다이렉트 흐름을 추적해 백엔드 URL 수정으로 연결했습니다.'
+					'운영과 유지보수 측면에서 React가 필요한 이유와 기능별 전환 방식을 제안했고, 합의 후 주요 관리자 기능을 옮겼습니다. 한 차례 배포 직후 무한 호출이 발생했을 때는 먼저 롤백한 뒤 오류와 리다이렉트 흐름을 추적해 백엔드 URL 문제를 찾았습니다.'
 				],
 				effect:
-					'기존 서비스를 중단하지 않고 약 1년간 JSP와 React를 병행 운영하며 기능 단위로 전환할 기반을 마련했습니다.',
-				effectHighlights: ['기존 서비스를 중단하지 않고', '기능 단위로 전환할 기반'],
+					'약 1년 동안 기존 서비스를 멈추지 않고 JSP와 React를 함께 운영하며 기능별로 화면을 옮겼습니다.',
+				effectHighlights: ['기존 서비스를 멈추지 않고', '기능별로 화면을 옮겼습니다'],
 				stack: ['React', 'TanStack Query', 'Emotion']
 			},
 			{
 				id: 'shopl-map',
-				title: '마커 2만 개로 중단되던 작업률 지도를 클러스터링으로 개선',
+				title: '대량 근무지 작업률 지도',
 				period: '재직 기간 중 약 1년간 개발·운영',
 				scope: '국내·해외 지도 연동과 클러스터링 구현',
 				overview:
 					'관리자가 날짜·근무지·직원별 작업 완료율을 국내외 지도에서 확인하는 기능을 개발했습니다.',
-				problem:
-					'근무지 마커 2만 개를 한 번에 렌더링하면 브라우저가 멈추고 흰 화면이 표시됐습니다.',
-				process: ['국내·해외 지도 API에 맞는 클러스터링을 구현해 대량의 마커를 묶어 표시했습니다.'],
+				problem: '근무지 마커 2만 개를 한꺼번에 그리면 브라우저가 멈추고 화면이 하얗게 비었습니다.',
+				process: ['국내와 해외에서 쓰는 지도 API에 맞춰 각각 클러스터링을 구현했습니다.'],
 				effect:
-					'흰 화면을 정상화해 관리자가 대량의 근무지 데이터에서도 작업 현황을 확인할 수 있게 했습니다.',
-				effectHighlights: ['흰 화면을 정상화', '작업 현황을 확인'],
+					'마커가 많은 근무지도 화면이 멈추지 않았고, 관리자는 지도에서 작업 현황을 다시 확인할 수 있었습니다.',
+				effectHighlights: ['화면이 멈추지 않았고', '작업 현황을 다시 확인'],
 				stack: ['React', 'NAVER Maps API', 'Google Maps API']
 			},
 			{
 				id: 'shopl-payment',
-				title: '수기 인보이스 업무를 국내·해외 정기결제 기능으로 전환',
-				period: '2022.11 — 2023.02',
+				title: '국내·해외 정기결제',
+				period: '2022.11 - 2023.02',
 				scope: '요금제·결제수단 관리 화면과 API 연동, 국내·해외 결제 상태 흐름 정의',
 				overview: '고객이 요금제와 결제수단을 직접 등록하고 관리하는 정기결제 기능을 개발했습니다.',
 				problem:
-					'수기로 처리하던 인보이스 업무를 제품 기능으로 옮겨야 했지만, Stripe의 결제수단 사전 등록과 후불 정기결제 흐름은 공식 문서만으로 확정하기 어려웠습니다.',
+					'인보이스로 수기 처리하던 결제를 고객이 직접 쓸 수 있는 제품 기능으로 옮겨야 했습니다.',
 				process: [
-					'아임포트와 Stripe를 연동해 요금제·결제수단 등록과 결제 관리 화면을 구현했습니다.',
-					'불명확한 해외 결제 동작은 Stripe 고객센터에 직접 문의하고 백엔드 개발자와 결제 상태별 역할을 합의했습니다.'
+					'아임포트와 Stripe로 결제 화면을 구현했습니다. 문서만으로 판단하기 어려운 결제 상태는 Stripe 고객센터에 직접 문의하고 백엔드와 맞춰 흐름을 확정했습니다.'
 				],
-				effect:
-					'국내·해외 고객이 요금제와 결제수단을 직접 관리할 수 있게 하며 수기 인보이스 절차를 제품 흐름으로 전환했습니다.',
-				effectHighlights: ['직접 관리', '수기 인보이스 절차를 제품 흐름으로 전환'],
+				effect: '국내외 고객이 제품 안에서 요금제와 결제수단을 직접 관리하게 됐습니다.',
+				effectHighlights: ['제품 안에서', '직접 관리하게 됐습니다'],
 				stack: ['React', '아임포트', 'Stripe', 'TanStack Query']
 			}
 		]
 	},
 	{
 		company: '아이티키',
-		period: '2018.07 — 2020.11',
+		responsibilities: '고객사 웹·관리자 화면과 API 개발, 주문·결제 운영 장애 대응',
+		service: '신한DS LMS, 롯데마트 웹·웹앱, 공공기관 사이트, 미스터피자 리뉴얼 등 고객사 SI 서비스',
+		period: '2018.07 - 2020.11',
 		duration: '2년 4개월',
 		role: 'SI 개발팀 사원',
 		summary: '여러 고객사의 웹 서비스·관리자 화면을 개발하고 운영 장애에 대응했습니다.',
 		works: [
 			{
 				id: 'itkey-si',
-				title: '고객사 주문·결제 운영과 인수인계 개선',
-				period: '2018.07 — 2020.11',
+				title: '',
+				period: '2018.07 - 2020.11',
 				scope: '관리자·회원·주문·결제 화면과 API 개발, 운영 대응, 가이드 작성',
 				overview:
 					'신한DS LMS, 롯데마트 웹·웹앱, 공공기관 사이트와 미스터피자 리뉴얼 등 여러 SI 프로젝트를 수행했습니다.',
 				problem:
-					'고객사마다 운영 방식이 달라 장애 대응과 신규 팀원의 반복적인 실행 절차 파악이 필요했습니다.',
+					'고객사마다 환경과 업무가 달라 데이터·주문·결제 오류도 제각각이었습니다. 프로젝트가 바뀔 때마다 새로 합류한 팀원이 실행 절차를 처음부터 다시 파악하는 일도 반복됐습니다.',
 				process: [
-					'관리자·회원·주문·결제 화면과 API를 구현하고 장애를 처리했으며, 업무·테스트 절차를 가이드로 남겼습니다.'
+					'관리자·회원·주문·결제 화면과 API를 개발하면서 운영 장애를 처리했습니다. 고객사별 실행 방법과 테스트 절차는 가이드로 따로 정리했습니다.'
 				],
-				effect: '운영 대응을 지속하고 반복되던 실행·인수인계 정보를 팀 문서로 정리했습니다.',
-				effectHighlights: ['운영 대응을 지속', '팀 문서로 정리했습니다'],
-				stack: ['Java', 'JavaScript', 'JSP']
+				effect:
+					'새로 합류한 팀원은 실행과 인수인계에 필요한 정보를 팀 문서에서 바로 확인할 수 있었습니다.',
+				effectHighlights: ['팀 문서에서 바로 확인'],
+				stack: ['Spring', 'Java', 'JavaScript', 'JSP', 'jQuery', 'Oracle', 'MySQL']
 			}
 		]
 	}
