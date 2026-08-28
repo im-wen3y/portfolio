@@ -43,6 +43,14 @@
   },
   "dynamicRoutes": [
     {
+      "page": "/print/download/[version]",
+      "regex": "^/print/download/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPversion": "nxtPversion"
+      },
+      "namedRegex": "^/print/download/(?<nxtPversion>[^/]+?)(?:/)?$"
+    },
+    {
       "page": "/project/[id]",
       "regex": "^/project/([^/]+?)(?:/)?$",
       "routeKeys": {
@@ -69,6 +77,18 @@
       "regex": "^/_not\\-found(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/owner",
+      "regex": "^/owner(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/owner(?:/)?$"
+    },
+    {
+      "page": "/owner/logout",
+      "regex": "^/owner/logout(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/owner/logout(?:/)?$"
     },
     {
       "page": "/print",

@@ -265,23 +265,23 @@ export const PRINT_PORTFOLIO_COLLABORATION = [
 export const PRINT_TARGET_RESUMES: Record<PrintTargetResumeId, PrintTargetResume> = {
 	senior: {
 		id: 'senior',
-		label: '시니어 FE',
-		headline: '운영을 멈추지 않고 구조를 바꾸며, 팀이 그 기준으로 일하게 만드는 프론트엔드 개발자',
+		label: '토스 지원용 FE',
+		headline: '사용자 흐름과 운영 기준을 함께 다듬으며, 팀이 같은 기준으로 움직이게 만드는 시니어 프론트엔드 개발자',
 		intro:
-			'두 차례의 JSP 서비스 React 전환을 제안부터 합의, 구현까지 이끌었습니다. 현상만 고치지 않고 상태·입력·배포·서버 설정까지 원인을 좁히고, 판단 근거를 문서로 남겨 파트 전체가 같은 기준으로 개발하게 합니다.',
+			'6명 규모 프론트엔드 파트에서 업무 배분, 온보딩, 기술 의사결정을 맡아 레거시 서비스 전환과 운영 개선을 함께 이끌었습니다. 화면만 보는 대신 입력·포커스·반응형·배포·보안 설정까지 원인을 좁혀 해결하고, 판단 근거를 문서로 남겨 팀이 같은 기준으로 개발하게 합니다.',
 		strengths: [
-			'React 전환을 대표·PM에게 제안해 합의를 만들고, 약 1년간 서비스를 멈추지 않고 기능 단위로 이전',
-			'UI가 서로 다른 렌즈 계산기 3개를 공통 입력·검증 구조로 통합해 중복 구현과 400 오류 감소',
-			'웹뷰 오류·크래시를 Slack으로 알리는 모니터링을 구축해, 사용자 문의 전에 대응 시작',
-			'신입 4명이 각자 운영 기능을, 주임급 개발자가 프로젝트 리드를 맡도록 경험에 맞춰 역할 확대'
+			'6명 규모 프론트엔드 파트 운영: 신입 온보딩, 업무 배분, 기술 기준 정리',
+			'JSP 레거시를 React로 전환하고 화면·정책·배포 구조를 분리',
+			'모바일·태블릿 입력, 포커스, 반응형 기준을 사용자 피드백에 맞춰 조정',
+			'결제·지도·본인인증·보안 차단 같은 운영 이슈를 직접 진단해 임시 조치와 정식 개선을 분리'
 		],
 		workIds: [
 			'acuvue-renewal',
-			'shopl-migration',
-			'cre8orclub-sentry',
 			'smartfitting',
+			'shopl-migration',
 			'shopl-map',
-			'shopl-payment'
+			'shopl-payment',
+			'nonmyacuvue-promo'
 		]
 	},
 	lead: {
