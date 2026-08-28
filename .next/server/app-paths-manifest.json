@@ -2,5 +2,11 @@
   "/(portfolio)/page": "app/(portfolio)/page.js",
   "/(portfolio)/project/[id]/page": "app/(portfolio)/project/[id]/page.js",
   "/_global-error/page": "app/_global-error/page.js",
-  "/_not-found/page": "app/_not-found/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/print/career/page": "app/print/career/page.js",
+  "/print/lead/page": "app/print/lead/page.js",
+  "/print/page": "app/print/page.js",
+  "/print/portfolio/page": "app/print/portfolio/page.js",
+  "/print/product/page": "app/print/product/page.js",
+  "/print/senior/page": "app/print/senior/page.js"
 }

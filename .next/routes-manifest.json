@@ -69,6 +69,42 @@
       "regex": "^/_not\\-found(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/print",
+      "regex": "^/print(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/print(?:/)?$"
+    },
+    {
+      "page": "/print/career",
+      "regex": "^/print/career(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/print/career(?:/)?$"
+    },
+    {
+      "page": "/print/lead",
+      "regex": "^/print/lead(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/print/lead(?:/)?$"
+    },
+    {
+      "page": "/print/portfolio",
+      "regex": "^/print/portfolio(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/print/portfolio(?:/)?$"
+    },
+    {
+      "page": "/print/product",
+      "regex": "^/print/product(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/print/product(?:/)?$"
+    },
+    {
+      "page": "/print/senior",
+      "regex": "^/print/senior(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/print/senior(?:/)?$"
     }
   ],
   "dataRoutes": [],
