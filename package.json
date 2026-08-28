@@ -4,19 +4,14 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"dev": "BROWSER='google chrome' vite dev --open",
-		"dev:portfolio": "pnpm --dir apps/portfolio dev",
-		"build": "vite build",
-		"build:portfolio": "pnpm --dir apps/portfolio build",
-		"preview": "vite preview",
-		"prepare": "svelte-kit sync || echo ''",
-		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"check": "tsc --noEmit",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
-		"test:unit": "vitest",
-		"test": "pnpm test:unit --run",
-		"check:portfolio": "pnpm --dir apps/portfolio check",
+		"test": "vitest run",
+		"test:watch": "vitest",
 		"pdf": "node --env-file=.env.local scripts/render-resume-pdf.mjs"
 	},
 	"devDependencies": {
@@ -25,6 +20,8 @@
 		"@sveltejs/kit": "^2.63.0",
 		"@sveltejs/vite-plugin-svelte": "^7.1.2",
 		"@types/node": "^22",
+		"@types/react": "^19",
+		"@types/react-dom": "^19",
 		"eslint": "^10.4.1",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.19.0",
@@ -38,5 +35,10 @@
 		"typescript-eslint": "^8.60.1",
 		"vite": "^8.0.16",
 		"vitest": "^4.1.8"
+	},
+	"dependencies": {
+		"next": "16.3.3",
+		"react": "19.2.8",
+		"react-dom": "19.2.8"
 	}
 }

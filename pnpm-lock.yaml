@@ -7,6 +7,16 @@ settings:
 importers:
 
   .:
+    dependencies:
+      next:
+        specifier: 16.3.3
+        version: 16.3.3(@types/node@22.19.21)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      react:
+        specifier: 19.2.8
+        version: 19.2.8
+      react-dom:
+        specifier: 19.2.8
+        version: 19.2.8(react@19.2.8)
     devDependencies:
       '@eslint/js':
         specifier: ^10.0.1
@@ -23,6 +33,12 @@ importers:
       '@types/node':
         specifier: ^22
         version: 22.19.21
+      '@types/react':
+        specifier: ^19
+        version: 19.2.18
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.2.5(@types/react@19.2.18)
       eslint:
         specifier: ^10.4.1
         version: 10.5.0
@@ -62,43 +78,6 @@ importers:
       vitest:
         specifier: ^4.1.8
         version: 4.1.9(@types/node@22.19.21)(vite@8.0.16(@types/node@22.19.21))
-
-  apps/portfolio:
-    dependencies:
-      next:
-        specifier: 16.3.3
-        version: 16.3.3(@types/node@22.19.21)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      react:
-        specifier: 19.2.8
-        version: 19.2.8
-      react-dom:
-        specifier: 19.2.8
-        version: 19.2.8(react@19.2.8)
-    devDependencies:
-      '@eslint/js':
-        specifier: ^10.0.1
-        version: 10.0.1(eslint@10.5.0)
-      '@types/node':
-        specifier: ^22
-        version: 22.19.21
-      '@types/react':
-        specifier: ^19
-        version: 19.2.18
-      '@types/react-dom':
-        specifier: ^19
-        version: 19.2.5(@types/react@19.2.18)
-      eslint:
-        specifier: ^10.0.1
-        version: 10.5.0
-      globals:
-        specifier: ^17.6.0
-        version: 17.6.0
-      typescript:
-        specifier: ^6.0.3
-        version: 6.0.3
-      typescript-eslint:
-        specifier: ^8.61.1
-        version: 8.61.1(eslint@10.5.0)(typescript@6.0.3)
 
 packages:
 
