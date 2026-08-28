@@ -1,0 +1,3 @@
+module.exports=[27572,a=>{"use strict";var b=a.i(11914);let c={metadataBase:new URL("https://im-wen3yz.vercel.app"),title:"im-wen3y",icons:{icon:"/favicon.ico"}};a.s(["default",0,function({children:a}){return(0,b.jsxs)("html",{lang:"ko",children:[(0,b.jsx)("head",{children:(0,b.jsx)("meta",{name:"text-scale",content:"scale"})}),(0,b.jsx)("body",{children:a})]})},"metadata",0,c])},50645,function(a){a.n(a.i(27572))}];
+
+//# sourceMappingURL=src_app_layout_tsx_0r5yz5t._.js.map

@@ -1,0 +1,3 @@
+module.exports=[35004,a=>{"use strict";var b=a.i(95552),c=a.i(86389);a.s(["PortfolioFeed",0,function({children:a}){let d=(0,c.useRef)(null),[e,f]=(0,c.useState)(!1);return(0,b.jsxs)("div",{className:"portfolio-feed",ref:d,onScroll:function(a){let{scrollTop:b,clientHeight:c,scrollHeight:d}=a.currentTarget;f(b+c>=d-24)},children:[a,(0,b.jsx)("button",{className:e?"top-button top-button-visible":"top-button",type:"button",onClick:function(){let a=window.matchMedia("(prefers-reduced-motion: reduce)").matches;d.current?.scrollTo({top:0,behavior:a?"auto":"smooth"})},"aria-label":"콘텐츠 맨 위로 이동",children:"TOP"})]})}])}];
+
+//# sourceMappingURL=src_components_portfolio-feed_tsx_13ri6a4._.js.map

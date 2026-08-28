@@ -1,0 +1,13 @@
+:HL["/_next/static/chunks/3m_5js0ij-j99.css","style"]
+:HL["/avatar-profile-3d.png","image"]
+:HL["/footer-sticker-laptop.png","image"]
+:HL["/footer-sticker-browser.png","image"]
+:HL["/footer-sticker-keyboard.svg","image"]
+:HL["/footer-sticker-mouse.svg","image"]
+:HL["/footer-sticker-components.png","image"]
+:HL["/footer-sticker-cursor.png","image"]
+:HL["/footer-sticker-braces.png","image"]
+:HL["/footer-sticker-glasses.png","image"]
+:HL["/footer-sticker-peace.png","image"]
+:HL["/footer-sticker-heart.png","image"]
+0:{"tree":{"name":"","param":null,"prefetchHints":4176,"slots":{"children":{"name":"(portfolio)","param":null,"prefetchHints":4192,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}},"staleTime":300,"buildId":"V4jmlxAQATE3tfqBUx42b"}
