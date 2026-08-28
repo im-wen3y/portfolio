@@ -33,3 +33,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 @rules/code-style.md
 @rules/component-style.md
+
+## Code Quality
+
+코드를 새로 쓰거나 고칠 때의 판단 기준(가독성·예측 가능성·응집도·결합도, 추상화/공통화 여부,
+선언 레벨 선택)은 `code-quality` 스킬을 따른다. 기계적으로 검증 가능한 항목은
+`eslint.config.js`에 규칙으로 들어가 있다.

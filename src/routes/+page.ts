@@ -1,5 +1,5 @@
 import { redirect } from '@sveltejs/kit';
 
 export function load() {
-	redirect(301, '/portfolio');
+	redirect(301, '/print');
 }

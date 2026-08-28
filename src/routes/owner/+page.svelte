@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
@@ -39,7 +38,9 @@
 			{/if}
 		</form>
 
-		<a class="back-link" href={resolve('/portfolio')}>공개 포트폴리오로 돌아가기 →</a>
+		<a class="back-link" href="https://im-wen3yz.vercel.app/portfolio"
+			>공개 포트폴리오로 돌아가기 →</a
+		>
 	</div>
 </section>
 

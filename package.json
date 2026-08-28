@@ -5,7 +5,9 @@
 	"type": "module",
 	"scripts": {
 		"dev": "BROWSER='google chrome' vite dev --open",
+		"dev:portfolio": "pnpm --dir apps/portfolio dev",
 		"build": "vite build",
+		"build:portfolio": "pnpm --dir apps/portfolio build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -14,6 +16,7 @@
 		"format": "prettier --write .",
 		"test:unit": "vitest",
 		"test": "pnpm test:unit --run",
+		"check:portfolio": "pnpm --dir apps/portfolio check",
 		"pdf": "node --env-file=.env.local scripts/render-resume-pdf.mjs"
 	},
 	"devDependencies": {

@@ -10,8 +10,8 @@
 	let scrollProgress = $state(0);
 	let menuOpen = $state(false);
 
-	let isPortfolioActive = $derived(page.url.pathname.startsWith('/portfolio'));
-	let isPortfolioIndex = $derived(page.url.pathname === '/portfolio');
+	const isPortfolioActive = false;
+	const isPortfolioIndex = false;
 	let isPrintActive = $derived(page.url.pathname.startsWith('/print'));
 	let isShareablePage = $derived(isPortfolioActive);
 	const socialTitle = '프론트엔드 개발자 · 송누리 · 포트폴리오';
@@ -78,7 +78,7 @@
 	>
 		<div class="nav-inner">
 			<a
-				href={resolve('/portfolio')}
+				href="https://im-wen3yz.vercel.app/portfolio"
 				class="brand"
 				aria-label="송누리 홈"
 				onclick={handleBrandClick}
@@ -94,7 +94,7 @@
 					<li><a href="#skills">기술</a></li>
 					<li><a href="#ai">AI 활용</a></li>
 				{:else if isPortfolioActive}
-					<li><a href={resolve('/portfolio')}>포트폴리오</a></li>
+					<li><a href="https://im-wen3yz.vercel.app/portfolio">포트폴리오</a></li>
 				{/if}
 				{#if data.showPrintMenu}
 					<li><a href={resolve('/print')}>PDF</a></li>
@@ -165,7 +165,9 @@
 				<li><a href="#skills" onclick={closeMenu}>기술</a></li>
 				<li><a href="#ai" onclick={closeMenu}>AI 활용</a></li>
 			{:else if isPortfolioActive}
-				<li><a href={resolve('/portfolio')} onclick={closeMenu}>포트폴리오</a></li>
+				<li>
+					<a href="https://im-wen3yz.vercel.app/portfolio" onclick={closeMenu}>포트폴리오</a>
+				</li>
 			{/if}
 			{#if data.showPrintMenu}
 				<li><a href={resolve('/print')} onclick={closeMenu}>PDF</a></li>
@@ -666,6 +668,33 @@
 		background: #2e3340;
 	}
 
+	.portfolio-index-nav {
+		left: 0;
+		right: 0;
+		width: 100%;
+		border-inline: 0;
+		border-bottom: 1px solid var(--color-hairline);
+		background: rgb(244 247 246 / 92%);
+		box-shadow: none;
+		transform: none;
+		backdrop-filter: blur(14px);
+		-webkit-backdrop-filter: blur(14px);
+	}
+
+	.portfolio-index-nav.scrolled {
+		background: rgb(244 247 246 / 97%);
+	}
+
+	.portfolio-index-nav .brand-name {
+		padding: 0;
+		border: 0;
+		border-radius: 0;
+		background: transparent;
+		box-shadow: none;
+		font-size: 15px;
+		transform: none;
+	}
+
 	.portfolio-drawer {
 		border: 2px solid #2e3340;
 		border-top: 0;
@@ -692,48 +721,154 @@
 				url('/cursor-isometric.png') 4 4,
 				auto;
 		}
+
+		:global(body:has(main.portfolio-index-page)),
+		:global(body:has(main.portfolio-index-page) *) {
+			cursor: auto;
+		}
+
+		:global(body:has(main.portfolio-index-page) :is(a, button)) {
+			cursor: pointer;
+		}
 	}
 
 	@media (min-width: 900px) {
-		:global(body:has(main.portfolio-index-page)) {
-			overflow: hidden;
-		}
-
 		.portfolio-nav,
 		main.portfolio-page,
 		.portfolio-footer {
 			width: min(100%, 1040px);
 		}
 
+		.portfolio-index-nav,
+		main.portfolio-index-page,
+		.portfolio-index-footer {
+			width: 100%;
+			max-width: none;
+		}
+
+		.portfolio-index-nav .nav-inner {
+			width: min(100%, 1280px);
+			margin-inline: auto;
+			padding-inline: clamp(24px, 6vw, 80px);
+		}
+
+		.portfolio-index-nav .brand-role,
+		.portfolio-index-nav .nav-links {
+			display: flex;
+		}
+
+		.portfolio-index-nav .hamburger {
+			display: none;
+		}
+
 		.portfolio-index-nav {
-			right: max(0px, calc((100vw - 964px) / 2));
-			left: auto;
-			width: 520px;
-			transform: none;
+			top: 24px;
+			bottom: 24px;
+			left: 24px;
+			right: auto;
+			width: 184px;
+			height: auto;
+			border: 2px solid #11100f;
+			border-radius: 26px;
+			background: #f2e8df;
+			overflow: hidden;
 		}
 
-		.portfolio-drawer {
-			right: max(0px, calc((100vw - 964px) / 2));
-			width: 520px;
-			transform: translateY(-12px) scale(0.98);
-			transform-origin: top right;
+		.portfolio-index-nav.scrolled {
+			background: #f2e8df;
 		}
 
-		.portfolio-drawer.drawer-open {
-			transform: translateY(0) scale(1);
+		.portfolio-index-nav .nav-inner {
+			display: flex;
+			flex-direction: column;
+			align-items: stretch;
+			justify-content: flex-start;
+			gap: 14px;
+			width: 100%;
+			height: 100%;
+			padding: 18px;
+		}
+
+		.portfolio-index-nav .brand {
+			display: block;
+			padding: 8px 2px 12px;
+		}
+
+		.portfolio-index-nav .brand-name {
+			font-size: 24px;
+			font-weight: 900;
+			letter-spacing: -0.06em;
+		}
+
+		.portfolio-index-nav .brand-role {
+			margin-top: 3px;
+			font-size: 9px;
+			font-weight: 700;
+			text-transform: uppercase;
+		}
+
+		.portfolio-index-nav .nav-links {
+			display: flex;
+			flex: 1;
+			flex-direction: column;
+			align-items: stretch;
+			gap: 8px;
+			width: 100%;
+		}
+
+		.portfolio-index-nav .nav-links li {
+			width: 100%;
+		}
+
+		.portfolio-index-nav .nav-links a {
+			display: flex;
+			align-items: flex-end;
+			width: 100%;
+			min-height: 58px;
+			padding: 10px;
+			border: 1.5px solid #11100f;
+			border-radius: 11px;
+			background: #238fe8;
+			font-size: 12px;
+			font-weight: 800;
+			color: #11100f;
+		}
+
+		.portfolio-index-nav .nav-links li:nth-child(2) a {
+			background: #ffc21c;
+		}
+
+		.portfolio-index-nav .nav-links li:nth-child(3) a {
+			background: #ff5422;
+		}
+
+		.portfolio-index-nav .nav-links li:nth-child(4) a {
+			background: #14bc43;
+		}
+
+		.portfolio-index-nav .nav-links li:nth-child(5) a {
+			background: #b55cf0;
+		}
+
+		.portfolio-index-nav .nav-links .nav-cta {
+			min-height: 44px;
+			background: #11100f;
+			color: #f2e8df;
 		}
 
 		main.portfolio-index-page {
-			width: min(100%, 964px);
-			height: 100dvh;
-			padding-top: 0;
-			overflow: hidden;
-			background: transparent;
-			box-shadow: none;
+			padding-left: 208px;
+			background: #1378df;
 		}
 
 		.portfolio-index-footer {
-			display: none;
+			padding-left: 232px;
+		}
+	}
+
+	@media (prefers-color-scheme: dark) {
+		main.portfolio-index-page {
+			background: #0d4384;
 		}
 	}
 
