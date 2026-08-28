@@ -51,12 +51,12 @@
 
 ## 색상 & 스타일 (사이트 기존 팔레트 재사용, 새 색상 없음)
 
-| 요소 | Light 상태 | Dark 상태 |
-|---|---|---|
-| 트랙 배경 | `--color-accent-amber` 옅은 틴트 (`color-mix(in srgb, var(--color-accent-amber) 30%, transparent)`) | `--color-surface-dark` |
-| Thumb 배경 | `--color-accent-amber` 솔리드 | `--color-primary` |
-| 아이콘 색 | thumb 위에서 잘 보이는 어두운 톤 (`--color-on-primary`) | `--color-on-primary` |
-| 라벨 텍스트 | `--color-muted` (평상시) / `--color-ink` (hover) | 동일 |
+| 요소        | Light 상태                                                                                          | Dark 상태              |
+| ----------- | --------------------------------------------------------------------------------------------------- | ---------------------- |
+| 트랙 배경   | `--color-accent-amber` 옅은 틴트 (`color-mix(in srgb, var(--color-accent-amber) 30%, transparent)`) | `--color-surface-dark` |
+| Thumb 배경  | `--color-accent-amber` 솔리드                                                                       | `--color-primary`      |
+| 아이콘 색   | thumb 위에서 잘 보이는 어두운 톤 (`--color-on-primary`)                                             | `--color-on-primary`   |
+| 라벨 텍스트 | `--color-muted` (평상시) / `--color-ink` (hover)                                                    | 동일                   |
 
 - 트랙: `width: 44px; height: 24px; border-radius: 999px; padding: 2px;`
 - Thumb: `width: 20px; height: 20px; border-radius: 50%;` — `is-dark` 클래스일 때 `transform: translateX(20px)`, 아닐 때 `translateX(0)`. `transition: transform 0.2s ease, background-color 0.2s ease;`

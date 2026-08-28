@@ -1,6 +1,6 @@
 ---
 name: code-quality
-description: 이 저장소의 Svelte/TypeScript/React 코드를 새로 쓰거나 고치거나 리뷰할 때 항상 참조한다. "변경하기 쉬운 코드"를 기준으로 가독성·예측 가능성·응집도·결합도를 판단하고, 추상화·공통화 여부와 선언 레벨을 고른다. 컴포넌트 분리, 훅/스토어 설계, 중복 제거 여부를 고민할 때 특히 사용한다.
+description: 이 저장소의 React/TypeScript 코드를 새로 쓰거나 고치거나 리뷰할 때 항상 참조한다. "변경하기 쉬운 코드"를 기준으로 가독성·예측 가능성·응집도·결합도를 판단하고, 추상화·공통화 여부와 선언 레벨을 고른다. 컴포넌트 분리, 서버·클라이언트 경계, 훅 설계, 중복 제거 여부를 고민할 때 특히 사용한다.
 ---
 
 # 코드 품질 기준
@@ -46,16 +46,16 @@ sum(nums);
 
 ### 선언적 코드가 항상 좋은 건 아니다
 
-```svelte
-<!-- 잘 된 추상화 — 인터페이스가 좁고, 한 곳만 바꾸면 전파된다 -->
-<SignUpForm onsubmit={(result) => { /* ... */ }} />
+```tsx
+// 잘 된 추상화 — 인터페이스가 좁고, 한 곳만 바꾸면 전파된다
+<SignUpForm onSubmit={(result) => { /* ... */ }} />
 
-<!-- 무너진 추상화 — 화면마다 조금씩 달라서 prop이 폭발한다 -->
+// 무너진 추상화 — 화면마다 조금씩 달라서 prop이 폭발한다
 <SignUpForm
   signUpOrder={['sns', 'normal']}
   title="..." subtitle="..."
   primaryButtonColor={...} secondaryButtonColor={...}
-  oncancel={...} onsubmit={...}
+  onCancel={...} onSubmit={...}
 />
 ```
 
@@ -72,7 +72,7 @@ sum(nums);
 
 분기 때문에 동시에 실행될 수 없는 코드가 한 컴포넌트에 섞이면 두 흐름을 동시에 추적해야 한다.
 
-```svelte
+```tsx
 <!-- Before — 두 역할의 로직이 교차한다 -->
 <script lang="ts">
 	const isViewer = $derived(role.value === 'viewer');
@@ -95,7 +95,7 @@ sum(nums);
 ### 구현 상세는 감싼다
 
 로그인 여부 검사, 권한 체크 같은 상세가 화면 코드에 드러나면 "이 화면이 무엇을 하는지"가 묻힌다.
-래퍼 컴포넌트나 `+layout.svelte` / `+page.ts` load로 옮긴다.
+래퍼 컴포넌트나 `layout.tsx` / `proxy.ts`로 옮긴다.
 
 ### 이름을 붙인다
 
@@ -136,13 +136,13 @@ await delay(ANIMATION_DELAY_MS);
 ### 같은 계열은 반환 타입을 통일한다
 
 ```ts
-// Before — 같은 계열인데 하나는 store를, 하나는 값을 반환한다
-export function useUser() { return createQuery(...); }
-export function useServerTime() { const { data } = createQuery(...); return data; }
+// Before — 같은 계열인데 하나는 query 객체를, 하나는 값을 반환한다
+export function useUser() { return useQuery(...); }
+export function useServerTime() { const { data } = useQuery(...); return data; }
 
 // After — 같은 계열은 같은 형태로
-export function useUser() { return createQuery(...); }
-export function useServerTime() { return createQuery(...); }
+export function useUser() { return useQuery(...); }
+export function useServerTime() { return useQuery(...); }
 ```
 
 검증 함수처럼 여러 곳에 흩어지는 유틸도 반환 형태를 하나로 맞춘다.
@@ -177,32 +177,31 @@ logging.log('balance_fetched');
 **기능/도메인 단위로 묶고, 그 안에서 파일을 나눈다.**
 
 ```
-src/lib/
-  print/            ← 인쇄 이력서 도메인
-    PrintShell.svelte
-    print-profile.ts
-    resume-print.css
+src/
+  components/print/   ← 인쇄 문서 컴포넌트
+  data/print-profile.ts
+  styles/resume-print.css
 ```
 
-> 이 저장소의 현재 상태: `src/lib/components/print/`와 `src/lib/styles/resume-print.css`가
-> 갈라져 있다. 같이 바뀌는 파일들이므로 손댈 일이 생기면 합치는 방향으로 간다.
+> 이 저장소의 현재 상태: 인쇄 문서의 컴포넌트·데이터·스타일이 세 디렉토리로 갈라져 있다.
+> 같이 바뀌는 파일들이므로 손댈 일이 생기면 합치는 방향으로 간다.
 
 ### 함께 바뀌는 값은 하나의 상수를 공유한다
 
 같은 원본에서 파생되는 값을 여러 곳에서 따로 계산하지 않는다.
 
-```svelte
-<!-- Before — variant → id 매핑과 variant → title 매핑이 따로 있다 -->
-const currentDoc = $derived(/* variant 분기 */);
-const documentTitle = $derived(/* 같은 variant 분기를 또 */);
+```tsx
+// Before — variant → id 매핑과 variant → title 매핑이 따로 있다
+const currentDoc = /* variant 분기 */;
+const documentTitle = /* 같은 variant 분기를 또 */;
 
-<!-- After — 같이 바뀌므로 한 곳에서 함께 결정한다 -->
+// After — 같이 바뀌므로 한 곳에서 함께 결정한다
 function resolveDocument(): { id: string; title: string } {
   if (targetResume) return { id: 'target', title: `${targetResume.label} 이력서` };
   if (variant === 'career') return { id: 'career', title: '경력기술서' };
   return { id: 'resume', title: '이력서' };
 }
-const currentDocument = $derived(resolveDocument());
+const currentDocument = resolveDocument();
 ```
 
 ### 폼의 응집 단위를 의식적으로 고른다
@@ -218,10 +217,10 @@ const currentDocument = $derived(resolveDocument());
 
 ### 책임을 하나씩 관리한다
 
-여러 관심사를 담은 훅/스토어는 한 관심사만 필요한 화면까지 전부 묶어버린다.
+여러 관심사를 담은 훅은 한 관심사만 필요한 화면까지 전부 묶어버린다.
 
 ```ts
-// Before — 이 스토어를 쓰는 모든 화면이 모든 쿼리 파라미터에 결합된다
+// Before — 이 훅을 쓰는 모든 화면이 모든 쿼리 파라미터에 결합된다
 const [values, setValues] = usePageState(); // cardId, dateFrom, dateTo, status...
 
 // After — 필요한 것만 각각
@@ -240,9 +239,9 @@ const [dateFrom, setDateFrom] = useDateFromQueryParam();
 ### Props Drilling을 지운다
 
 중간 컴포넌트가 자기가 쓰지 않는 prop을 전달하면, prop 하나가 바뀔 때 경로 전체가 수정된다.
-Svelte 5에서는 **snippet 조합**이나 `setContext`/`getContext`로 경로를 끊는다.
+React에서는 **children 조합**이나 Context로 경로를 끊는다.
 
-```svelte
+```tsx
 <!-- Before -->
 <ItemEditBody {items} {recommendedItems} {onconfirm} />
 
@@ -273,32 +272,32 @@ Svelte 5에서는 **snippet 조합**이나 `setContext`/`getContext`로 경로�
 
 ### 오버레이 — 상태 변수를 없앤다
 
-```svelte
-<!-- Before — isOpen 상태와 setter가 화면 코드에 드러난다 -->
-let isSheetOpen = $state(false);
-<button onclick={() => (isSheetOpen = true)}>열기</button>
-<BottomSheet open={isSheetOpen} onclose={() => (isSheetOpen = false)}>내용</BottomSheet>
+```tsx
+// Before — isOpen 상태와 setter가 화면 코드에 드러난다
+const [isSheetOpen, setIsSheetOpen] = useState(false);
+<button onClick={() => setIsSheetOpen(true)}>열기</button>
+<BottomSheet open={isSheetOpen} onClose={() => setIsSheetOpen(false)}>내용</BottomSheet>
 
-<!-- After — "열어라"만 남는다 -->
-<button onclick={() => overlay.open(BottomSheetContent)}>열기</button>
+// After — "열어라"만 남는다
+<button onClick={() => overlay.open(BottomSheetContent)}>열기</button>
 ```
 
-React(`apps/portfolio`)에서는 [overlay-kit](https://github.com/toss/overlay-kit)의
+React에서는 [overlay-kit](https://github.com/toss/overlay-kit)의
 `overlay.openAsync<boolean>(...)`로 결과를 Promise로 받는다.
 
 ### 노출 감지 — 옵저버를 감춘다
 
 `IntersectionObserver` 생성·해제, 스크롤 핸들러, 임계값 계산을 컴포넌트 안에 감춘다.
 
-```svelte
-<ImpressionArea onimpressionstart={() => log('viewed')}>
+```tsx
+<ImpressionArea onImpressionStart={() => log('viewed')}>
 	<div>이 영역이 보이면 실행된다</div>
 </ImpressionArea>
 ```
 
 ### 로깅 — 핸들러를 오염시키지 않는다
 
-```svelte
+```tsx
 <!-- Before — 클릭 핸들러에 로깅 호출이 섞인다 -->
 <button
 	onclick={() => {
@@ -336,7 +335,7 @@ return <Profile data={data} />;
 ```
 
 이는 "같이 실행되지 않는 코드 분리하기"(가독성)와 동일한 원리다.
-SvelteKit에서는 `+page.ts`의 load와 `{#await}`, `+error.svelte`가 같은 역할을 한다.
+App Router에서는 `loading.tsx`와 `error.tsx`가 같은 역할을 한다.
 
 ---
 
@@ -356,7 +355,7 @@ SvelteKit에서는 `+page.ts`의 load와 `{#await}`, `+error.svelte`가 같은 �
 ### 예측 가능성
 
 - [ ] 라이브러리·기존 함수와 같은 이름으로 다른 동작을 하지 않는가
-- [ ] 같은 계열 함수/훅/스토어의 반환 타입이 일관적인가
+- [ ] 같은 계열 함수/훅의 반환 타입이 일관적인가
 - [ ] 이름이 약속하지 않은 부수 효과(로깅, 저장, 이동)가 숨어 있지 않은가
 - [x] ★ 스코프 간 이름 가림 (`@typescript-eslint/no-shadow`)
 
@@ -368,7 +367,7 @@ SvelteKit에서는 `+page.ts`의 load와 `{#await}`, `+error.svelte`가 같은 �
 
 ### 결합도
 
-- [ ] 한 훅/스토어/함수가 여러 관심사를 동시에 갖고 있지 않은가
+- [ ] 한 훅/함수가 여러 관심사를 동시에 갖고 있지 않은가
 - [ ] 아직 방향이 갈릴 수 있는 코드를 성급히 공통화하지 않았는가
 - [ ] 중간 컴포넌트가 쓰지 않는 prop을 전달하고 있지 않은가
 

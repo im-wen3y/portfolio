@@ -5,17 +5,7 @@ import ts from 'typescript-eslint';
 // 코드 품질 기준은 .claude/skills/code-quality/SKILL.md 를 따른다.
 // 기계로 검증 가능한 항목만 여기서 규칙화한다.
 export default ts.config(
-	// src/routes, src/lib, src/hooks.server.ts 는 이식 참조용 SvelteKit 잔여물 — 5단계에서 제거한다
-	{
-		ignores: [
-			'.next/**',
-			'.svelte-kit/**',
-			'next-env.d.ts',
-			'src/routes/**',
-			'src/lib/**',
-			'src/hooks.server.ts'
-		]
-	},
+	{ ignores: ['.next/**', 'next-env.d.ts'] },
 	js.configs.recommended,
 	ts.configs.recommended,
 	{

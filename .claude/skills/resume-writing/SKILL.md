@@ -1,6 +1,6 @@
 ---
 name: resume-writing
-description: 이력서·경력기술서·포트폴리오 문구를 쓰거나 고칠 때 사용한다. PAAR 구조, 성과의 수치화, 문서별 성격 분리 기준을 적용해 "수행 업무 나열"을 "문제 해결 서사"로 바꾼다. src/lib/components/print/print-profile.ts, src/lib/data/portfolio-projects.ts 수정 시 항상 참조.
+description: 이력서·경력기술서·포트폴리오 문구를 쓰거나 고칠 때 사용한다. PAAR 구조, 성과의 수치화, 문서별 성격 분리 기준을 적용해 "수행 업무 나열"을 "문제 해결 서사"로 바꾼다. src/data/print-profile.ts, src/data/portfolio-projects.ts 수정 시 항상 참조.
 ---
 
 # 이력서 작성 기준

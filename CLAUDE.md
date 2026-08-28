@@ -10,8 +10,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture
 
-- **Svelte 5 runes mode** is enforced project-wide via `vite.config.ts` (use `$props()`, `$state()`, `$derived()`, etc.)
-- `$lib` alias maps to `src/lib/`
+- **Next.js 16 App Router** (React 19, TypeScript). `@/*` alias maps to `src/*`
+- `src/app/(portfolio)/` → `/`, `/project/[id]` · `src/app/print/` → 인쇄 문서 · `src/app/owner/` → 소유자 로그인
+- `src/proxy.ts` 가 `/print/*` 를 소유자 인증으로 보호한다 (Next 16에서 middleware → proxy)
+- **CSS는 영역별로 분리한다.** `styles/base.css`(토큰·리셋)만 공유하고,
+  `styles/portfolio.css` 와 `styles/resume-print.css` 는 각 레이아웃에서만 import 한다.
+  화면 스타일을 루트 레이아웃에 두면 인쇄 문서로 샌다.
+- PDF는 `src/server-assets/` 에 둔다. `public/` 에 두면 공개 URL이 되어 인증이 무의미해진다
 
 ## Accessibility (a11y)
 
@@ -24,8 +29,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Testing
 
 - Vitest with `requireAssertions: true` — every test must contain at least one assertion
-- Server-side tests: `src/**/*.{test,spec}.{js,ts}`
-- Component tests excluded from server project (`.svelte.{test,spec}` files)
+- `src/**/*.{test,spec}.{js,ts}` — Node 환경. 컴포넌트가 아니라 순수 로직을 테스트한다
+  (예: `lib/owner-auth.ts`, `lib/print-theme.ts` — React 밖에 있어 훅 없이 검증된다)
 
 ## Type/Lint Errors
 

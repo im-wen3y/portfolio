@@ -720,16 +720,6 @@
 	font-weight: 600;
 }
 
-.portfolio-footer-grid {
-	display: flex;
-	flex-direction: column;
-	gap: 6mm;
-	margin-top: 10mm;
-	padding-top: 5mm;
-	border-top: 1px solid rgba(20, 20, 19, 0.14);
-	break-inside: avoid;
-}
-
 /* ── 섹션 레이블 ── */
 .pr-label {
 	font-family: 'Pretendard Variable', sans-serif;
@@ -975,6 +965,16 @@
 	display: flex;
 	flex-direction: column;
 	gap: 1.2mm;
+}
+
+.portfolio-footer-grid {
+	display: flex;
+	flex-direction: column;
+	gap: 6mm;
+	margin-top: 10mm;
+	padding-top: 5mm;
+	border-top: 1px solid rgba(20, 20, 19, 0.14);
+	break-inside: avoid;
 }
 
 .resume-skill-list p {
@@ -1921,6 +1921,13 @@
 		flex-wrap: wrap;
 	}
 
+	.pr-strength-grid,
+	.resume-career-grid,
+	.resume-footer-grid,
+	.portfolio-footer-grid {
+		grid-template-columns: 1fr;
+	}
+
 	.resume-summary-header {
 		align-items: flex-start;
 		flex-direction: column;
@@ -1974,13 +1981,6 @@
 			var(--color-hairline-soft) calc(8mm + 16px),
 			transparent calc(8mm + 16px)
 		);
-	}
-
-	.pr-strength-grid,
-	.resume-career-grid,
-	.resume-footer-grid,
-	.portfolio-footer-grid {
-		grid-template-columns: 1fr;
 	}
 
 	.resume-career-item {
@@ -2615,28 +2615,66 @@
 }
 
 /* ── 지원 직무별 2페이지 이력서 ── */
+.target-resume-sheet {
+	--target-sentence-surface: color-mix(in srgb, var(--color-primary) 8%, var(--color-canvas));
+	--target-sentence-border: color-mix(in srgb, var(--color-primary) 28%, var(--color-hairline));
+	--target-sentence-shadow: color-mix(in srgb, var(--color-primary) 10%, transparent);
+}
+
+.target-resume-sheet[data-target-resume='senior'] {
+	--pr-accent: var(--color-primary);
+}
+
 .target-resume-intro {
 	margin-top: 5mm;
-	padding: 4mm 0;
-	border-top: 1px solid var(--doc-line);
-	border-bottom: 1px solid var(--doc-line);
+	padding: 4mm 0 4.5mm;
+	border-top: 1px solid color-mix(in srgb, var(--pr-accent) 18%, var(--doc-line));
+	border-bottom: 1px solid color-mix(in srgb, var(--pr-accent) 18%, var(--doc-line));
 }
 
 .target-resume-intro h2 {
 	max-width: 145mm;
 	margin: 0;
 	color: var(--doc-ink);
-	font-size: 15pt;
+	font-size: 16.5pt;
 	font-weight: 780;
-	letter-spacing: -0.035em;
+	letter-spacing: -0.03em;
 	line-height: 1.35;
 }
 
 .target-resume-intro h2 + p {
 	max-width: 158mm;
 	margin: 2mm 0 0;
-	font-size: 9.2pt;
-	line-height: 1.65;
+	font-size: 10.2pt;
+	line-height: 1.62;
+	color: var(--doc-text);
+}
+
+.target-sentence-strip {
+	margin-top: 5mm;
+}
+
+.target-sentence-list {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 3mm;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.target-sentence-list li {
+	min-height: 100%;
+	padding: 4mm 4.5mm;
+	border: 1px solid var(--target-sentence-border);
+	border-left: 3px solid var(--pr-accent);
+	border-radius: 8px;
+	background: var(--target-sentence-surface);
+	box-shadow: 0 8px 18px var(--target-sentence-shadow);
+	color: var(--doc-text);
+	font-size: 10.3pt;
+	line-height: 1.55;
+	text-wrap: pretty;
 }
 
 .target-strength-list {
@@ -2650,11 +2688,11 @@
 
 .target-strength-list li {
 	padding-top: 2.5mm;
-	border-top: 2px solid var(--doc-ink);
+	border-top: 2px solid var(--pr-accent);
 	color: var(--doc-text);
-	font-size: 8.3pt;
+	font-size: 8.8pt;
 	font-weight: 650;
-	line-height: 1.5;
+	line-height: 1.52;
 }
 
 .target-work-section {
@@ -2681,7 +2719,7 @@
 .target-resume-work h3 {
 	margin: 0;
 	color: var(--doc-ink);
-	font-size: var(--doc-title);
+	font-size: 13.2pt;
 	font-weight: 760;
 }
 
@@ -2689,7 +2727,7 @@
 .target-resume-work header > span {
 	margin: 0.5mm 0 0;
 	color: var(--doc-muted);
-	font-size: var(--doc-micro);
+	font-size: 9.3pt;
 	font-weight: 620;
 }
 
@@ -2712,7 +2750,7 @@
 .target-resume-work dt,
 .target-resume-work dd {
 	margin: 0;
-	font-size: 8.2pt;
+	font-size: 8.8pt;
 	line-height: 1.5;
 }
 
@@ -2735,7 +2773,7 @@
 	gap: 4mm;
 	padding: 1.5mm 0;
 	border-bottom: 1px solid var(--doc-line);
-	font-size: var(--doc-meta);
+	font-size: 9.3pt;
 }
 
 .target-career-summary article span {
@@ -3124,7 +3162,4 @@
 		break-after: auto;
 		page-break-after: auto;
 	}
-}
-
-@media (max-width: 680px) {
 }

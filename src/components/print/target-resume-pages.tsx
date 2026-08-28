@@ -23,6 +23,13 @@ function getTargetWorks(profile: PrintTargetResume): TargetWork[] {
 	});
 }
 
+/** 지원 직무마다 다른 강조색을 준다 */
+function accentFor(id: PrintTargetResume['id']): string {
+	if (id === 'senior') return 'portfolio-green';
+	if (id === 'lead') return 'toss-blue';
+	return 'carrot-orange';
+}
+
 /** 지원 직무별 이력서(senior/lead/product): A4 2장 */
 export function TargetResumePages({
 	profile,
@@ -31,6 +38,7 @@ export function TargetResumePages({
 	profile: PrintTargetResume;
 	dark: boolean;
 }) {
+	const accent = accentFor(profile.id);
 	const sheetClass = dark
 		? 'page resume-document resume-sheet target-resume-sheet dark'
 		: 'page resume-document resume-sheet target-resume-sheet';
@@ -39,7 +47,12 @@ export function TargetResumePages({
 
 	return (
 		<>
-			<article className={sheetClass} data-resume-version="compact">
+			<article
+				className={sheetClass}
+				data-resume-version="compact"
+				data-target-resume={profile.id}
+				data-accent={accent}
+			>
 				<SheetMeta page="01" total="02" section={profile.label} />
 				<DocumentHeader />
 
@@ -47,6 +60,22 @@ export function TargetResumePages({
 					<h2 id={`target-title-${profile.id}`}>{profile.headline}</h2>
 					<p>{profile.intro}</p>
 				</section>
+
+				{profile.sentences && (
+					<section
+						className="target-sentence-strip"
+						aria-labelledby={`target-sentences-${profile.id}`}
+					>
+						<h2 id={`target-sentences-${profile.id}`} className="pr-label">
+							지원 문장
+						</h2>
+						<ul className="target-sentence-list">
+							{profile.sentences.map((sentence) => (
+								<li key={sentence}>{sentence}</li>
+							))}
+						</ul>
+					</section>
+				)}
 
 				<section className="resume-overview" aria-labelledby={`target-strengths-${profile.id}`}>
 					<h2 id={`target-strengths-${profile.id}`} className="pr-label">

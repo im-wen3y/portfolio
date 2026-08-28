@@ -63,6 +63,7 @@ export interface PrintTargetResume {
 	label: string;
 	headline: string;
 	intro: string;
+	sentences?: string[];
 	strengths: string[];
 	workIds: string[];
 }
@@ -266,9 +267,16 @@ export const PRINT_TARGET_RESUMES: Record<PrintTargetResumeId, PrintTargetResume
 	senior: {
 		id: 'senior',
 		label: '토스 지원용 FE',
-		headline: '사용자 흐름과 운영 기준을 함께 다듬으며, 팀이 같은 기준으로 움직이게 만드는 시니어 프론트엔드 개발자',
+		headline:
+			'사용자 흐름과 운영 기준을 함께 다듬으며, 팀이 같은 기준으로 움직이게 만드는 시니어 프론트엔드 개발자',
 		intro:
 			'6명 규모 프론트엔드 파트에서 업무 배분, 온보딩, 기술 의사결정을 맡아 레거시 서비스 전환과 운영 개선을 함께 이끌었습니다. 화면만 보는 대신 입력·포커스·반응형·배포·보안 설정까지 원인을 좁혀 해결하고, 판단 근거를 문서로 남겨 팀이 같은 기준으로 개발하게 합니다.',
+		sentences: [
+			'6명 규모 프론트엔드 파트에서 업무 배분, 온보딩, 기술 의사결정을 맡아 레거시 서비스 전환과 운영 개선을 함께 이끌었습니다.',
+			'화면만 보는 대신 입력·포커스·반응형·배포·보안 설정까지 원인을 좁혀 해결하고, 판단 근거를 문서로 남겨 팀이 같은 기준으로 개발하게 합니다.',
+			'JSP 레거시를 React로 전환하고 화면·정책·배포 구조를 분리했습니다.',
+			'모바일·태블릿 입력, 포커스, 반응형 기준을 사용자 피드백에 맞춰 조정했습니다.'
+		],
 		strengths: [
 			'6명 규모 프론트엔드 파트 운영: 신입 온보딩, 업무 배분, 기술 기준 정리',
 			'JSP 레거시를 React로 전환하고 화면·정책·배포 구조를 분리',

@@ -10,5 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function PrintLayout({ children }: Readonly<{ children: ReactNode }>) {
-	return <main className="print-page">{children}</main>;
+	return <main>{children}</main>;
 }

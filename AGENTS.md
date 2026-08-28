@@ -2,7 +2,7 @@
 
 ## 적용 범위와 우선순위
 
-이 저장소는 SvelteKit으로 만든 개인 이력서·포트폴리오 사이트다. 채용 담당자가 경력과
+이 저장소는 Next.js로 만든 개인 이력서·포트폴리오 사이트다. 채용 담당자가 경력과
 기술을 빠르게 파악하도록 정보 전달, 접근성, 성능을 장식 효과보다 우선한다. 이 규칙은
 저장소 전체에 적용하며, 하위 디렉터리에 `AGENTS.md`가 생기면 해당 규칙을 우선한다.
 
@@ -11,24 +11,29 @@
 - 기존 사용자 변경을 덮어쓰거나 관련 없는 파일을 포맷하지 않는다.
 - 새 라이브러리나 외부 서비스는 임의로 추가하지 않는다.
 
-## 기술 및 Svelte 규칙
+## 기술 및 React 규칙
 
-실제 `package.json`과 설정 파일을 기준으로 작업한다. 이 프로젝트는 SvelteKit, Svelte 5
-runes, strict TypeScript, Vite, pnpm을 사용하며 `$lib`은 `src/lib`을 가리킨다.
+실제 `package.json`과 설정 파일을 기준으로 작업한다. 이 프로젝트는 Next.js 16 App Router,
+React 19, strict TypeScript, pnpm을 사용하며 `@/*`는 `src/*`를 가리킨다.
 
-- 컴포넌트는 `<script lang="ts">`와 `$props()`, `$state()`, `$derived()` 등 기존 runes
-  문법을 사용한다. props와 데이터 구조에는 명확한 타입을 지정한다.
+- 기본은 서버 컴포넌트다. 상태·이벤트·브라우저 API가 필요할 때만 `'use client'`를 붙이고,
+  되도록 잎(leaf)에 둔다. props와 데이터 구조에는 명확한 타입을 지정한다.
 - 파생 가능한 값을 별도 상태로 중복 저장하지 않는다. 전역 상태는 여러 화면에서 실제로
   공유할 때만 사용한다.
-- 브라우저 API는 SSR을 고려해 `onMount` 또는 브라우저 여부가 보장된 위치에서 사용한다.
-- SvelteKit 라우팅·로딩 규칙을 따르고 내부 링크는 `$app/paths`의 `resolve()`를 사용한다.
+- localStorage 등 서버에 없는 값은 초기 렌더에 기본값을 쓰고 `useEffect`에서 읽어
+  하이드레이션 불일치를 피한다.
+- App Router 파일 규칙(`layout`/`page`/`route`/`not-found`)을 따르고 내부 링크는
+  `next/link`의 `<Link>`를 사용한다.
+- CSS는 영역별로 분리한다. `styles/base.css`(토큰·리셋)만 공유하고 화면 스타일은
+  `styles/portfolio.css`·`styles/resume-print.css`·`styles/owner.css` 로 나눈다.
+  전역 CSS라 일반 셀렉터(`h1`, `form`)는 화면 루트 클래스 아래로 중첩한다.
 - 반복 UI나 로직이 실제로 존재할 때만 컴포넌트·유틸리티로 추출한다.
-- `{@html}`은 피한다. 불가피하면 입력이 신뢰 가능한지 확인한다.
+- `dangerouslySetInnerHTML`은 피한다. 불가피하면 입력이 신뢰 가능한지 확인한다.
 - 타입·린트 오류를 `any`, `@ts-ignore`, `@ts-expect-error`, `eslint-disable` 또는 설정 완화로
   숨기지 않는다. `rules/code-style.md`와 `rules/component-style.md`를 따른다.
 
-Prettier 기준은 탭, 작은따옴표, trailing comma 없음, 100자 너비다. Svelte 컴포넌트는
-PascalCase, 일반 모듈과 store는 kebab-case, 테스트는 `*.spec.ts` 또는 `*.test.ts`로
+Prettier 기준은 탭, 작은따옴표, trailing comma 없음, 100자 너비다. 컴포넌트 파일과 모듈은
+kebab-case, 내보내는 컴포넌트는 PascalCase, 테스트는 `*.spec.ts` 또는 `*.test.ts`로
 명명하고 대상 코드 옆에 둔다.
 
 ## 경력 및 콘텐츠 정확성
