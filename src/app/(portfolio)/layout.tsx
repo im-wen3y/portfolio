@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { PortfolioNav } from '@/components/portfolio-nav';
+import '@/styles/portfolio.css';
 
 const TITLE = '프론트엔드 개발자 · 송누리 · 포트폴리오';
 const DESCRIPTION =

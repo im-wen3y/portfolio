@@ -1,4 +1,5 @@
-:HL["/_next/static/chunks/3m_5js0ij-j99.css","style"]
+:HL["/_next/static/chunks/0msf5quajyqwe.css","style"]
+:HL["/_next/static/chunks/2ij496chk43ss.css","style"]
 :HL["/avatar-profile-3d.png","image"]
 :HL["/footer-sticker-laptop.png","image"]
 :HL["/footer-sticker-browser.png","image"]
@@ -10,4 +11,4 @@
 :HL["/footer-sticker-glasses.png","image"]
 :HL["/footer-sticker-peace.png","image"]
 :HL["/footer-sticker-heart.png","image"]
-0:{"tree":{"name":"","param":null,"prefetchHints":4176,"slots":{"children":{"name":"(portfolio)","param":null,"prefetchHints":4192,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}},"staleTime":300,"buildId":"u7AWs5jfN6pP5vuWei75G"}
+0:{"tree":{"name":"","param":null,"prefetchHints":4176,"slots":{"children":{"name":"(portfolio)","param":null,"prefetchHints":4192,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}},"staleTime":300,"buildId":"EndeTqcWq996Cjw-93jlO"}

@@ -1,0 +1,132 @@
+@import './pretendard.css';
+
+/* 토큰 · 리셋 · 폰트. 포트폴리오와 인쇄 문서가 함께 쓰는 최소 층이다.
+   화면 스타일은 여기 두지 않는다 — portfolio.css / resume-print.css 로 간다. */
+
+:root {
+	/* Neo-refined portfolio system */
+	--color-primary: #47d7a4;
+	--color-primary-active: #31bd8e;
+	--color-primary-strong: #237a5f;
+	--color-secondary: #c679df;
+	--color-secondary-strong: #77428b;
+	--color-accent-teal: #47d7a4;
+	--color-accent-amber: #ffb47f;
+
+	/* Text */
+	--color-ink: #1d2430;
+	--color-body: #3f4947;
+	--color-body-strong: #303a38;
+	--color-muted: #596461;
+	--color-muted-soft: #74807d;
+	--color-on-primary: #153d31;
+	--color-on-dark: #f1f7f5;
+	--color-on-dark-soft: #c7d0ce;
+
+	/* Surface */
+	--color-canvas: #f1f7f5;
+	--color-surface-soft: #edf4f1;
+	--color-surface-card: #f1f7f5;
+	--color-surface-raised: #e9efed;
+	--color-surface-high: #e1e9e7;
+	--color-surface-dark: #303a38;
+	--color-surface-dark-elevated: #3f4947;
+	--color-surface-dark-soft: #35413f;
+
+	/* Border */
+	--color-hairline: #c3cecb;
+	--color-hairline-soft: #d7e0de;
+
+	/* Typography */
+	--font-display: 'Pretendard Variable', sans-serif;
+	--font-body: 'Pretendard Variable', sans-serif;
+	--font-code: 'JetBrains Mono', ui-monospace, monospace;
+
+	/* Spacing */
+	--space-xxs: 4px;
+	--space-xs: 8px;
+	--space-sm: 12px;
+	--space-md: 16px;
+	--space-lg: 24px;
+	--space-xl: 32px;
+	--space-xxl: 48px;
+	--space-section: 96px;
+
+	/* Rounded */
+	--rounded-sm: 2px;
+	--rounded-md: 4px;
+	--rounded-lg: 8px;
+	--rounded-pill: 9999px;
+	--rounded-full: 9999px;
+
+	--radius-sm: 0.125rem;
+	--radius-default: 0.25rem;
+	--radius-md: 0.375rem;
+	--radius-lg: 0.5rem;
+	--radius-xl: 0.75rem;
+	--radius-full: 9999px;
+
+	/* Semantic aliases (neo-refined design system) */
+	--surface-card: var(--color-surface-card);
+	--surface-card-raised: var(--color-surface-soft);
+	--surface-recessed: var(--color-surface-high);
+	--text-heading: var(--color-ink);
+	--text-body: var(--color-body);
+	--border-default: var(--color-hairline);
+	--border-strong: var(--color-muted);
+	--link-color: var(--color-secondary-strong);
+	--link-color-hover: var(--color-secondary);
+	--progress-track: var(--color-surface-high);
+	--progress-fill: var(--color-surface-dark);
+
+	/* Isometric sticker-book art direction (포트폴리오 목록·상세 공통) */
+	--sticker-ink: #2e3340;
+	--sticker-paper: #fffdf8;
+	--sticker-mint: #77deb9;
+	--sticker-mint-soft: #dff8ef;
+	--sticker-coral: #ff8c7b;
+	--sticker-coral-soft: #ffe2dc;
+	--sticker-yellow: #f6d970;
+	--sticker-yellow-soft: #fff4bf;
+	--sticker-lilac: #b9a7ec;
+	--sticker-lilac-soft: #eee8ff;
+	--sticker-grid: #f7f5ff;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	font-family: var(--font-body);
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 1.7;
+	color: var(--color-body);
+	background-color: var(--color-canvas);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+/* 컴포넌트에서 개별 선언하면 Svelte 스코프 클래스 때문에 포트폴리오 커스텀 커서를 이겨버린다 */
+button {
+	cursor: pointer;
+}
+
+img {
+	display: block;
+	max-width: 100%;
+}

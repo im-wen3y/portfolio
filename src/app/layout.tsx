@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
-import './globals.css';
+import '@/styles/base.css';
 
 export const metadata: Metadata = {
 	metadataBase: new URL('https://im-wen3yz.vercel.app'),
