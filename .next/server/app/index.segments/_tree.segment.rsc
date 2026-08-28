@@ -10,4 +10,4 @@
 :HL["/footer-sticker-glasses.png","image"]
 :HL["/footer-sticker-peace.png","image"]
 :HL["/footer-sticker-heart.png","image"]
-0:{"tree":{"name":"","param":null,"prefetchHints":4176,"slots":{"children":{"name":"(portfolio)","param":null,"prefetchHints":4192,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}},"staleTime":300,"buildId":"V4jmlxAQATE3tfqBUx42b"}
+0:{"tree":{"name":"","param":null,"prefetchHints":4176,"slots":{"children":{"name":"(portfolio)","param":null,"prefetchHints":4192,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}},"staleTime":300,"buildId":"WoLQWknqV8Kwo2QeqdscI"}
