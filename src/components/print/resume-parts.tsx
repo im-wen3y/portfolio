@@ -151,6 +151,12 @@ export function CompanySection({
 									<InlineHighlights text={work.effect} highlights={work.effectHighlights} />
 								</dd>
 							</div>
+							{work.takeaway && (
+								<div>
+									<dt>배운 점</dt>
+									<dd>{work.takeaway}</dd>
+								</div>
+							)}
 						</dl>
 						<p className="resume-work-stack">{work.stack.join(' · ')}</p>
 					</article>
@@ -162,16 +168,23 @@ export function CompanySection({
 
 /** 지원용 이력서의 압축된 경험 카드 */
 export function TargetWorkCard({ item }: { item: TargetWork }) {
+	const roleLabel =
+		item.experience.company === '라텔앤드파트너즈' && item.work.id !== 'nonmyacuvue-promo'
+			? ' ・파트 리더'
+			: '';
+
 	return (
 		<article className="target-resume-work">
 			<header>
-				<div>
+				<div className="target-work-title-row">
 					<h3>{item.work.title}</h3>
-					<p>
-						{item.experience.company} · {item.work.role}
-					</p>
+					<span>{item.work.period}</span>
 				</div>
-				<span>{item.work.period}</span>
+				<p>
+					{item.experience.company}
+					{roleLabel} | {item.work.role}
+				</p>
+				<p className="resume-work-stack">{item.work.stack.join(' · ')}</p>
 			</header>
 			<dl>
 				<div>
@@ -188,8 +201,13 @@ export function TargetWorkCard({ item }: { item: TargetWork }) {
 						<InlineHighlights text={item.work.effect} highlights={item.work.effectHighlights} />
 					</dd>
 				</div>
+				{item.work.takeaway && (
+					<div>
+						<dt>배운 점</dt>
+						<dd>{item.work.takeaway}</dd>
+					</div>
+				)}
 			</dl>
-			<p className="resume-work-stack">{item.work.stack.join(' · ')}</p>
 		</article>
 	);
 }

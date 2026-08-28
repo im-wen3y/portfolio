@@ -16,7 +16,6 @@ const TOAST_DURATION_MS = 3000;
 const DOCUMENTS = [
 	{ label: '이력서', id: 'resume', href: '/print' },
 	{ label: '경력기술서', id: 'career', href: '/print/career' },
-	{ label: '포트폴리오', id: 'portfolio', href: '/print/portfolio' },
 	{ label: '지원용', id: 'target', href: '/print/senior' }
 ];
 

@@ -4,13 +4,7 @@ import {
 	PRINT_SKILLS,
 	type PrintTargetResume
 } from '@/data/print-profile';
-import {
-	DocumentHeader,
-	SheetMeta,
-	TargetWorkCard,
-	toPrintPeriod,
-	type TargetWork
-} from './resume-parts';
+import { SheetMeta, TargetWorkCard, type TargetWork } from './resume-parts';
 
 /** workIds 순서대로 경력 전체에서 해당 프로젝트를 찾아온다 */
 function getTargetWorks(profile: PrintTargetResume): TargetWork[] {
@@ -25,7 +19,7 @@ function getTargetWorks(profile: PrintTargetResume): TargetWork[] {
 
 /** 지원 직무마다 다른 강조색을 준다 */
 function accentFor(id: PrintTargetResume['id']): string {
-	if (id === 'senior') return 'portfolio-green';
+	if (id === 'senior') return 'toss-blue';
 	if (id === 'lead') return 'toss-blue';
 	return 'carrot-orange';
 }
@@ -54,36 +48,29 @@ export function TargetResumePages({
 				data-accent={accent}
 			>
 				<SheetMeta page="01" total="02" section={profile.label} />
-				<DocumentHeader />
 
-				<section className="target-resume-intro" aria-labelledby={`target-title-${profile.id}`}>
-					<h2 id={`target-title-${profile.id}`}>{profile.headline}</h2>
-					<p>{profile.intro}</p>
+				<section className="target-resume-hero" aria-labelledby={`target-title-${profile.id}`}>
+					<h2 id={`target-title-${profile.id}`} className="target-resume-title">
+						송누리
+					</h2>
+					<p className="target-resume-role">프론트엔드 개발자</p>
+					<p className="target-resume-meta">
+						<a href="tel:010-5108-5493">010-5108-5493</a>
+						<span aria-hidden="true">•</span>
+						<a href="mailto:gloriosd@gmail.com">gloriosd@gmail.com</a>
+					</p>
 				</section>
 
-				{profile.sentences && (
-					<section
-						className="target-sentence-strip"
-						aria-labelledby={`target-sentences-${profile.id}`}
-					>
-						<h2 id={`target-sentences-${profile.id}`} className="pr-label">
-							지원 문장
-						</h2>
-						<ul className="target-sentence-list">
-							{profile.sentences.map((sentence) => (
-								<li key={sentence}>{sentence}</li>
-							))}
-						</ul>
-					</section>
-				)}
-
-				<section className="resume-overview" aria-labelledby={`target-strengths-${profile.id}`}>
-					<h2 id={`target-strengths-${profile.id}`} className="pr-label">
-						핵심 강점
+				<section
+					className="resume-overview target-sentence-strip"
+					aria-labelledby={`target-sentences-${profile.id}`}
+				>
+					<h2 id={`target-sentences-${profile.id}`} className="pr-label">
+						주요 내용
 					</h2>
-					<ul className="target-strength-list">
-						{profile.strengths.map((strength) => (
-							<li key={strength}>{strength}</li>
+					<ul className="target-sentence-list">
+						{profile.sentences?.map((sentence) => (
+							<li key={sentence}>{sentence}</li>
 						))}
 					</ul>
 				</section>
@@ -124,8 +111,9 @@ export function TargetResumePages({
 						<article key={experience.company}>
 							<strong>{experience.company}</strong>
 							<span>
-								{toPrintPeriod(experience.period)} · {experience.role}
+								{experience.period} (총 {experience.duration})
 							</span>
+							<span>{experience.role}</span>
 						</article>
 					))}
 				</section>
@@ -150,8 +138,9 @@ export function TargetResumePages({
 							학력
 						</h2>
 						{PRINT_EDUCATION.map((education) => (
-							<p key={education.title}>
-								<strong>{education.title}</strong> · {education.details.join(' · ')}
+							<p className="target-education-entry" key={education.title}>
+								<strong>{education.title}</strong>
+								<span>{education.details.join(' · ')}</span>
 							</p>
 						))}
 					</section>
