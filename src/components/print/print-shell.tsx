@@ -19,16 +19,13 @@ const DOCUMENTS = [
 	{ label: '지원용', id: 'target', href: '/print/senior' }
 ];
 
-const TARGET_DOCUMENTS = [
-	{ ...PRINT_TARGET_RESUMES.senior, href: '/print/senior' },
-	{ ...PRINT_TARGET_RESUMES.lead, href: '/print/lead' },
-	{ ...PRINT_TARGET_RESUMES.product, href: '/print/product' }
-];
+const TARGET_DOCUMENTS = Object.values(PRINT_TARGET_RESUMES).map((resume) => ({
+	...resume,
+	href: `/print/${resume.id}`
+}));
 
 function toTargetResume(variant: PrintVariant) {
-	return variant === 'senior' || variant === 'lead' || variant === 'product'
-		? PRINT_TARGET_RESUMES[variant]
-		: undefined;
+	return TARGET_DOCUMENTS.find((resume) => resume.id === variant);
 }
 
 export function PrintShell({ variant = 'v1' }: { variant?: PrintVariant }) {

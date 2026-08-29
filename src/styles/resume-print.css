@@ -408,6 +408,9 @@
 .page[data-accent='carrot-orange'] {
 	--pr-accent: #ff6f0f;
 }
+.page[data-accent='millie-yellow'] {
+	--pr-accent: #16181d;
+}
 
 .page.dark .pr-name,
 .page.dark .pr-company,
@@ -2084,6 +2087,7 @@
 	.target-resume-work
 	.document-emphasis {
 	color: var(--target-accent);
+	font-weight: 700;
 }
 
 .target-resume-sheet.resume-document[data-resume-version='compact']
@@ -2651,6 +2655,33 @@
 	--pr-accent: var(--target-accent);
 }
 
+/* 밀리의서재는 노랑을 글자색이 아니라 바탕으로 쓰고 그 위에 검정 글자를 얹는다.
+   그래서 강조색은 먹색으로 두고, 브랜드 노랑은 형광펜처럼 바탕에만 깐다.
+   배경이 인쇄되도록 print-color-adjust를 켜두되, 브라우저가 무시해도
+   글자는 먹색이라 읽는 데는 지장이 없다 */
+.target-resume-sheet[data-target-resume='millie'] {
+	--target-accent: #16181d;
+	--target-brand: #f7f04b;
+	--target-callout-surface: #fefce0;
+	--target-callout-border: var(--target-brand);
+	--pr-accent: var(--target-accent);
+
+	print-color-adjust: exact;
+	-webkit-print-color-adjust: exact;
+}
+
+/* 브랜드 노랑은 이름 한 곳에만 형광펜처럼 쓴다. 강조 구절마다 칠하면
+   한 장에 여덟 군데가 되어 강조가 배경 소음이 된다. 본문 강조는 굵기로만 구분한다 */
+.target-resume-sheet[data-target-resume='millie'] .target-resume-title {
+	width: fit-content;
+	background: linear-gradient(transparent 62%, var(--target-brand) 62%);
+}
+
+.page.dark.target-resume-sheet[data-target-resume='millie'] {
+	--target-accent: var(--target-brand);
+	--target-callout-surface: transparent;
+}
+
 .target-resume-hero {
 	margin-top: 4mm;
 	padding: 0 0 4mm;
@@ -2748,7 +2779,7 @@
 
 .target-sentence-list {
 	display: grid;
-	gap: 2.2mm;
+	gap: 1.4mm;
 	padding-left: 4.5mm;
 }
 
@@ -2763,6 +2794,11 @@
 	color: var(--target-text);
 	font-size: 9.8pt;
 	line-height: 1.55;
+	overflow-wrap: break-word;
+	word-break: keep-all;
+	text-align: justify;
+	text-justify: inter-character;
+	text-align-last: left;
 }
 
 .target-sentence-list li::marker,
@@ -2800,7 +2836,7 @@
 
 .target-work-title-row {
 	display: flex;
-	align-items: baseline;
+	align-items: flex-start;
 	justify-content: space-between;
 	gap: 5mm;
 }
@@ -2814,8 +2850,7 @@
 	line-height: 1.35;
 }
 
-.target-resume-work header p,
-.target-work-title-row > span {
+.target-resume-work header p {
 	margin: 1mm 0 0;
 	color: #6b7684;
 	font-size: 9.2pt;
@@ -2823,8 +2858,31 @@
 	line-height: 1.45;
 }
 
-.target-work-title-row > span {
+.target-work-period-row {
+	display: inline-flex;
+	flex-wrap: nowrap;
+	align-items: baseline;
+	justify-content: flex-end;
+	gap: 1.1mm;
+	margin: 0;
 	flex: none;
+	min-width: 0;
+	text-align: right;
+}
+
+.target-work-period {
+	color: #6b7684;
+	font-size: 9pt;
+	font-weight: 600;
+	line-height: 1.3;
+	white-space: nowrap;
+}
+
+.target-work-total {
+	color: #8b95a1;
+	font-size: 7.5pt;
+	font-weight: 500;
+	line-height: 1.25;
 	white-space: nowrap;
 }
 
@@ -2854,6 +2912,11 @@
 
 .target-resume-work dd {
 	color: var(--target-text);
+	overflow-wrap: break-word;
+	word-break: keep-all;
+	text-align: justify;
+	text-justify: inter-character;
+	text-align-last: left;
 }
 
 .target-resume-work dd .document-emphasis {
@@ -2865,35 +2928,135 @@
 	margin: 1.2mm 0 0;
 	color: #6b7684;
 	font-size: 8.8pt;
-	font-weight: 600;
+	font-weight: 500;
 	line-height: 1.5;
 }
 
+/* 1장은 2·3장과 같은 간격·크기를 쓴다. 예전에는 대표 경험 2개를 넣느라
+   여백과 글자를 0.5mm 단위로 줄였지만, 지금은 1개라 압축할 이유가 없다 */
+.target-resume-sheet[data-target-page='1'] .target-resume-work {
+	break-inside: avoid;
+	page-break-inside: avoid;
+}
+
+.target-resume-sheet.resume-document[data-resume-version='compact'] .target-career-summary {
+	margin-top: 0;
+	padding-top: 9mm;
+}
+
+.target-resume-sheet.resume-document[data-resume-version='compact']
+	.target-career-summary
+	> h2.pr-label {
+	margin-top: 0;
+}
+
+/* 1장에서는 페이지 선두가 아니라 자기소개 아래에 오므로,
+   선두용 여백 대신 핵심 역량과 같은 섹션 간격(4mm)을 쓴다 */
+.target-resume-sheet.resume-document[data-resume-version='compact'][data-target-page='1']
+	.target-career-summary {
+	padding-top: 0;
+}
+
+.target-resume-sheet.resume-document[data-resume-version='compact'][data-target-page='1']
+	.target-career-summary
+	> h2.pr-label {
+	margin: var(--sp-5) 0 var(--sp-3);
+}
+
+/* 자기소개 — 핵심 역량 문장과 같은 크기, 강조는 대표 경험과 같은 강조색 */
+.target-resume-sheet.resume-document[data-resume-version='compact'] .resume-thesis > p {
+	color: var(--target-text);
+	font-size: 9.5pt;
+	line-height: 1.55;
+	overflow-wrap: break-word;
+	word-break: keep-all;
+	text-align: justify;
+	text-justify: inter-character;
+	text-align-last: left;
+}
+
+.target-resume-sheet.resume-document[data-resume-version='compact']
+	.resume-thesis
+	.document-emphasis {
+	color: var(--target-accent);
+	font-weight: 700;
+}
+
+/* 핵심 역량은 굵기로만 강조한다. 강조색은 자기소개·대표 경험 결과에만 써서
+   한 페이지에 파란 볼드가 과하게 늘어나지 않게 한다 */
+.target-resume-sheet.resume-document[data-resume-version='compact']
+	.target-sentence-list
+	.document-emphasis {
+	color: var(--target-ink);
+	font-weight: 700;
+}
+
+/* 열 순서가 회사 / 역할 및 담당업무 / 기간이라, 위치 기준 너비를 다시 잡는다.
+   (/print/ 요약 이력서는 기간이 첫 열이라 공용 규칙을 그대로 둔다) */
+.target-resume-sheet.resume-document[data-resume-version='compact']
+	.resume-summary-table
+	th:first-child,
+.target-resume-sheet.resume-document[data-resume-version='compact']
+	.resume-summary-table
+	td:first-child {
+	width: 23%;
+	white-space: nowrap;
+}
+
+.target-resume-sheet.resume-document[data-resume-version='compact']
+	.resume-summary-table
+	th:nth-child(2),
+.target-resume-sheet.resume-document[data-resume-version='compact']
+	.resume-summary-table
+	td:nth-child(2) {
+	width: auto;
+}
+
+.target-resume-sheet.resume-document[data-resume-version='compact'] .resume-summary-period {
+	width: 24%;
+	white-space: nowrap;
+	font-variant-numeric: tabular-nums;
+}
+
+/* 경력 표는 /print/ 문서 색이 아니라 target 시트 팔레트를 쓴다 */
+.target-resume-sheet.resume-document[data-resume-version='compact'] .resume-total-experience,
+.target-resume-sheet.resume-document[data-resume-version='compact'] .resume-summary-table th,
+.target-resume-sheet.resume-document[data-resume-version='compact'] .resume-summary-period,
+.target-resume-sheet.resume-document[data-resume-version='compact'] .resume-summary-duration,
+.target-resume-sheet.resume-document[data-resume-version='compact']
+	.resume-summary-responsibilities {
+	color: var(--target-text);
+}
+
+.target-resume-sheet.resume-document[data-resume-version='compact'] .resume-total-experience strong,
+.target-resume-sheet.resume-document[data-resume-version='compact'] .resume-summary-table strong {
+	color: var(--target-ink);
+}
+
+.target-resume-sheet.resume-document[data-resume-version='compact'] .resume-summary-table th,
+.target-resume-sheet.resume-document[data-resume-version='compact'] .resume-summary-table td {
+	border-color: var(--target-line);
+}
+
+/* 경력 타이틀과 총 경력을 한 줄에 두고, 표는 아래에서 전체 폭을 쓴다 */
 .target-career-summary {
-	margin-top: 5mm;
+	display: grid;
+	grid-template-columns: 1fr auto;
+	align-items: baseline;
+}
+
+.target-career-summary > .resume-total-experience {
+	margin: 0;
+	justify-self: end;
+}
+
+.target-career-summary > .resume-summary-table {
+	grid-column: 1 / -1;
 }
 
 .target-career-summary > .pr-label,
 .target-resume-facts .pr-label {
 	color: var(--target-accent);
-}
-
-.target-career-summary article {
-	display: grid;
-	grid-template-columns: 40mm 52mm minmax(0, 1fr);
-	gap: 4mm;
-	align-items: baseline;
-	padding: 1.5mm 0;
-	border-bottom: 1px solid var(--target-line);
-	font-size: 10pt;
-}
-
-.target-career-summary article:last-child {
-	border-bottom: 0;
-}
-
-.target-career-summary article span {
-	color: var(--target-muted);
 }
 
 .target-resume-facts {
@@ -2921,9 +3084,40 @@
 	font-weight: 700;
 }
 
+.target-resume-side-facts {
+	display: grid;
+	align-content: start;
+}
+
+.target-profile-links {
+	display: grid;
+	gap: 1.2mm;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.target-profile-links li {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr);
+	gap: 1.2mm;
+	align-items: baseline;
+	font-size: 9pt;
+	line-height: 1.45;
+}
+
+.target-profile-links strong {
+	color: var(--target-ink);
+	font-weight: 700;
+}
+
+.target-profile-links a {
+	color: var(--target-accent);
+	text-decoration: none;
+}
+
 .page.dark .target-resume-intro,
-.page.dark .target-resume-work + .target-resume-work,
-.page.dark .target-career-summary article {
+.page.dark .target-resume-work + .target-resume-work {
 	border-color: var(--color-hairline-soft);
 }
 

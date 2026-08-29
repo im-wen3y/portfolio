@@ -3,6 +3,29 @@ import { InlineHighlights } from './inline-highlights';
 
 export type TargetWork = { experience: PrintExperience; work: PrintWork };
 
+function getWorkDurationText(period: string): string {
+	const match = period.match(/(\d{4})\.(\d{2})\s*-\s*(\d{4})\.(\d{2})/);
+
+	if (!match) return '';
+
+	const startYear = Number(match[1]);
+	const startMonth = Number(match[2]);
+	const endYear = Number(match[3]);
+	const endMonth = Number(match[4]);
+	const duration = (endYear - startYear) * 12 + (endMonth - startMonth) + 1;
+
+	if (duration <= 0) return '';
+
+	if (duration > 12) {
+		const years = Math.floor(duration / 12);
+		const months = duration % 12;
+
+		return months === 0 ? `총 ${years}년` : `총 ${years}년 ${months}개월`;
+	}
+
+	return `총 ${duration}개월`;
+}
+
 /** period 표기는 화면(2024.04 - 2026.06)과 인쇄(2024.04~2026.06)가 다르다 */
 export function toPrintPeriod(period: string): string {
 	return period.replace(' - ', '~');
@@ -172,13 +195,19 @@ export function TargetWorkCard({ item }: { item: TargetWork }) {
 		item.experience.company === '라텔앤드파트너즈' && item.work.id !== 'nonmyacuvue-promo'
 			? ' ・파트 리더'
 			: '';
+	const workDurationText = getWorkDurationText(item.work.period);
 
 	return (
 		<article className="target-resume-work">
 			<header>
 				<div className="target-work-title-row">
 					<h3>{item.work.title}</h3>
-					<span>{item.work.period}</span>
+					<p className="target-work-period-row">
+						<span className="target-work-period">{item.work.period}</span>
+						{workDurationText && (
+							<span className="target-work-total">{`(${workDurationText})`}</span>
+						)}
+					</p>
 				</div>
 				<p>
 					{item.experience.company}
