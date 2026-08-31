@@ -2640,6 +2640,19 @@
 }
 
 /* ── 지원 직무별 2페이지 이력서 ── */
+/* 시니어 FE만 기존 Spoqa 조합을 쓰고, 회사별 지원 이력서는 Pretendard로 통일한다.
+   .pr-label 처럼 개별 요소가 font-family를 직접 선언하는 곳이 있어 함께 덮어쓴다 */
+.target-resume-sheet:not([data-target-resume='senior']),
+.target-resume-sheet:not([data-target-resume='senior']) .pr-label,
+.target-resume-sheet:not([data-target-resume='senior']) .pr-name {
+	font-family:
+		'Pretendard Variable',
+		Pretendard,
+		-apple-system,
+		system-ui,
+		sans-serif;
+}
+
 .target-resume-sheet {
 	--target-accent: #3182f6;
 	--target-ink: #333d4b;
@@ -2662,12 +2675,15 @@
 .target-resume-sheet[data-target-resume='millie'] {
 	--target-accent: #16181d;
 	--target-brand: #f7f04b;
-	--target-callout-surface: #fefce0;
-	--target-callout-border: var(--target-brand);
 	--pr-accent: var(--target-accent);
 
 	print-color-adjust: exact;
 	-webkit-print-color-adjust: exact;
+}
+
+/* 머릿말 구분선 — 글자가 아니라 선이라 7pt 가독성에 영향이 없고, 페이지마다 한 번만 나온다 */
+.target-resume-sheet[data-target-resume='millie'] > .resume-sheet-meta {
+	border-bottom: 2px solid var(--target-brand);
 }
 
 /* 브랜드 노랑은 이름 한 곳에만 형광펜처럼 쓴다. 강조 구절마다 칠하면
@@ -2679,7 +2695,6 @@
 
 .page.dark.target-resume-sheet[data-target-resume='millie'] {
 	--target-accent: var(--target-brand);
-	--target-callout-surface: transparent;
 }
 
 .target-resume-hero {
