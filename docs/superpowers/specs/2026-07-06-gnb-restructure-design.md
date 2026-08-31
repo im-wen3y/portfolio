@@ -20,11 +20,11 @@
 
 `$app/state`의 `page.url.pathname`으로 판단한다.
 
-| 라우트 | nav-links | PDF 버튼 | 테마 토글 | 햄버거/드로어 |
-|---|---|---|---|---|
-| `/resume` | Resume(active) / Portfolio | 노출 | 없음 | 노출 (Resume/Portfolio + PDF 퀵링크) |
-| `/portfolio` | Resume / Portfolio(active) | 없음 | 없음 | 노출 (Resume/Portfolio, PDF 없음) |
-| `/resume/print` | 없음 (전부 숨김) | 없음 | 노출 | 숨김 (열 게 없으므로 버튼 자체 미표시) |
+| 라우트          | nav-links                  | PDF 버튼 | 테마 토글 | 햄버거/드로어                          |
+| --------------- | -------------------------- | -------- | --------- | -------------------------------------- |
+| `/resume`       | Resume(active) / Portfolio | 노출     | 없음      | 노출 (Resume/Portfolio + PDF 퀵링크)   |
+| `/portfolio`    | Resume / Portfolio(active) | 없음     | 없음      | 노출 (Resume/Portfolio, PDF 없음)      |
+| `/resume/print` | 없음 (전부 숨김)           | 없음     | 노출      | 숨김 (열 게 없으므로 버튼 자체 미표시) |
 
 - Portfolio 활성 판정: `page.url.pathname === '/portfolio'`
 - Resume 활성 판정: `page.url.pathname.startsWith('/resume')` (print 하위 포함되지만 print에서는 nav-links 자체가 안 보이므로 무해)

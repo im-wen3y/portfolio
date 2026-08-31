@@ -19,12 +19,14 @@
 ### Task 1: 테마 상태, localStorage 영속성, 토글 버튼
 
 **Files:**
+
 - Modify: `src/routes/resume/print/+page.svelte:1-15` (script 블록)
 - Modify: `src/routes/resume/print/+page.svelte:11-15` (`.controls` 마크업)
 - Modify: `src/routes/resume/print/+page.svelte:19` (`<article class="page">` 마크업)
 - Modify: `src/routes/resume/print/+page.svelte` 내 `<style>` 블록 (토글 버튼 스타일 추가)
 
 **Interfaces:**
+
 - Produces: `theme` (`$state<'light' | 'dark'>`, 초기값 `'light'`), `toggleTheme()` 함수 — Task 3의 `handlePrint()`가 `theme` 값을 읽어 사용함.
 
 - [ ] **Step 1: script 블록에 테마 상태와 localStorage 로직 추가**
@@ -151,6 +153,7 @@ Expected: 에러 없음 (`0 errors`)
 - [ ] **Step 6: 수동 확인**
 
 Run: `pnpm dev` (이미 실행 중이 아니면)
+
 - 브라우저에서 `http://localhost:5173/resume/print` 접속
 - "🌙 Dark로 보기" 버튼 클릭 → 텍스트가 "☀️ Light로 보기"로 바뀌는지 확인 (스타일은 아직 라이트 그대로, Task 2에서 적용)
 - 브라우저 devtools > Application > Local Storage에서 `resume-print-theme` 키가 `dark`로 저장되는지 확인
@@ -168,9 +171,11 @@ git commit -m "feat(print): 다크 테마 토글 상태 및 localStorage 영속�
 ### Task 2: 다크 팔레트 오버라이드 + 인쇄 배경색 유지
 
 **Files:**
+
 - Modify: `src/routes/resume/print/+page.svelte` 내 `<style>` 블록 (`.page` 규칙, 새 `.page.dark` 규칙 블록 추가)
 
 **Interfaces:**
+
 - Consumes: Task 1에서 만든 `class:dark={theme === 'dark'}` 바인딩 (CSS만으로 소비, `.page.dark` 셀렉터)
 
 - [ ] **Step 1: `.page` 규칙에 인쇄 배경색 유지 속성 추가**
@@ -294,11 +299,13 @@ git commit -m "feat(print): 다크 테마 컬러 오버라이드 및 인쇄 배�
 ### Task 3: 인쇄 안내 토스트 (다크 테마에서 저장 클릭 시)
 
 **Files:**
+
 - Modify: `src/routes/resume/print/+page.svelte` 내 script 블록 (`handlePrint` 수정, `toastVisible` 상태 추가)
 - Modify: `src/routes/resume/print/+page.svelte` 마크업 (`.controls` div 다음에 토스트 엘리먼트 추가)
 - Modify: `src/routes/resume/print/+page.svelte` 내 `<style>` 블록 (`.print-toast` 스타일 및 `@media print` 규칙 추가)
 
 **Interfaces:**
+
 - Consumes: Task 1의 `theme` 상태 (`'light' | 'dark'`)
 - Produces: 없음 (최종 태스크)
 

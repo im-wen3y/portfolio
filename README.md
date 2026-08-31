@@ -1,22 +1,23 @@
 # im-books-front
 
-송누리의 이력서와 프로젝트를 소개하는 개인 웹사이트입니다. 인터랙티브 포트폴리오,
-프로젝트 상세 화면, 인쇄 및 PDF 저장에 최적화된 이력서 화면을 제공합니다. 루트 경로(`/`)는
-`/portfolio`로 이동합니다.
+송누리의 이력서와 프로젝트를 소개하는 개인 웹사이트입니다. 공개 포트폴리오는 Next.js
+정적 앱으로, 소유자 인증이 필요한 인쇄 화면은 SvelteKit 앱으로 운영합니다.
 
 ## 주요 화면
 
-| 경로                      | 설명                                               |
-| ------------------------- | -------------------------------------------------- |
-| `/portfolio`              | 프로젝트의 문제·해결·성과를 정리한 웹 포트폴리오   |
-| `/portfolio/project/[id]` | 개별 프로젝트 상세 내용                            |
-| `/print`                  | 인쇄 이력서의 색상 설정 및 PDF 저장                |
-| `/print/[company]`        | 지원 회사 요구사항에 맞춘 이력서·포트폴리오 프로필 |
+| 경로                 | 설명                      |
+| -------------------- | ------------------------- | -------------------------------------------------- |
+| 앱                   | 경로                      | 설명                                               |
+| -------------------- | ------------------------- | -------------------------------------------------- |
+| Next.js 포트폴리오   | `/`, `/portfolio`         | 프로젝트의 문제·해결·성과를 정리한 공개 화면       |
+| Next.js 포트폴리오   | `/portfolio/project/[id]` | 개별 프로젝트 상세 내용                            |
+| SvelteKit 인쇄 문서  | `/print`                  | 인쇄 이력서의 색상 설정 및 PDF 저장                |
+| SvelteKit 인쇄 문서  | `/print/[company]`        | 지원 회사 요구사항에 맞춘 이력서·포트폴리오 프로필 |
 
 ## 기술 스택
 
-- SvelteKit, Svelte 5 runes, TypeScript strict mode
-- Vite, `@sveltejs/adapter-auto`
+- Next.js App Router, React, TypeScript strict mode, 정적 내보내기
+- SvelteKit, Svelte 5 runes, Vite, `@sveltejs/adapter-auto`
 - Vitest
 - ESLint, Prettier, `prettier-plugin-svelte`
 - pnpm
@@ -27,10 +28,10 @@ Node.js 22 이상과 pnpm 10 이상이 필요합니다.
 
 ```bash
 pnpm install
-pnpm dev
+pnpm dev:portfolio
 ```
 
-개발 서버가 실행되면 브라우저가 자동으로 열립니다.
+인쇄 문서 앱은 `pnpm dev`로 실행합니다.
 
 ### 소유자 인쇄 문서
 
@@ -45,21 +46,24 @@ pnpm dev
 
 ## 명령어
 
-| 명령어           | 용도                           |
-| ---------------- | ------------------------------ |
-| `pnpm dev`       | 개발 서버 실행                 |
-| `pnpm build`     | 프로덕션 빌드 생성             |
-| `pnpm preview`   | 빌드 결과 로컬 확인            |
-| `pnpm check`     | Svelte 및 TypeScript 타입 검사 |
-| `pnpm lint`      | Prettier와 ESLint 검사         |
-| `pnpm format`    | Prettier로 파일 정리           |
-| `pnpm test`      | Vitest 전체 테스트 1회 실행    |
-| `pnpm test:unit` | Vitest 감시 모드 실행          |
+| 명령어                 | 용도                               |
+| ---------------------- | ---------------------------------- |
+| `pnpm dev:portfolio`   | Next.js 포트폴리오 개발 서버 실행  |
+| `pnpm build:portfolio` | 정적 포트폴리오를 `out/`에 생성    |
+| `pnpm check:portfolio` | 포트폴리오 TypeScript 검사         |
+| `pnpm dev`             | SvelteKit 인쇄 문서 개발 서버 실행 |
+| `pnpm build`           | SvelteKit 인쇄 문서 빌드           |
+| `pnpm check`           | Svelte 및 TypeScript 타입 검사     |
+| `pnpm lint`            | Prettier와 ESLint 검사             |
 
 ## 프로젝트 구조
 
 ```text
-src/
+apps/portfolio/             # Next.js 공개 포트폴리오
+├── src/app/                # App Router 페이지와 전역 스타일
+├── src/components/         # 포트폴리오 인터랙션 컴포넌트
+└── src/data/               # 공개 경력·프로젝트 데이터
+src/                        # SvelteKit 소유자 인쇄 문서
 ├── lib/
 │   ├── actions/       # 재사용 가능한 Svelte 액션
 │   ├── components/    # 포트폴리오 및 인쇄용 컴포넌트

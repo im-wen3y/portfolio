@@ -18,15 +18,17 @@
 코드를 수정한 뒤에는 아래 명령을 실행해서 에러가 0건인지 확인하고 나서 작업을 마친다.
 
 ```bash
-pnpm check   # svelte-check — 타입 에러 확인
+pnpm check   # tsc --noEmit — 타입 에러 확인
 pnpm lint    # prettier + eslint
 ```
 
 ## 자주 발생하는 케이스와 올바른 처리 방법
 
-- **`svelte/require-each-key`** — `{#each}` 블록에 안정적인 키를 추가한다. 값이 고유하면 값 자체를 키로 사용하고(`(item)`), 중복 가능성이 있으면 고유 id 필드를 사용한다. 인덱스를 키로 쓰는 것은 최후의 수단이다.
-- **`svelte/no-navigation-without-resolve`** — 내부 라우트로 이동하는 `href`는 `$app/paths`의 `resolve()`로 감싼다 (`href={resolve('/resume')}`). `mailto:`, 외부 URL(`https://...`)은 대상이 아니다.
-- **`svelte/no-at-html-tags`** — `{@html ...}`로 문자열을 렌더링하는 대신, 가능하면 실제 Svelte 마크업으로 작성한다. 정말 HTML 문자열이 필요하다면 신뢰할 수 있는 출처인지 확인하고, 사용자 입력이 섞이지 않도록 한다.
+- **`react/jsx-key` 계열 누락** — `.map()`으로 만든 요소에 안정적인 키를 추가한다. 값이 고유하면 값 자체를 키로 사용하고, 중복 가능성이 있으면 고유 id 필드를 사용한다. 인덱스를 키로 쓰는 것은 최후의 수단이다.
+- **`no-nested-ternary`** — 중첩 삼항 대신 조기 반환하는 함수로 푼다. 함께 바뀌는 값이 여러 개면 한 함수에서 같이 결정한다 (`print-shell.tsx`의 `resolveDocumentId()` 참고).
+- **`complexity` / `max-depth` / `max-params`** — 한 번에 들고 있어야 하는 맥락이 많다는 신호다. 조건에 이름을 붙이거나 함수를 쪼갠다.
+- **`@typescript-eslint/no-shadow`** — 바깥 스코프와 같은 이름을 다시 선언하지 않는다. 이름을 구체적으로 바꾼다.
+- **서버 컴포넌트에서 클라이언트 훅 사용** — `'use client'`를 페이지 전체에 붙여 해결하지 말고, 훅이 필요한 부분만 별도 클라이언트 컴포넌트로 분리한다.
 
 ## 관련 문서
 

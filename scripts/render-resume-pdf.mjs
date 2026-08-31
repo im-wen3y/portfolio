@@ -1,13 +1,13 @@
 // /print 화면을 그대로 A4 PDF로 굽는다. 개발 서버가 떠 있어야 한다.
 //   터미널 1: pnpm dev
 //   터미널 2: pnpm pdf
-// 결과물은 static/이 아니라 src/lib/server/에 둔다 — 공개 URL이 되면 소유자 인증이 무의미해진다.
+// 결과물은 public/이 아니라 src/server-assets/에 둔다 — 공개 URL이 되면 소유자 인증이 무의미해진다.
 // ponytail: 로컬 Chrome을 그대로 쓴다(playwright-core). 브라우저 별도 설치 없음.
 import { mkdir } from 'node:fs/promises';
 import { chromium } from 'playwright-core';
 
-const BASE_URL = process.env.PDF_BASE_URL ?? 'http://localhost:5173';
-const OUT_DIR = 'src/lib/server/pdf';
+const BASE_URL = process.env.PDF_BASE_URL ?? 'http://localhost:3000';
+const OUT_DIR = 'src/server-assets';
 
 const TARGETS = [
 	{ radio: /기존 상세/, out: `${OUT_DIR}/resume-detailed.pdf` },
