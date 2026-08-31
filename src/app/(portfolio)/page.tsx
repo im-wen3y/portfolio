@@ -36,24 +36,48 @@ const FOOTER_STICKERS = [
 	{ file: 'footer-sticker-heart.png', modifier: 'footer-heart', size: 160 }
 ];
 
+const PROJECT_SUMMARY_HIGHLIGHTS: Partial<Record<string, string>> = {
+	'virtual-fitting': '판매 과정을 게임 형태로 연습하는 교육용 웹 시뮬레이터',
+	'shopl-migration': '기능 단위로 React 화면을 함께 제공하는 점진 전환을 제안',
+	'shopl-todo-map': '작업·검수 완료율'
+};
+
+function EmphasizedLead({ text, phrase }: { text: string; phrase?: string }) {
+	if (phrase) {
+		const phraseStart = text.indexOf(phrase);
+		if (phraseStart !== -1) {
+			return (
+				<>
+					{text.slice(0, phraseStart)}
+					<strong className="content-emphasis">{phrase}</strong>
+					{text.slice(phraseStart + phrase.length)}
+				</>
+			);
+		}
+	}
+
+	const sentenceEnd = text.indexOf('.');
+	if (sentenceEnd === -1) return <>{text}</>;
+
+	const lead = text.slice(0, sentenceEnd + 1);
+	const rest = text.slice(sentenceEnd + 1);
+
+	return (
+		<>
+			<strong className="content-emphasis">{lead}</strong>
+			{rest}
+		</>
+	);
+}
+
 export default function PortfolioPage() {
 	return (
 		<main className="portfolio-index-page">
 			<div className="page portfolio-redesign">
 				<section className="hero container">
-					<div className="profile-card">
-						<img
-							className="profile-avatar"
-							src="/avatar-profile-3d.png"
-							alt="송누리 캐릭터 아바타"
-							width={512}
-							height={512}
-						/>
+					<div className="hero-copy">
 						<p className="profile-role">Frontend Developer</p>
-						<h1>송누리</h1>
-						<p className="profile-headline">
-							레거시의 맥락을 읽고, 팀이 계속 운영할 수 있는 프론트엔드를 만듭니다.
-						</p>
+						<h1>레거시의 맥락을 읽고, 팀이 계속 운영할 수 있는 프론트엔드를 만듭니다.</h1>
 						<p className="lede">
 							사용자와 운영자가 막히는 흐름을 기준으로 정책과 제약을 분석합니다. React 전환과 모바일
 							리뉴얼을 이끌고, 팀이 반복해서 사용할 기준을 정리해왔습니다.
@@ -80,18 +104,30 @@ export default function PortfolioPage() {
 							</a>
 						</div>
 					</div>
-					<div className="profile-facts" aria-label="프로필 요약">
-						<div>
-							<span>역할</span>
-							<strong>프론트엔드 파트 리더</strong>
+					<div className="hero-profile">
+						<div className="profile-card">
+							<img
+								className="profile-avatar"
+								src="/avatar-profile-3d.png"
+								alt="송누리 캐릭터 아바타"
+								width={512}
+								height={512}
+							/>
+							<p className="profile-name">송누리</p>
 						</div>
-						<div>
-							<span>주력 기술</span>
-							<strong>React / TypeScript</strong>
-						</div>
-						<div>
-							<span>경력</span>
-							<strong>6년 10개월</strong>
+						<div className="profile-facts" aria-label="프로필 요약">
+							<div>
+								<span>역할</span>
+								<strong>프론트엔드 파트 리더</strong>
+							</div>
+							<div>
+								<span>주력 기술</span>
+								<strong>React / TypeScript</strong>
+							</div>
+							<div>
+								<span>경력</span>
+								<strong>6년 10개월</strong>
+							</div>
 						</div>
 					</div>
 				</section>
@@ -110,7 +146,9 @@ export default function PortfolioPage() {
 									<div>
 										<h3>{career.company}</h3>
 										<div className="career-role">{career.role}</div>
-										<p className="career-summary">{career.summary}</p>
+										<p className="career-summary">
+											<EmphasizedLead text={career.summary} />
+										</p>
 										{career.bullets.length > 0 && (
 											<ul className="bullets">
 												{career.bullets.map((bullet) => (
@@ -148,7 +186,12 @@ export default function PortfolioPage() {
 										)}
 									</div>
 									<h3>{project.title}</h3>
-									<p className="card-summary">{project.summary}</p>
+									<p className="card-summary">
+										<EmphasizedLead
+											text={project.summary}
+											phrase={PROJECT_SUMMARY_HIGHLIGHTS[project.id]}
+										/>
+									</p>
 									<div className="chips">
 										{project.stack.map((tech) => (
 											<span className="chip" key={tech}>

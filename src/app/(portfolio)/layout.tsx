@@ -1,7 +1,14 @@
 import type { Metadata } from 'next';
+import { IBM_Plex_Sans_KR } from 'next/font/google';
 import type { ReactNode } from 'react';
 import { PortfolioNav } from '@/components/portfolio-nav';
 import '@/styles/portfolio.css';
+
+const ibmPlexSansKr = IBM_Plex_Sans_KR({
+	weight: ['400', '500', '600', '700'],
+	variable: '--font-ibm-plex-sans-kr',
+	preload: false
+});
 
 const TITLE = '프론트엔드 개발자 · 송누리 · 포트폴리오';
 const DESCRIPTION =
@@ -30,9 +37,9 @@ export const metadata: Metadata = {
 
 export default function PortfolioLayout({ children }: Readonly<{ children: ReactNode }>) {
 	return (
-		<>
+		<div className={`portfolio-font ${ibmPlexSansKr.variable}`}>
 			<PortfolioNav />
 			{children}
-		</>
+		</div>
 	);
 }

@@ -5,6 +5,25 @@ import { PORTFOLIO_PROJECTS } from '@/data/portfolio-projects';
 
 type ProjectPageProps = { params: Promise<{ id: string }> };
 
+const EMPHASIZED_SECTIONS = new Set(['직접 맡은 역할', '결과']);
+
+function ProjectParagraph({ text, emphasize }: { text: string; emphasize: boolean }) {
+	if (!emphasize) return <p>{text}</p>;
+
+	const sentenceEnd = text.indexOf('.');
+	if (sentenceEnd === -1) return <p>{text}</p>;
+
+	const lead = text.slice(0, sentenceEnd + 1);
+	const rest = text.slice(sentenceEnd + 1);
+
+	return (
+		<p>
+			<strong>{lead}</strong>
+			{rest}
+		</p>
+	);
+}
+
 export const dynamicParams = false;
 
 export function generateStaticParams() {
@@ -50,7 +69,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 								<h2>{block.title}</h2>
 								<div className="article-block">
 									{block.paragraphs?.map((paragraph) => (
-										<p key={paragraph}>{paragraph}</p>
+										<ProjectParagraph
+											text={paragraph}
+											emphasize={EMPHASIZED_SECTIONS.has(block.title)}
+											key={paragraph}
+										/>
 									))}
 									{block.bullets && (
 										<ul>
