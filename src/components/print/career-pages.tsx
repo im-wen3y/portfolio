@@ -1,11 +1,5 @@
-import {
-	PRINT_COMPACT_EXPERIENCES,
-	PRINT_COMPACT_ORGANIZATION_CONTRIBUTIONS,
-	PRINT_EDUCATION
-} from '@/data/print-profile';
+import type { PrintContribution, PrintEducation, PrintExperience } from '@/data/print-profile';
 import { CompanySection, ResumeLinks, SheetMeta } from './resume-parts';
-
-const EXPERIENCES = PRINT_COMPACT_EXPERIENCES;
 
 // 경력기술서는 A4 4장에 회사·프로젝트를 나눠 담는다. 어느 프로젝트가 몇 페이지에
 // 들어가는지는 인쇄 결과를 보고 맞춘 값이라 slice 범위를 임의로 바꾸면 페이지가 깨진다.
@@ -14,9 +8,20 @@ type CareerPagesProps = {
 	total: string;
 	dark: boolean;
 	withResumeInfo?: boolean;
+	experiences: PrintExperience[];
+	organizationContributions: PrintContribution[];
+	education: PrintEducation[];
 };
 
-export function CareerPages({ pages, total, dark, withResumeInfo = false }: CareerPagesProps) {
+export function CareerPages({
+	pages,
+	total,
+	dark,
+	withResumeInfo = false,
+	experiences: EXPERIENCES,
+	organizationContributions,
+	education
+}: CareerPagesProps) {
 	const sheetClass = dark
 		? 'page resume-document resume-sheet dark'
 		: 'page resume-document resume-sheet';
@@ -35,7 +40,7 @@ export function CareerPages({ pages, total, dark, withResumeInfo = false }: Care
 						팀 리드
 					</h2>
 					<div className="template-contribution-list">
-						{PRINT_COMPACT_ORGANIZATION_CONTRIBUTIONS.map((contribution) => (
+						{organizationContributions.map((contribution) => (
 							<article className="template-contribution" key={contribution.title}>
 								<h3>{contribution.title}</h3>
 								<ul className="template-contribution-details">
@@ -126,14 +131,14 @@ export function CareerPages({ pages, total, dark, withResumeInfo = false }: Care
 								학력
 							</h2>
 							<div className="template-education-list">
-								{PRINT_EDUCATION.map((education) => (
-									<article className="template-education" key={education.title}>
+								{education.map((item) => (
+									<article className="template-education" key={item.title}>
 										<header>
-											<h3>{education.title}</h3>
-											<span>{education.period}</span>
+											<h3>{item.title}</h3>
+											<span>{item.period}</span>
 										</header>
 										<ul className="template-contribution-details">
-											{education.details.map((detail) => (
+											{item.details.map((detail) => (
 												<li key={detail}>{detail}</li>
 											))}
 										</ul>

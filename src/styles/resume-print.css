@@ -349,13 +349,10 @@
 	box-shadow:
 		0 1px 2px rgba(29, 36, 48, 0.08),
 		0 24px 64px rgba(29, 36, 48, 0.13);
-	font-family:
-		'Spoqa Han Sans Neo',
-		'Pretendard Variable',
-		-apple-system,
-		BlinkMacSystemFont,
-		system-ui,
-		sans-serif;
+	/* 인쇄 문서는 자체 호스팅한 Pretendard로 통일한다 (styles/pretendard.css) */
+	--font-body:
+		'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+	font-family: var(--font-body);
 	color: #141413;
 	--pr-accent: #0650c0;
 }
@@ -377,22 +374,6 @@
 	--resume-font-meta: 8.75pt;
 }
 
-/* ── 원티드 브랜드 컬러에 Black을 섞은 문서용 저채도 액센트 ── */
-.page[data-accent='wanted-blue'] {
-	--pr-accent: #0650c0;
-}
-.page[data-accent='wanted-orange'] {
-	--pr-accent: #bd4908;
-}
-.page[data-accent='wanted-pink'] {
-	--pr-accent: #bd6dc0;
-}
-.page[data-accent='wanted-sky-blue'] {
-	--pr-accent: #0684c0;
-}
-.page[data-accent='wanted-violet'] {
-	--pr-accent: #644fc0;
-}
 .page[data-accent='portfolio-green'] {
 	--pr-accent: #47d7a4;
 }
@@ -402,14 +383,18 @@
 .page[data-accent='toss-blue'] {
 	--pr-accent: #3182f6;
 }
-.page[data-accent='baemin-mint'] {
-	--pr-accent: rgb(12, 239, 211);
-}
 .page[data-accent='carrot-orange'] {
 	--pr-accent: #ff6f0f;
 }
-.page[data-accent='millie-yellow'] {
+/* 강조를 색이 아니라 굵기로만 주는 무채색 버전. 학력·링크와 같은 회색을 쓴다 */
+.page[data-accent='mono-ink'] {
+	--pr-accent: #4e5968;
+}
+.page[data-accent='org-1-accent'] {
 	--pr-accent: #16181d;
+}
+.page[data-accent='org-3-accent'] {
+	--pr-accent: #006ecd;
 }
 
 .page.dark .pr-name,
@@ -511,7 +496,7 @@
 }
 
 .pr-name {
-	font-family: 'Spoqa Han Sans Neo', 'Pretendard Variable', sans-serif;
+	font-family: var(--font-body);
 	font-size: var(--resume-font-name, 30pt);
 	font-weight: 600;
 	line-height: 1.05;
@@ -726,7 +711,7 @@
 
 /* ── 섹션 레이블 ── */
 .pr-label {
-	font-family: 'Spoqa Han Sans Neo', 'Pretendard Variable', sans-serif;
+	font-family: var(--font-body);
 	font-size: 8.5pt;
 	font-weight: 700;
 	letter-spacing: 1.5pt;
@@ -1054,7 +1039,7 @@
 }
 
 .resume-continuation-header > p {
-	font-family: 'Spoqa Han Sans Neo', 'Pretendard Variable', sans-serif;
+	font-family: var(--font-body);
 	font-size: 6pt;
 	font-weight: 500;
 	letter-spacing: 0.6pt;
@@ -1087,7 +1072,7 @@
 .resume-principle-head span {
 	display: block;
 	margin-bottom: 1mm;
-	font-family: 'Spoqa Han Sans Neo', 'Pretendard Variable', sans-serif;
+	font-family: var(--font-body);
 	font-size: 6.2pt;
 	font-weight: 600;
 	letter-spacing: 0.7pt;
@@ -2640,20 +2625,9 @@
 }
 
 /* ── 지원 직무별 2페이지 이력서 ── */
-/* 시니어 FE만 기존 Spoqa 조합을 쓰고, 회사별 지원 이력서는 Pretendard로 통일한다.
-   .pr-label 처럼 개별 요소가 font-family를 직접 선언하는 곳이 있어 함께 덮어쓴다 */
-.target-resume-sheet:not([data-target-resume='senior']),
-.target-resume-sheet:not([data-target-resume='senior']) .pr-label,
-.target-resume-sheet:not([data-target-resume='senior']) .pr-name {
-	font-family:
-		'Pretendard Variable',
-		Pretendard,
-		-apple-system,
-		system-ui,
-		sans-serif;
-}
-
 .target-resume-sheet {
+	/* 1장 섹션(자기소개·경력·핵심 역량·대표 경험) 사이 간격. 한 곳만 고치면 셋 다 바뀐다 */
+	--target-section-gap: 10mm;
 	--target-accent: #3182f6;
 	--target-ink: #333d4b;
 	--target-text: #4e5968;
@@ -2664,15 +2638,43 @@
 	--target-callout-border: #c9e2ff;
 }
 
+/* 시니어 FE는 강조를 색이 아니라 본문보다 진한 회색으로만 준다 */
 .target-resume-sheet[data-target-resume='senior'] {
+	--target-accent: #4e5968;
 	--pr-accent: var(--target-accent);
 }
 
-/* 밀리의서재는 노랑을 글자색이 아니라 바탕으로 쓰고 그 위에 검정 글자를 얹는다.
+/* 제품 FE는 시니어 FE와 같은 본문을 쓰되 강조를 무채색으로만 준다.
+   어두운 화면에서는 배경에 묻혀서 밝은 회색으로 뒤집는다 */
+.target-resume-sheet[data-target-resume='product'] {
+	--target-accent: #4e5968;
+}
+
+.page.dark.target-resume-sheet[data-target-resume='product'] {
+	--target-accent: #e5e8eb;
+}
+
+/* 한국어는 어절 단위로 줄바꿈(keep-all)돼 양끝 맞춤과 겹치면 어간이 눈에 띄게 벌어진다.
+   지원처 3은 문장이 길어 그 간격이 특히 커서 왼쪽 정렬로 둔다 */
+.target-resume-sheet.resume-document[data-resume-version='compact'][data-target-resume='org-3']
+	.resume-thesis
+	> p,
+.target-resume-sheet[data-target-resume='org-3'] .target-sentence-list li,
+.target-resume-sheet[data-target-resume='org-3'] .target-resume-work dd {
+	text-align: left;
+}
+
+/* 지원처 3은 이력서와 경력기술서가 같은 강조색을 쓴다 */
+.target-resume-sheet[data-target-resume='org-3'] {
+	--target-accent: #006ecd;
+	--pr-accent: var(--target-accent);
+}
+
+/* org-1 지원 대상은 브랜드 노랑을 글자색이 아니라 바탕으로 쓰고 그 위에 검정 글자를 얹는다.
    그래서 강조색은 먹색으로 두고, 브랜드 노랑은 형광펜처럼 바탕에만 깐다.
    배경이 인쇄되도록 print-color-adjust를 켜두되, 브라우저가 무시해도
    글자는 먹색이라 읽는 데는 지장이 없다 */
-.target-resume-sheet[data-target-resume='millie'] {
+.target-resume-sheet[data-target-resume='org-1'] {
 	--target-accent: #16181d;
 	--target-brand: #f7f04b;
 	--pr-accent: var(--target-accent);
@@ -2682,18 +2684,18 @@
 }
 
 /* 머릿말 구분선 — 글자가 아니라 선이라 7pt 가독성에 영향이 없고, 페이지마다 한 번만 나온다 */
-.target-resume-sheet[data-target-resume='millie'] > .resume-sheet-meta {
+.target-resume-sheet[data-target-resume='org-1'] > .resume-sheet-meta {
 	border-bottom: 2px solid var(--target-brand);
 }
 
 /* 브랜드 노랑은 이름 한 곳에만 형광펜처럼 쓴다. 강조 구절마다 칠하면
    한 장에 여덟 군데가 되어 강조가 배경 소음이 된다. 본문 강조는 굵기로만 구분한다 */
-.target-resume-sheet[data-target-resume='millie'] .target-resume-title {
+.target-resume-sheet[data-target-resume='org-1'] .target-resume-title {
 	width: fit-content;
 	background: linear-gradient(transparent 62%, var(--target-brand) 62%);
 }
 
-.page.dark.target-resume-sheet[data-target-resume='millie'] {
+.page.dark.target-resume-sheet[data-target-resume='org-1'] {
 	--target-accent: var(--target-brand);
 }
 
@@ -2771,8 +2773,9 @@
 	font-weight: 700;
 }
 
-.target-sentence-strip {
-	margin-top: 4mm;
+/* .resume-overview 리셋(margin-top:0)보다 뒤·같은 구체도라 여기서 다시 잡는다 */
+.resume-document[data-resume-version='compact'] .target-sentence-strip {
+	margin-top: var(--target-section-gap);
 }
 
 .target-sentence-strip .pr-label {
@@ -2821,8 +2824,8 @@
 	color: var(--target-accent);
 }
 
-.target-work-section {
-	margin-top: 7mm;
+.resume-document[data-resume-version='compact'] .target-work-section {
+	margin-top: var(--target-section-gap);
 }
 
 .target-work-section > .pr-label {
@@ -2835,7 +2838,8 @@
 	text-transform: none;
 }
 
-.target-page-lead {
+/* 2·3장 선두 섹션은 머릿말 바로 아래라 섹션 간격을 쓰지 않는다 */
+.resume-document[data-resume-version='compact'] .target-page-lead {
 	margin-top: 4mm;
 }
 
@@ -2867,7 +2871,7 @@
 
 .target-resume-work header p {
 	margin: 1mm 0 0;
-	color: #6b7684;
+	color: #4e5968;
 	font-size: 9.2pt;
 	font-weight: 600;
 	line-height: 1.45;
@@ -2886,7 +2890,7 @@
 }
 
 .target-work-period {
-	color: #6b7684;
+	color: #4e5968;
 	font-size: 9pt;
 	font-weight: 600;
 	line-height: 1.3;
@@ -2921,7 +2925,7 @@
 }
 
 .target-resume-work dt {
-	color: #6b7684;
+	color: #4e5968;
 	font-weight: 700;
 }
 
@@ -2975,7 +2979,7 @@
 .target-resume-sheet.resume-document[data-resume-version='compact'][data-target-page='1']
 	.target-career-summary
 	> h2.pr-label {
-	margin: var(--sp-5) 0 var(--sp-3);
+	margin: var(--target-section-gap) 0 var(--sp-3);
 }
 
 /* 자기소개 — 핵심 역량 문장과 같은 크기, 강조는 대표 경험과 같은 강조색 */
@@ -3078,24 +3082,28 @@
 	display: grid;
 	grid-template-columns: 1.4fr 1fr;
 	gap: 8mm;
-	margin-top: 5mm;
+	margin-top: var(--sp-4);
 }
 
 .target-resume-facts .resume-skill-list strong {
 	color: var(--target-accent);
 }
 
+.target-resume-facts .resume-skill-list p {
+	color: #4e5968;
+}
+
 .target-education-entry {
 	display: grid;
 	gap: 1mm;
 	margin: 0;
-	color: var(--target-text);
+	color: #4e5968;
 	font-size: 9.5pt;
 	line-height: 1.5;
 }
 
 .target-education-entry strong {
-	color: var(--target-ink);
+	color: #4e5968;
 	font-weight: 700;
 }
 
@@ -3122,12 +3130,12 @@
 }
 
 .target-profile-links strong {
-	color: var(--target-ink);
+	color: #4e5968;
 	font-weight: 700;
 }
 
 .target-profile-links a {
-	color: var(--target-accent);
+	color: #4e5968;
 	text-decoration: none;
 }
 

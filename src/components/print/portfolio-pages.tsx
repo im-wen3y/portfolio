@@ -1,13 +1,4 @@
-import {
-	PRINT_EDUCATION,
-	PRINT_PORTFOLIO_COLLABORATION,
-	PRINT_PORTFOLIO_EXPERIENCES,
-	PRINT_PORTFOLIO_INTRO,
-	PRINT_PORTFOLIO_STACK,
-	PRINT_SKILLS,
-	PRINT_TOTAL_EXPERIENCE,
-	type PrintPortfolioExperience
-} from '@/data/print-profile';
+import type { PrintEducation, PrintPortfolioExperience, PrintSkill } from '@/data/print-profile';
 import { DocumentHeader, ResumeLinks, SheetMeta } from './resume-parts';
 
 function PortfolioExperience({ experience }: { experience: PrintPortfolioExperience }) {
@@ -38,7 +29,27 @@ function PortfolioExperience({ experience }: { experience: PrintPortfolioExperie
 }
 
 /** 인쇄용 포트폴리오: A4 2장 */
-export function PortfolioPages({ dark }: { dark: boolean }) {
+export function PortfolioPages({
+	dark,
+	phone,
+	totalExperience,
+	skills,
+	education,
+	intro,
+	stack,
+	experiences,
+	collaboration
+}: {
+	dark: boolean;
+	phone: string;
+	totalExperience: string;
+	skills: PrintSkill[];
+	education: PrintEducation[];
+	intro: string[];
+	stack: string[];
+	experiences: PrintPortfolioExperience[];
+	collaboration: string[];
+}) {
 	const sheetClass = dark
 		? 'page resume-document resume-sheet portfolio-resume-sheet dark'
 		: 'page resume-document resume-sheet portfolio-resume-sheet';
@@ -47,14 +58,14 @@ export function PortfolioPages({ dark }: { dark: boolean }) {
 		<>
 			<article className={sheetClass} data-resume-version="compact">
 				<SheetMeta page="01" total="02" section="소개와 최근 경력" />
-				<DocumentHeader />
+				<DocumentHeader phone={phone} />
 
 				<section className="portfolio-resume-intro" aria-label="소개">
 					<h2>안녕하세요. 7년 차 프론트엔드 개발자 송누리입니다.</h2>
-					{PRINT_PORTFOLIO_INTRO.map((paragraph) => (
+					{intro.map((paragraph) => (
 						<p key={paragraph}>{paragraph}</p>
 					))}
-					<p className="portfolio-stack-line">{PRINT_PORTFOLIO_STACK.join(' · ')}</p>
+					<p className="portfolio-stack-line">{stack.join(' · ')}</p>
 				</section>
 
 				<section
@@ -66,9 +77,9 @@ export function PortfolioPages({ dark }: { dark: boolean }) {
 					</h2>
 					<p className="resume-total-experience">
 						<strong>총 경력</strong>
-						{PRINT_TOTAL_EXPERIENCE}
+						{totalExperience}
 					</p>
-					<PortfolioExperience experience={PRINT_PORTFOLIO_EXPERIENCES[0]} />
+					<PortfolioExperience experience={experiences[0]} />
 				</section>
 			</article>
 
@@ -79,8 +90,8 @@ export function PortfolioPages({ dark }: { dark: boolean }) {
 					className="resume-overview portfolio-project-summary portfolio-page-lead"
 					aria-label="경력 계속"
 				>
-					<PortfolioExperience experience={PRINT_PORTFOLIO_EXPERIENCES[1]} />
-					<PortfolioExperience experience={PRINT_PORTFOLIO_EXPERIENCES[2]} />
+					<PortfolioExperience experience={experiences[1]} />
+					<PortfolioExperience experience={experiences[2]} />
 				</section>
 
 				<div className="portfolio-resume-facts">
@@ -89,7 +100,7 @@ export function PortfolioPages({ dark }: { dark: boolean }) {
 							기술
 						</h2>
 						<div className="resume-skill-list">
-							{PRINT_SKILLS.map((skill) => (
+							{skills.map((skill) => (
 								<p key={skill.label}>
 									<strong>{skill.label}</strong>
 									<span className="resume-skill-value">{skill.value}</span>
@@ -103,7 +114,7 @@ export function PortfolioPages({ dark }: { dark: boolean }) {
 							협업 및 리더십
 						</h2>
 						<ul className="portfolio-collaboration-list">
-							{PRINT_PORTFOLIO_COLLABORATION.map((item) => (
+							{collaboration.map((item) => (
 								<li key={item}>{item}</li>
 							))}
 						</ul>
@@ -113,13 +124,13 @@ export function PortfolioPages({ dark }: { dark: boolean }) {
 						<h2 id="portfolio-education" className="pr-label">
 							교육
 						</h2>
-						{PRINT_EDUCATION.map((education) => (
-							<article className="portfolio-education-item" key={education.title}>
+						{education.map((item) => (
+							<article className="portfolio-education-item" key={item.title}>
 								<header>
-									<h3>{education.title}</h3>
-									<span>{education.period}</span>
+									<h3>{item.title}</h3>
+									<span>{item.period}</span>
 								</header>
-								<p>{education.details.join(' · ')}</p>
+								<p>{item.details.join(' · ')}</p>
 							</article>
 						))}
 					</section>

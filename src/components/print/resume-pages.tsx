@@ -1,16 +1,36 @@
-import {
-	PRINT_COMPACT_EXPERIENCES,
-	PRINT_CORE_COMPETENCIES,
-	PRINT_RESUME_SUMMARY,
-	PRINT_SKILLS,
-	PRINT_TOTAL_EXPERIENCE
+import type {
+	PrintContribution,
+	PrintEducation,
+	PrintExperience,
+	PrintResumeSummaryParagraph,
+	PrintSkill
 } from '@/data/print-profile';
 import { CareerPages } from './career-pages';
 import { InlineHighlights } from './inline-highlights';
 import { DocumentHeader, SheetMeta, toPrintPeriod } from './resume-parts';
 
 /** 기본 이력서(v1): 요약 1장 + 경력기술서 4장 */
-export function ResumePages({ dark }: { dark: boolean }) {
+export function ResumePages({
+	dark,
+	phone,
+	totalExperience,
+	skills,
+	coreCompetencies,
+	summary,
+	experiences,
+	organizationContributions,
+	education
+}: {
+	dark: boolean;
+	phone: string;
+	totalExperience: string;
+	skills: PrintSkill[];
+	coreCompetencies: PrintSkill[];
+	summary: PrintResumeSummaryParagraph[];
+	experiences: PrintExperience[];
+	organizationContributions: PrintContribution[];
+	education: PrintEducation[];
+}) {
 	return (
 		<>
 			<article
@@ -20,10 +40,10 @@ export function ResumePages({ dark }: { dark: boolean }) {
 				data-resume-version="compact"
 			>
 				<SheetMeta page="01" total="05" section="프로필과 경력 요약" />
-				<DocumentHeader />
+				<DocumentHeader phone={phone} />
 
 				<section className="resume-thesis" aria-label="요약">
-					{PRINT_RESUME_SUMMARY.map((paragraph) => (
+					{summary.map((paragraph) => (
 						<p key={paragraph.text}>
 							<InlineHighlights text={paragraph.text} highlights={paragraph.highlights} />
 						</p>
@@ -39,7 +59,7 @@ export function ResumePages({ dark }: { dark: boolean }) {
 					</h2>
 					<p className="resume-total-experience">
 						<strong>총 경력</strong>
-						{PRINT_TOTAL_EXPERIENCE}
+						{totalExperience}
 					</p>
 					<table className="resume-summary-table">
 						<thead>
@@ -50,7 +70,7 @@ export function ResumePages({ dark }: { dark: boolean }) {
 							</tr>
 						</thead>
 						<tbody>
-							{PRINT_COMPACT_EXPERIENCES.map((experience) => (
+							{experiences.map((experience) => (
 								<tr key={experience.company}>
 									<td className="resume-summary-period">
 										{toPrintPeriod(experience.period)}
@@ -81,7 +101,7 @@ export function ResumePages({ dark }: { dark: boolean }) {
 						핵심 역량
 					</h2>
 					<ul className="resume-competency-list">
-						{PRINT_CORE_COMPETENCIES.map((competency) => (
+						{coreCompetencies.map((competency) => (
 							<li key={competency.label}>
 								<strong>{competency.label}</strong>
 								{competency.value}
@@ -95,7 +115,7 @@ export function ResumePages({ dark }: { dark: boolean }) {
 						기술
 					</h2>
 					<div className="resume-skill-list">
-						{PRINT_SKILLS.map((skill) => (
+						{skills.map((skill) => (
 							<p key={skill.label}>
 								<strong>{skill.label}</strong>
 								<span className="resume-skill-value">{skill.value}</span>
@@ -105,7 +125,15 @@ export function ResumePages({ dark }: { dark: boolean }) {
 				</section>
 			</article>
 
-			<CareerPages pages={['02', '03', '04', '05']} total="05" dark={dark} withResumeInfo />
+			<CareerPages
+				pages={['02', '03', '04', '05']}
+				total="05"
+				dark={dark}
+				withResumeInfo
+				experiences={experiences}
+				organizationContributions={organizationContributions}
+				education={education}
+			/>
 		</>
 	);
 }

@@ -1,4 +1,10 @@
-import { PRINT_ROLE, type PrintExperience, type PrintWork } from '@/data/print-profile';
+import {
+	PRINT_ROLE,
+	type PrintExperience,
+	type PrintSharedResumeData,
+	type PrintTargetResume,
+	type PrintWork
+} from '@/data/print-profile';
 import { InlineHighlights } from './inline-highlights';
 
 export type TargetWork = { experience: PrintExperience; work: PrintWork };
@@ -52,14 +58,14 @@ export function SheetMeta({
 }
 
 /** 첫 장에만 들어가는 이름·연락처 블록 */
-export function DocumentHeader() {
+export function DocumentHeader({ phone }: { phone: string }) {
 	return (
 		<div className="document-header-group">
 			<header className="pr-header">
 				<h1 className="pr-name">송누리</h1>
 				<p className="pr-role">{PRINT_ROLE}</p>
 				<div className="pr-contact">
-					<a href="tel:010-5108-5493">010-5108-5493</a>
+					<a href={`tel:${phone}`}>{phone}</a>
 					<span className="pr-sep" aria-hidden="true">
 						·
 					</span>
@@ -238,5 +244,58 @@ export function TargetWorkCard({ item }: { item: TargetWork }) {
 				)}
 			</dl>
 		</article>
+	);
+}
+
+/** 지원용 문서(이력서·경력기술서)가 공유하는 경력 요약 표 */
+export function TargetCareerSummary({
+	profileId,
+	shared
+}: {
+	profileId: PrintTargetResume['id'];
+	shared: PrintSharedResumeData;
+}) {
+	return (
+		<section
+			className="resume-overview target-career-summary"
+			aria-labelledby={`target-career-${profileId}`}
+		>
+			<h2 id={`target-career-${profileId}`} className="pr-label">
+				경력
+			</h2>
+			<p className="resume-total-experience">
+				<strong>총 경력</strong>
+				{shared.totalExperience}
+			</p>
+			<table className="resume-summary-table">
+				<thead>
+					<tr>
+						<th scope="col">회사</th>
+						<th scope="col">역할 및 담당업무</th>
+						<th scope="col">기간</th>
+					</tr>
+				</thead>
+				<tbody>
+					{shared.compactExperiences.map((experience) => (
+						<tr key={experience.company}>
+							<td>
+								<strong>{experience.company}</strong>
+							</td>
+							<td>
+								<strong>{experience.role}</strong>
+								<span className="resume-summary-responsibilities">
+									{experience.responsibilities}
+								</span>
+							</td>
+							<td className="resume-summary-period">
+								{toPrintPeriod(experience.period)}
+								<br />
+								<span className="resume-summary-duration">(총 {experience.duration})</span>
+							</td>
+						</tr>
+					))}
+				</tbody>
+			</table>
+		</section>
 	);
 }

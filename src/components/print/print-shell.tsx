@@ -2,48 +2,114 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import { PRINT_TARGET_RESUMES, type PrintTargetResumeId } from '@/data/print-profile';
+import type {
+	PrintCareerData,
+	PrintPortfolioData,
+	PrintResumeData,
+	PrintSharedResumeData,
+	PrintTargetResume,
+	PrintTargetResumeId
+} from '@/data/print-profile';
 import { usePrintTheme } from '@/lib/use-print-theme';
 import { CareerPages } from './career-pages';
 import { PortfolioPages } from './portfolio-pages';
 import { ResumePages } from './resume-pages';
+import { TargetCareerPages } from './target-career-pages';
 import { TargetResumePages } from './target-resume-pages';
 
-export type PrintVariant = 'v1' | 'career' | 'portfolio' | PrintTargetResumeId;
+export type PrintVariant = 'v1' | 'career' | 'portfolio' | 'career-org-3' | PrintTargetResumeId;
 
 const TOAST_DURATION_MS = 3000;
 
 const DOCUMENTS = [
-	{ label: '이력서', id: 'resume', href: '/print' },
+	{ label: '이력서', id: 'resume', href: '/print/v1' },
 	{ label: '경력기술서', id: 'career', href: '/print/career' },
 	{ label: '지원용', id: 'target', href: '/print/senior' }
 ];
 
-const TARGET_DOCUMENTS = Object.values(PRINT_TARGET_RESUMES).map((resume) => ({
-	...resume,
-	href: `/print/${resume.id}`
-}));
+// 지원 대상 이름·강조 문구는 각 페이지 서버 컴포넌트가 조회해 props로 내려준다.
+// 여기서는 탭 이동에 필요한 라벨만 갖는다 (print-profile.ts 전체를 import하지 않는다).
+// 탭에 없는 지원용 문서도 URL로는 그대로 열린다.
+const TARGET_NAV: { id: PrintTargetResumeId; label: string; href: string }[] = [
+	{ id: 'senior', label: '시니어 FE', href: '/print/senior' },
+	{ id: 'org-1', label: '지원처 1 FE', href: '/print/org-1' },
+	{ id: 'org-2', label: '지원처 2 FE', href: '/print/org-2' },
+	{ id: 'org-3', label: '지원처 3 FE', href: '/print/org-3' }
+];
 
-function toTargetResume(variant: PrintVariant) {
-	return TARGET_DOCUMENTS.find((resume) => resume.id === variant);
+// 탭 목록(TARGET_NAV)과 분리한다. 탭에서 빼는 것은 화면에서 감추는 일이고,
+// 여기서 빼는 것은 그 라우트를 지원용 이력서가 아닌 것으로 만드는 일이다.
+// Record로 두면 새 지원처를 추가할 때 컴파일러가 빠뜨린 항목을 잡아준다.
+const TARGET_RESUME_IDS: Record<PrintTargetResumeId, true> = {
+	senior: true,
+	'org-1': true,
+	product: true,
+	'org-2': true,
+	'org-3': true
+};
+
+function isTargetVariant(variant: PrintVariant): variant is PrintTargetResumeId {
+	return variant in TARGET_RESUME_IDS;
 }
 
-export function PrintShell({ variant = 'v1' }: { variant?: PrintVariant }) {
-	const { isDark, toggle } = usePrintTheme();
+// 문서 제목은 각 라우트의 metadata가 갖는다. 여기서는 탭 활성화만 판단한다.
+function resolveDocumentId(variant: PrintVariant): string {
+	if (isTargetVariant(variant)) return 'target';
+	if (variant === 'career') return 'career';
+	if (variant === 'career-org-3') return 'target-career';
+	if (variant === 'portfolio') return 'portfolio';
+	return 'resume';
+}
+
+/** 문서 종류 탭과, 지원용 문서일 때만 나오는 버전 탭 */
+function DocumentTabs({ variant }: { variant: PrintVariant }) {
+	const currentDocumentId = resolveDocumentId(variant);
+
+	return (
+		<>
+			<nav className="doc-switch" aria-label="문서 종류">
+				{DOCUMENTS.map((doc) => (
+					<Link
+						href={doc.href}
+						className={doc.id === currentDocumentId ? 'doc-switch-item active' : 'doc-switch-item'}
+						aria-current={doc.id === currentDocumentId ? 'page' : undefined}
+						key={doc.id}
+					>
+						{doc.label}
+					</Link>
+				))}
+			</nav>
+			{isTargetVariant(variant) && (
+				<nav className="target-doc-switch" aria-label="지원용 이력서 버전">
+					{TARGET_NAV.map((doc) => (
+						<Link
+							href={doc.href}
+							className={doc.id === variant ? 'active' : undefined}
+							aria-current={doc.id === variant ? 'page' : undefined}
+							key={doc.id}
+						>
+							{doc.label}
+						</Link>
+					))}
+				</nav>
+			)}
+		</>
+	);
+}
+
+/** 인쇄 미리보기 화면에만 있는 조작부. 문서 자체가 아니라 화면 UI라 인쇄 시에는 CSS로 감춘다 */
+function PrintChrome({
+	variant,
+	isDark,
+	toggle
+}: {
+	variant: PrintVariant;
+	isDark: boolean;
+	toggle: () => void;
+}) {
 	const [floatingMenuOpen, setFloatingMenuOpen] = useState(false);
 	const [toastVisible, setToastVisible] = useState(false);
 	const toastTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-
-	const targetResume = toTargetResume(variant);
-
-	// 문서 제목은 각 라우트의 metadata가 갖는다. 여기서는 탭 활성화만 판단한다.
-	function resolveDocumentId(): string {
-		if (targetResume) return 'target';
-		if (variant === 'career') return 'career';
-		if (variant === 'portfolio') return 'portfolio';
-		return 'resume';
-	}
-	const currentDocumentId = resolveDocumentId();
 
 	useEffect(() => {
 		function handleKeydown(event: KeyboardEvent) {
@@ -71,34 +137,7 @@ export function PrintShell({ variant = 'v1' }: { variant?: PrintVariant }) {
 				<Link href="/" className="back-link">
 					← 포트폴리오로
 				</Link>
-				<nav className="doc-switch" aria-label="문서 종류">
-					{DOCUMENTS.map((doc) => (
-						<Link
-							href={doc.href}
-							className={
-								doc.id === currentDocumentId ? 'doc-switch-item active' : 'doc-switch-item'
-							}
-							aria-current={doc.id === currentDocumentId ? 'page' : undefined}
-							key={doc.id}
-						>
-							{doc.label}
-						</Link>
-					))}
-				</nav>
-				{targetResume && (
-					<nav className="target-doc-switch" aria-label="지원용 이력서 버전">
-						{TARGET_DOCUMENTS.map((doc) => (
-							<Link
-								href={doc.href}
-								className={doc.id === targetResume.id ? 'active' : undefined}
-								aria-current={doc.id === targetResume.id ? 'page' : undefined}
-								key={doc.id}
-							>
-								{doc.label}
-							</Link>
-						))}
-					</nav>
-				)}
+				<DocumentTabs variant={variant} />
 				<div className="document-tools">
 					<button type="button" onClick={handlePrint} className="save-btn">
 						PDF 다운로드
@@ -165,23 +204,242 @@ export function PrintShell({ variant = 'v1' }: { variant?: PrintVariant }) {
 			>
 				다크 배경이 보이려면 인쇄 설정에서 &apos;배경 그래픽&apos;을 켜주세요.
 			</div>
+		</>
+	);
+}
+
+export function PrintShell({
+	variant = 'v1',
+	targetResume,
+	sharedResumeData,
+	resumeData,
+	careerData,
+	portfolioData,
+	publicView = false
+}: {
+	variant?: PrintVariant;
+	/**
+	 * 인증 없이 열리는 경로(/resume)용. 연락처와 문서 전환·설정 조작부를 모두 감춘다.
+	 * 다른 문서 버전의 존재가 링크로 드러나지 않게 하기 위한 것이다
+	 */
+	publicView?: boolean;
+	targetResume?: PrintTargetResume;
+	sharedResumeData?: PrintSharedResumeData;
+	resumeData?: PrintResumeData;
+	careerData?: PrintCareerData;
+	portfolioData?: PrintPortfolioData;
+}) {
+	const { isDark, toggle } = usePrintTheme();
+
+	return (
+		<>
+			{!publicView && <PrintChrome variant={variant} isDark={isDark} toggle={toggle} />}
 
 			<div className="preview-wrap">
 				<div className="resume-pages">
-					<PrintDocument variant={variant} dark={isDark} />
+					<PrintDocument
+						variant={variant}
+						targetResume={targetResume}
+						sharedResumeData={sharedResumeData}
+						resumeData={resumeData}
+						careerData={careerData}
+						portfolioData={portfolioData}
+						dark={isDark}
+						showContact={!publicView}
+					/>
 				</div>
 			</div>
 		</>
 	);
 }
 
-function PrintDocument({ variant, dark }: { variant: PrintVariant; dark: boolean }) {
-	const targetResume = toTargetResume(variant);
-
-	if (variant === 'career') {
-		return <CareerPages pages={['01', '02', '03', '04']} total="04" dark={dark} />;
+function CareerDocument({
+	sharedResumeData,
+	careerData,
+	dark
+}: {
+	sharedResumeData?: PrintSharedResumeData;
+	careerData?: PrintCareerData;
+	dark: boolean;
+}) {
+	if (!sharedResumeData || !careerData) {
+		throw new Error('경력기술서 데이터가 전달되지 않았습니다.');
 	}
-	if (targetResume) return <TargetResumePages profile={targetResume} dark={dark} />;
-	if (variant === 'portfolio') return <PortfolioPages dark={dark} />;
-	return <ResumePages dark={dark} />;
+	return (
+		<CareerPages
+			pages={['01', '02', '03', '04']}
+			total="04"
+			dark={dark}
+			experiences={sharedResumeData.compactExperiences}
+			organizationContributions={careerData.organizationContributions}
+			education={sharedResumeData.education}
+		/>
+	);
+}
+
+function TargetCareerDocument({
+	targetResume,
+	sharedResumeData,
+	careerData,
+	dark
+}: {
+	targetResume?: PrintTargetResume;
+	sharedResumeData?: PrintSharedResumeData;
+	careerData?: PrintCareerData;
+	dark: boolean;
+}) {
+	if (!targetResume || !sharedResumeData || !careerData) {
+		throw new Error('지원용 경력기술서 데이터가 전달되지 않았습니다.');
+	}
+	return (
+		<TargetCareerPages
+			profile={targetResume}
+			shared={sharedResumeData}
+			organizationContributions={careerData.organizationContributions}
+			dark={dark}
+		/>
+	);
+}
+
+function TargetResumeDocument({
+	targetResume,
+	sharedResumeData,
+	dark,
+	showContact
+}: {
+	targetResume?: PrintTargetResume;
+	sharedResumeData?: PrintSharedResumeData;
+	dark: boolean;
+	showContact: boolean;
+}) {
+	if (!targetResume || !sharedResumeData) {
+		throw new Error('지원용 이력서 데이터가 전달되지 않았습니다.');
+	}
+	return (
+		<TargetResumePages
+			profile={targetResume}
+			shared={sharedResumeData}
+			dark={dark}
+			showContact={showContact}
+		/>
+	);
+}
+
+function ResumeDocument({
+	sharedResumeData,
+	resumeData,
+	careerData,
+	dark
+}: {
+	sharedResumeData?: PrintSharedResumeData;
+	resumeData?: PrintResumeData;
+	careerData?: PrintCareerData;
+	dark: boolean;
+}) {
+	if (!sharedResumeData || !resumeData || !careerData) {
+		throw new Error('이력서 데이터가 전달되지 않았습니다.');
+	}
+	return (
+		<ResumePages
+			dark={dark}
+			phone={sharedResumeData.phone}
+			totalExperience={sharedResumeData.totalExperience}
+			skills={sharedResumeData.skills}
+			coreCompetencies={resumeData.coreCompetencies}
+			summary={resumeData.summary}
+			experiences={sharedResumeData.compactExperiences}
+			organizationContributions={careerData.organizationContributions}
+			education={sharedResumeData.education}
+		/>
+	);
+}
+
+function PortfolioDocument({
+	sharedResumeData,
+	portfolioData,
+	dark
+}: {
+	sharedResumeData?: PrintSharedResumeData;
+	portfolioData?: PrintPortfolioData;
+	dark: boolean;
+}) {
+	if (!sharedResumeData || !portfolioData) {
+		throw new Error('포트폴리오 데이터가 전달되지 않았습니다.');
+	}
+	return (
+		<PortfolioPages
+			dark={dark}
+			phone={sharedResumeData.phone}
+			totalExperience={sharedResumeData.totalExperience}
+			skills={sharedResumeData.skills}
+			education={sharedResumeData.education}
+			intro={portfolioData.intro}
+			stack={portfolioData.stack}
+			experiences={portfolioData.experiences}
+			collaboration={portfolioData.collaboration}
+		/>
+	);
+}
+
+function PrintDocument({
+	variant,
+	targetResume,
+	sharedResumeData,
+	resumeData,
+	careerData,
+	portfolioData,
+	dark,
+	showContact
+}: {
+	variant: PrintVariant;
+	targetResume?: PrintTargetResume;
+	sharedResumeData?: PrintSharedResumeData;
+	resumeData?: PrintResumeData;
+	careerData?: PrintCareerData;
+	portfolioData?: PrintPortfolioData;
+	dark: boolean;
+	showContact: boolean;
+}) {
+	if (variant === 'career') {
+		return (
+			<CareerDocument sharedResumeData={sharedResumeData} careerData={careerData} dark={dark} />
+		);
+	}
+	if (variant === 'career-org-3') {
+		return (
+			<TargetCareerDocument
+				targetResume={targetResume}
+				sharedResumeData={sharedResumeData}
+				careerData={careerData}
+				dark={dark}
+			/>
+		);
+	}
+	if (isTargetVariant(variant)) {
+		return (
+			<TargetResumeDocument
+				targetResume={targetResume}
+				sharedResumeData={sharedResumeData}
+				dark={dark}
+				showContact={showContact}
+			/>
+		);
+	}
+	if (variant === 'portfolio') {
+		return (
+			<PortfolioDocument
+				sharedResumeData={sharedResumeData}
+				portfolioData={portfolioData}
+				dark={dark}
+			/>
+		);
+	}
+	return (
+		<ResumeDocument
+			sharedResumeData={sharedResumeData}
+			resumeData={resumeData}
+			careerData={careerData}
+			dark={dark}
+		/>
+	);
 }
