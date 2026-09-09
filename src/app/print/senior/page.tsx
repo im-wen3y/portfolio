@@ -1,9 +1,16 @@
 import type { Metadata } from 'next';
 import { PrintShell } from '@/components/print/print-shell';
-import { PRINT_TARGET_RESUMES } from '@/data/print-profile';
+import { getSharedResumeData, getTargetResume } from '@/lib/resume/get-private-resume';
 
-export const metadata: Metadata = { title: `${PRINT_TARGET_RESUMES.senior.label} 이력서` };
+export const metadata: Metadata = { title: '시니어 FE 이력서' };
 
-export default function PrintSeniorPage() {
-	return <PrintShell variant="senior" />;
+export default async function PrintSeniorPage() {
+	const [targetResume, sharedResumeData] = await Promise.all([
+		getTargetResume('senior'),
+		getSharedResumeData()
+	]);
+
+	return (
+		<PrintShell variant="senior" targetResume={targetResume} sharedResumeData={sharedResumeData} />
+	);
 }

@@ -2,15 +2,15 @@ import type { Metadata } from 'next';
 import { PrintShell } from '@/components/print/print-shell';
 import { getSharedResumeData, getTargetResume } from '@/lib/resume/get-private-resume';
 
-export const metadata: Metadata = { title: '제품 FE 이력서' };
+export const metadata: Metadata = { title: '지원처 3 FE 이력서' };
 
-export default async function PrintProductPage() {
+export default async function PrintOrg3Page() {
 	const [targetResume, sharedResumeData] = await Promise.all([
-		getTargetResume('product'),
+		getTargetResume('org-3'),
 		getSharedResumeData()
 	]);
 
 	return (
-		<PrintShell variant="product" targetResume={targetResume} sharedResumeData={sharedResumeData} />
+		<PrintShell variant="org-3" targetResume={targetResume} sharedResumeData={sharedResumeData} />
 	);
 }
