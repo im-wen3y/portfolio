@@ -11,8 +11,7 @@
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"test": "vitest run",
-		"test:watch": "vitest",
-		"pdf": "node --env-file=.env.local scripts/render-resume-pdf.mjs"
+		"test:watch": "vitest"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
